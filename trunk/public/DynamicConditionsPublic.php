@@ -113,7 +113,7 @@ class DynamicConditionsPublic {
         }
 
         $settings = $widget->get_settings_for_display();
-        $controls = $widget->get_controls();
+        //$controls = $widget->get_controls();
 
         if ( empty( $settings['dynamicconditions_condition'] ) ) {
             // no condition selected - disable conditions
@@ -132,39 +132,56 @@ class DynamicConditionsPublic {
             $widgetValueArray = [ $widgetValueArray ];
         }
 
-        var_dump( $checkValue );
-        var_dump( $widgetValueArray );
-        //var_dump($controls);
-
         $condition = false;
+        $break = false;
+        $breakFalse = false;
         foreach ( $widgetValueArray as $widgetValue ) {
+            if ( is_array( $widgetValue ) ) {
+                if ( !empty( $widgetValue['id'] ) ) {
+                    $widgetValue = get_attachment_link( $widgetValue['id'] );
+                } else {
+                    continue;
+                }
+            }
+
             switch ( $settings['dynamicconditions_condition'] ) {
                 case 'equal':
                     $condition = $checkValue == $widgetValue;
+                    $break = true;
                     break;
 
                 case 'not_equal':
                     $condition = $checkValue != $widgetValue;
+                    $breakFalse = true;
                     break;
 
                 case 'contains':
                     $condition = strpos( $widgetValue, $checkValue ) !== false;
+                    $break = true;
                     break;
 
                 case 'not_contains':
                     $condition = strpos( $widgetValue, $checkValue ) === false;
+                    $breakFalse = true;
                     break;
 
                 case 'empty':
                     $condition = empty( $widgetValue );
+                    $breakFalse = true;
                     break;
 
                 case 'not_empty':
                     $condition = !empty( $widgetValue );
+                    $break = true;
                     break;
             }
 
-            if ( $condition ) {
+            if ( $break && $condition ) {
+                // break if condition is true
+                break;
+            }
+            if ( $breakFalse && !$condition ) {
+                // break if condition is false
                 break;
             }
         }

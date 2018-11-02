@@ -197,7 +197,7 @@ class DynamicConditionsAdmin {
                     'categories' => [
                         Module::TEXT_CATEGORY,
                         Module::URL_CATEGORY,
-                        //Module::GALLERY_CATEGORY,
+                        Module::GALLERY_CATEGORY,
                         Module::IMAGE_CATEGORY,
                         Module::MEDIA_CATEGORY,
                         Module::POST_META_CATEGORY
