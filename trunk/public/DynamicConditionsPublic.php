@@ -152,11 +152,17 @@ class DynamicConditionsPublic {
                     break;
 
                 case 'contains':
+                    if ( empty( $checkValue ) ) {
+                        continue;
+                    }
                     $condition = strpos( $widgetValue, $checkValue ) !== false;
                     $break = true;
                     break;
 
                 case 'not_contains':
+                    if ( empty( $checkValue ) ) {
+                        continue;
+                    }
                     $condition = strpos( $widgetValue, $checkValue ) === false;
                     $breakFalse = true;
                     break;
