@@ -2,6 +2,8 @@
 
 use Admin\DynamicConditionsAdmin;
 use Pub\DynamicConditionsPublic;
+use Elementor\Controls_Manager;
+use Elementor\Modules\DynamicTags\Module;
 
 /**
  * The file that defines the core plugin class
@@ -31,6 +33,8 @@ use Pub\DynamicConditionsPublic;
  * @author     RTO GmbH <kundenhomepage@rto.de>
  */
 class DynamicConditions {
+
+    private $widgetsWithCondition = [];
 
 	/**
 	 * The loader that's responsible for maintaining and registering all hooks that power
@@ -129,13 +133,12 @@ class DynamicConditions {
 	 * @access   private
 	 */
 	private function defineAdminHooks() {
-
 		$pluginAdmin = new DynamicConditionsAdmin( $this->getDynamicConditions(), $this->getVersion() );
 
 		$this->loader->addAction( 'admin_enqueue_scripts', $pluginAdmin, 'enqueueStyles' );
 		$this->loader->addAction( 'admin_enqueue_scripts', $pluginAdmin, 'enqueueScripts' );
 
-        add_action( 'elementor/element/after_section_end', [$pluginAdmin, 'addConditionFields'], 10, 3 );
+        add_action( 'elementor/element/after_section_end', [$this, 'addConditionFields'], 10, 3 );
 	}
 
 	/**
@@ -152,6 +155,7 @@ class DynamicConditions {
 		$this->loader->addAction( 'wp_enqueue_scripts', $pluginPublic, 'enqueueStyles' );
         $this->loader->addAction( 'wp_enqueue_scripts', $pluginPublic, 'enqueueScripts' );
 
+        add_action( 'elementor/element/after_section_end', [$this, 'addConditionFields'], 10, 3 );
         add_action( 'elementor/widget/render_content', [$pluginPublic, 'hookRenderContent'], 10, 3 );
     }
 
@@ -194,5 +198,176 @@ class DynamicConditions {
     public static function run() {
         $plugin = new self();
         $plugin->loader->run();
+    }
+
+    /**
+     * Creates section for dynamic conditions in elementor-widgets
+     *
+     * @param $element
+     * @param $section_id
+     * @param $args
+     */
+    public function addConditionFields( $element, $section_id, $args ) {
+        /* if ( false && !\Elementor\Plugin::$instance->editor->is_edit_mode() ) {
+            return;
+        } */
+        //filter the elements first to avoid conflicts that can cause pagebuilder not to load
+        if ( in_array( $element->get_name(), array( 'global-settings', 'section', 'page-settings', 'oew-blog-grid' ) ) ) {
+            return;
+        }
+
+        $whitelist = array(
+            'section_image',
+            'section_advanced',
+            'section_title',
+            'section_editor',
+            'section_video',
+            'section_button',
+            'section_divider',
+            'section_spacer',
+            'section_map',
+            'section_icon',
+            'section_gallery',
+            'section_image_carousel',
+            'section_icon_list',
+            'section_counter',
+            'section_testimonial',
+            'section_tabs',
+            'section_toggle',
+            'section_social_icon',
+            'section_alert',
+            'section_audio',
+            'section_shortcode',
+            'section_anchor',
+            'section_sidebar',
+            'section_layout',
+            'section_slides',
+            'section_form_fields',
+            'section_list',
+            'section_header',
+            'section_pricing',
+            'section_countdown',
+            'section_buttons_content',
+            'section_blockquote_content',
+            'section_content',
+            'section_login_content',
+            'text_elements',
+            'section_side_a_content',
+            'section_side_b_content',
+            '_section_style',
+        );
+
+
+        if ( !in_array( $section_id, $whitelist ) ) {
+            return;
+        }
+
+        if ( in_array($element->get_name(), $this->widgetsWithCondition)) {
+            // dont add multiple, to prevent notices
+            return;
+        }
+        $this->widgetsWithCondition[] = $element->get_name();
+
+        $element->start_controls_section(
+            'dynamicconditions_section',
+            [
+                'tab' => Controls_Manager::TAB_ADVANCED,
+                'label' => __( 'Dynamic Conditions', 'dynamic-conditions' ),
+            ],
+            [
+                'overwrite' => true,
+            ]
+        );
+        /*$element->start_controls_tabs( 'dynamic_conditions_tabs',[
+            'overwrite'         => true
+        ] );
+
+        $element->start_controls_tab( 'dynamic_conditions_tab',
+            [
+                'label' => __( 'Dynamic Condition', 'dynamic-conditions' )
+            ],
+            [
+            'overwrite'         => true
+        ] );*/
+
+        $element->add_control(
+            'dynamicconditions_dynamic',
+            [
+                'label' => __( 'Dynamic Tag', 'dynamic-condtions' ),
+                'type' => Controls_Manager::MEDIA,
+                'dynamic' => [
+                    'active' => true,
+                    'categories' => [
+                        Module::TEXT_CATEGORY,
+                        Module::URL_CATEGORY,
+                        Module::GALLERY_CATEGORY,
+                        Module::IMAGE_CATEGORY,
+                        Module::MEDIA_CATEGORY,
+                        Module::POST_META_CATEGORY
+                    ],
+                ],
+                'returnType' => 'array',
+                'placeholder' => __( 'Select you dynamic condition', 'dynamic-condtions' ),
+            ]
+        );
+
+
+
+        $element->add_control(
+            'dynamicconditions_visibility',
+            [
+                'label' => __( 'Show/Hide', 'dynamic-conditions' ),
+                'type' => Controls_Manager::SELECT,
+                'default' => 'hide',
+                'options' => [
+                    'show' => __( 'Show when Condition\'s Met' ),
+                    'hide' => __( 'Hide when Condition\'s Met' ),
+                ],
+                'separator' => 'before',
+            ],
+            [
+                'overwrite' => true,
+            ]
+        );
+
+
+        $element->add_control(
+            'dynamicconditions_condition',
+            [
+                'label' => __( 'Condition', 'dynamic-conditions' ),
+                'type' => Controls_Manager::SELECT2,
+                'multiple' => false,
+                'label_block' => true,
+                'options' => [
+                    'equal' => __( 'Is Equal To', 'dynamic-conditions' ),
+                    'not_equal' => __( 'Is Not Equal To', 'dynamic-conditions' ),
+                    'contains' => __( 'Contains', 'dynamic-conditions' ),
+                    'not_contains' => __( 'Does Not Contain', 'dynamic-conditions' ),
+                    'empty' => __( 'Is Empty', 'dynamic-conditions' ),
+                    'not_empty' => __( 'Is Not Empty', 'dynamic-conditions' ),
+                ],
+                'render_type' => 'none',
+                'description' => __( 'Select your condition for this widget visibility.', 'dynamic-conditions' ),
+            ],
+            [
+                'overwrite' => true,
+            ]
+        );
+        $element->add_control(
+            'dynamicconditions_value',
+            [
+                'type' => Controls_Manager::TEXTAREA,
+                'label' => __( 'Conditional Value', 'dynamic-conditions' ),
+                'description' => __( 'Add your Conditional Value here if you selected Equal to, Not Equal To or Contains on the selection above.', 'dynamic-conditions' ),
+                // 'separator'     => 'none',
+            ],
+            [
+                'overwrite' => true,
+            ]
+        );
+
+        //$element->end_controls_tab();
+        //$element->end_controls_tabs();
+        $element->end_controls_section();
     }
 }
