@@ -4,9 +4,6 @@ use Lib\DynamicConditions;
 use Lib\DynamicConditionsActivator;
 use Lib\DynamicConditionsDeactivator;
 
-use Elementor\Controls_Manager;
-use Elementor\Modules\DynamicTags\Module;
-
 /**
  * The plugin bootstrap file
  *
@@ -22,7 +19,7 @@ use Elementor\Modules\DynamicTags\Module;
  * @wordpress-plugin
  * Plugin Name:       DynamicConditions
  * Plugin URI:        https://github.com/RTO-Websites/dynamic-conditions
- * Description:       This is a short description of what the plugin does. It's displayed in the WordPress admin area.
+ * Description:       Activates conditions for dynamic tags to show/hides a widget.
  * Version:           1.0.0
  * Author:            RTO GmbH
  * Author URI:        https://www.rto.de

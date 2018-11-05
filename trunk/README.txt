@@ -15,6 +15,9 @@ Activates conditions for dynamic tags to show/hides a widget.
 Activates conditions for dynamic tags to show/hides a widget.
 You can check every field which support dynamic-tags (also advanced custom fields) and check for empty, contain, equal.
 
+Requires elementor and elementor pro.
+
+
 You can help develop on
 https://github.com/RTO-Websites/dynamic-conditions
 
