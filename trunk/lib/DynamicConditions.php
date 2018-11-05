@@ -307,7 +307,7 @@ class DynamicConditions {
                     ],
                 ],
                 'returnType' => 'array',
-                'placeholder' => __( 'Select you dynamic condition', 'dynamic-condtions' ),
+                'placeholder' => __( 'Select condition field', 'dynamic-condtions' ),
             ]
         );
 
@@ -320,8 +320,8 @@ class DynamicConditions {
                 'type' => Controls_Manager::SELECT,
                 'default' => 'hide',
                 'options' => [
-                    'show' => __( 'Show when Condition\'s Met' ),
-                    'hide' => __( 'Hide when Condition\'s Met' ),
+                    'show' => __( 'Show when condition met', 'dynamic-conditions' ),
+                    'hide' => __( 'Hide when condition met', 'dynamic-conditions' ),
                 ],
                 'separator' => 'before',
             ],
@@ -339,12 +339,12 @@ class DynamicConditions {
                 'multiple' => false,
                 'label_block' => true,
                 'options' => [
-                    'equal' => __( 'Is Equal To', 'dynamic-conditions' ),
-                    'not_equal' => __( 'Is Not Equal To', 'dynamic-conditions' ),
+                    'equal' => __( 'Is equal to', 'dynamic-conditions' ),
+                    'not_equal' => __( 'Is not equal to', 'dynamic-conditions' ),
                     'contains' => __( 'Contains', 'dynamic-conditions' ),
-                    'not_contains' => __( 'Does Not Contain', 'dynamic-conditions' ),
-                    'empty' => __( 'Is Empty', 'dynamic-conditions' ),
-                    'not_empty' => __( 'Is Not Empty', 'dynamic-conditions' ),
+                    'not_contains' => __( 'Does not contain', 'dynamic-conditions' ),
+                    'empty' => __( 'Is empty', 'dynamic-conditions' ),
+                    'not_empty' => __( 'Is not empty', 'dynamic-conditions' ),
                 ],
                 'render_type' => 'none',
                 'description' => __( 'Select your condition for this widget visibility.', 'dynamic-conditions' ),
@@ -357,8 +357,8 @@ class DynamicConditions {
             'dynamicconditions_value',
             [
                 'type' => Controls_Manager::TEXTAREA,
-                'label' => __( 'Conditional Value', 'dynamic-conditions' ),
-                'description' => __( 'Add your Conditional Value here if you selected Equal to, Not Equal To or Contains on the selection above.', 'dynamic-conditions' ),
+                'label' => __( 'Conditional value', 'dynamic-conditions' ),
+                'description' => __( 'Add your conditional value here if you selected equal to, not equal to or contains on the selection above.', 'dynamic-conditions' ),
                 // 'separator'     => 'none',
             ],
             [

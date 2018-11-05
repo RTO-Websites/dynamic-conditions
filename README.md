@@ -7,6 +7,7 @@ You can check every field which support dynamic-tags (also advanced custom field
 ### Requirements
 - Composer (https://getcomposer.org/)
 - Elementor (https://wordpress.org/plugins/elementor/)
+- Elementor Pro (https://elementor.com)
 
 ### Run this
 ```
