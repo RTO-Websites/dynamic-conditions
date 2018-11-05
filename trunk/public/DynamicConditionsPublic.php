@@ -108,12 +108,10 @@ class DynamicConditionsPublic {
      * @return string
      */
     public function hookRenderContent( $content, $widget ) {
-        //global $controls;
         if ( \Elementor\Plugin::$instance->editor->is_edit_mode() ) {
             return $content;
         }
 
-        $controls = $widget->get_controls();
         $settings = $widget->get_settings_for_display();
         //$settings2 = $widget->get_settings();
 
@@ -123,21 +121,13 @@ class DynamicConditionsPublic {
             return $content;
         }
 
-        /*$dynamic_settings = array_merge( $control_obj->get_settings( 'dynamic' ), $control['dynamic'] );
-
-        if ( ! empty( $dynamic_settings['active'] ) && ! empty( $all_settings[ Manager::DYNAMIC_SETTING_KEY ][ $control_name ] ) ) {
-            $parsed_value = $control_obj->parse_tags( $all_settings[ Manager::DYNAMIC_SETTING_KEY ][ $control_name ], $dynamic_settings );*/
-
         $checkValue = !empty( $settings['dynamicconditions_value'] ) ? $settings['dynamicconditions_value'] : '';
         $widgetValueArray = !empty( $settings['dynamicconditions_dynamic'] ) ? $settings['dynamicconditions_dynamic'] : '';
 
         if ( !is_array( $widgetValueArray ) ) {
             $widgetValueArray = [ $widgetValueArray ];
         }
-        var_dump( $widget->get_settings_for_display( 'dynamicconditions_dynamic' ) );
-        //var_dump($settings );
-        var_dump( $widgetValueArray );
-        var_dump( $checkValue );
+
         $condition = false;
         $break = false;
         $breakFalse = false;

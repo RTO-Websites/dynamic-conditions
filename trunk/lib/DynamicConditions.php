@@ -208,9 +208,6 @@ class DynamicConditions {
      * @param $args
      */
     public function addConditionFields( $element, $section_id, $args ) {
-        /* if ( false && !\Elementor\Plugin::$instance->editor->is_edit_mode() ) {
-            return;
-        } */
         //filter the elements first to avoid conflicts that can cause pagebuilder not to load
         if ( in_array( $element->get_name(), array( 'global-settings', 'section', 'page-settings', 'oew-blog-grid' ) ) ) {
             return;
@@ -278,17 +275,6 @@ class DynamicConditions {
                 'overwrite' => true,
             ]
         );
-        /*$element->start_controls_tabs( 'dynamic_conditions_tabs',[
-            'overwrite'         => true
-        ] );
-
-        $element->start_controls_tab( 'dynamic_conditions_tab',
-            [
-                'label' => __( 'Dynamic Condition', 'dynamic-conditions' )
-            ],
-            [
-            'overwrite'         => true
-        ] );*/
 
         $element->add_control(
             'dynamicconditions_dynamic',
@@ -366,8 +352,6 @@ class DynamicConditions {
             ]
         );
 
-        //$element->end_controls_tab();
-        //$element->end_controls_tabs();
         $element->end_controls_section();
     }
 }
