@@ -34,8 +34,6 @@ use Elementor\Modules\DynamicTags\Module;
  */
 class DynamicConditions {
 
-    private $widgetsWithCondition = [];
-
     /**
      * The loader that's responsible for maintaining and registering all hooks that power
      * the plugin.
@@ -138,7 +136,9 @@ class DynamicConditions {
         $this->loader->addAction( 'admin_enqueue_scripts', $pluginAdmin, 'enqueueStyles' );
         $this->loader->addAction( 'admin_enqueue_scripts', $pluginAdmin, 'enqueueScripts' );
 
-        add_action( 'elementor/element/after_section_end', [ $this, 'addConditionFields' ], 10, 3 );
+        //add_action( 'elementor/element/after_section_end', [ $this, 'addConditionFields' ], 10, 3 );
+        add_action( 'elementor/element/section/section_advanced/after_section_end', [ $this, 'addConditionFields' ], 10, 3 );
+        add_action( 'elementor/element/common/_section_style/after_section_end', [ $this, 'addConditionFields' ], 10, 3 );
 
         add_action( 'admin_notices', [ $pluginAdmin, 'addAdminNotices' ], 10, 3 );
     }
@@ -157,7 +157,10 @@ class DynamicConditions {
         $this->loader->addAction( 'wp_enqueue_scripts', $pluginPublic, 'enqueueStyles' );
         $this->loader->addAction( 'wp_enqueue_scripts', $pluginPublic, 'enqueueScripts' );
 
-        add_action( 'elementor/element/after_section_end', [ $this, 'addConditionFields' ], 10, 3 );
+        //add_action( 'elementor/element/after_section_end', [ $this, 'addConditionFields' ], 10, 3 );
+        add_action( 'elementor/element/section/section_advanced/after_section_end', [ $this, 'addConditionFields' ], 10, 3 );
+        add_action( 'elementor/element/common/_section_style/after_section_end', [ $this, 'addConditionFields' ], 10, 3 );
+
         add_action( 'elementor/widget/render_content', [ $pluginPublic, 'hookRenderContent' ], 10, 3 );
     }
 
@@ -209,64 +212,7 @@ class DynamicConditions {
      * @param $section_id
      * @param $args
      */
-    public function addConditionFields( $element, $section_id, $args ) {
-        //filter the elements first to avoid conflicts that can cause pagebuilder not to load
-        if ( in_array( $element->get_name(), array( 'global-settings', 'section', 'page-settings', 'oew-blog-grid' ) ) ) {
-            return;
-        }
-
-        $whitelist = array(
-            'section_image',
-            'section_advanced',
-            'section_title',
-            'section_editor',
-            'section_video',
-            'section_button',
-            'section_divider',
-            'section_spacer',
-            'section_map',
-            'section_icon',
-            'section_gallery',
-            'section_image_carousel',
-            'section_icon_list',
-            'section_counter',
-            'section_testimonial',
-            'section_tabs',
-            'section_toggle',
-            'section_social_icon',
-            'section_alert',
-            'section_audio',
-            'section_shortcode',
-            'section_anchor',
-            'section_sidebar',
-            'section_layout',
-            'section_slides',
-            'section_form_fields',
-            'section_list',
-            'section_header',
-            'section_pricing',
-            'section_countdown',
-            'section_buttons_content',
-            'section_blockquote_content',
-            'section_content',
-            'section_login_content',
-            'text_elements',
-            'section_side_a_content',
-            'section_side_b_content',
-            '_section_style',
-        );
-
-
-        if ( !in_array( $section_id, $whitelist ) ) {
-            return;
-        }
-
-        if ( in_array( $element->get_name(), $this->widgetsWithCondition ) ) {
-            // dont add multiple, to prevent notices
-            return;
-        }
-        $this->widgetsWithCondition[] = $element->get_name();
-
+    public function addConditionFields( $element, $section_id, $args = null ) {
         $element->start_controls_section(
             'dynamicconditions_section',
             [
