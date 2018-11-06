@@ -100,4 +100,23 @@ class DynamicConditionsAdmin {
 
     }
 
+
+    public function addAdminNotices() {
+        $message = '';
+        $class = 'notice notice-error';
+
+        if ( !defined( 'ELEMENTOR_VERSION' ) && !defined( 'ELEMENTOR_PRO_VERSION' ) ) {
+            $message = __( 'Elementor and Elementor Pro not installed.', 'dynamic-conditions' );
+        } else if ( !defined( 'ELEMENTOR_PRO_VERSION' ) ) {
+            $message = __( 'Elementor Pro not installed.', 'dynamic-conditions' );
+        } else if ( !defined( 'ELEMENTOR_VERSION' ) ) {
+            $message = __( 'Elementor not installed.', 'dynamic-conditions' );
+        }
+
+
+        if ( empty( $message ) ) {
+            return;
+        }
+        printf( '<div class="%1$s"><p>DynamicConditions: %2$s</p></div>', esc_attr( $class ), esc_html( $message ) );
+    }
 }
