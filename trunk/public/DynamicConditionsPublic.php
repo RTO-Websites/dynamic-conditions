@@ -183,10 +183,8 @@ class DynamicConditionsPublic {
                 case 'smaller':
                 case 'less':
                     if ( is_numeric( $widgetValue ) ) {
-                        echo 'checkInt'.$widgetValue . '-'.$checkValue;
                         $condition = $widgetValue < $checkValue;
                     } else {
-                        echo 'checkString'.$widgetValue . '-'.$checkValue;
                         $condition = strlen( $widgetValue ) < strlen( $checkValue );
                     }
                     $break = true;
