@@ -31,6 +31,10 @@ Just download, install and activate
 
 == Changelog ==
 
+= 1.0.1 =
+* Fix sections
+* Some refactoring
+
 = 1.0 =
 * Release
 

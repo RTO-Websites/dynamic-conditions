@@ -1,5 +1,9 @@
 <?php namespace Admin;
 
+use Elementor\Controls_Manager;
+use Elementor\Modules\DynamicTags\Module;
+
+
 /**
  * The admin-specific functionality of the plugin.
  *
@@ -54,53 +58,6 @@ class DynamicConditionsAdmin {
 
     }
 
-    /**
-     * Register the stylesheets for the admin area.
-     *
-     * @since    1.0.0
-     */
-    public function enqueueStyles() {
-
-        /**
-         * This function is provided for demonstration purposes only.
-         *
-         * An instance of this class should be passed to the run() function
-         * defined in DynamicConditionsLoader as all of the hooks are defined
-         * in that particular class.
-         *
-         * The DynamicConditionsLoader will then create the relationship
-         * between the defined hooks and the functions defined in this
-         * class.
-         */
-
-        //wp_enqueue_style( $this->pluginName, plugin_dir_url( __FILE__ ) . 'css/dynamic-conditions-admin.css', array(), $this->version, 'all' );
-
-    }
-
-    /**
-     * Register the JavaScript for the admin area.
-     *
-     * @since    1.0.0
-     */
-    public function enqueueScripts() {
-
-        /**
-         * This function is provided for demonstration purposes only.
-         *
-         * An instance of this class should be passed to the run() function
-         * defined in DynamicConditionsLoader as all of the hooks are defined
-         * in that particular class.
-         *
-         * The DynamicConditionsLoader will then create the relationship
-         * between the defined hooks and the functions defined in this
-         * class.
-         */
-
-        //wp_enqueue_script( $this->pluginName, plugin_dir_url( __FILE__ ) . 'js/dynamic-conditions-admin.js', array( 'jquery' ), $this->version, false );
-
-    }
-
-
     public function addAdminNotices() {
         $message = '';
         $class = 'notice notice-error';
@@ -118,5 +75,103 @@ class DynamicConditionsAdmin {
             return;
         }
         printf( '<div class="%1$s"><p>DynamicConditions: %2$s</p></div>', esc_attr( $class ), esc_html( $message ) );
+    }
+
+
+    /**
+     * Creates section for dynamic conditions in elementor-widgets
+     *
+     * @param $element
+     * @param $section_id
+     * @param $args
+     */
+    public function addConditionFields( $element, $section_id = null, $args = null ) {
+        $element->start_controls_section(
+            'dynamicconditions_section',
+            [
+                'tab' => Controls_Manager::TAB_ADVANCED,
+                'label' => __( 'Dynamic Conditions', 'dynamic-conditions' ),
+            ],
+            [
+                'overwrite' => true,
+            ]
+        );
+
+        $element->add_control(
+            'dynamicconditions_dynamic',
+            [
+                'label' => __( 'Dynamic Tag', 'dynamic-condtions' ),
+                'type' => Controls_Manager::MEDIA,
+                'dynamic' => [
+                    'active' => true,
+                    'categories' => [
+                        Module::TEXT_CATEGORY,
+                        Module::URL_CATEGORY,
+                        Module::GALLERY_CATEGORY,
+                        Module::IMAGE_CATEGORY,
+                        Module::MEDIA_CATEGORY,
+                        Module::POST_META_CATEGORY,
+                    ],
+                ],
+                'returnType' => 'array',
+                'placeholder' => __( 'Select condition field', 'dynamic-condtions' ),
+            ]
+        );
+
+
+        $element->add_control(
+            'dynamicconditions_visibility',
+            [
+                'label' => __( 'Show/Hide', 'dynamic-conditions' ),
+                'type' => Controls_Manager::SELECT,
+                'default' => 'hide',
+                'options' => [
+                    'show' => __( 'Show when condition met', 'dynamic-conditions' ),
+                    'hide' => __( 'Hide when condition met', 'dynamic-conditions' ),
+                ],
+                'separator' => 'before',
+            ],
+            [
+                'overwrite' => true,
+            ]
+        );
+
+
+        $element->add_control(
+            'dynamicconditions_condition',
+            [
+                'label' => __( 'Condition', 'dynamic-conditions' ),
+                'type' => Controls_Manager::SELECT2,
+                'multiple' => false,
+                'label_block' => true,
+                'options' => [
+                    'equal' => __( 'Is equal to', 'dynamic-conditions' ),
+                    'not_equal' => __( 'Is not equal to', 'dynamic-conditions' ),
+                    'contains' => __( 'Contains', 'dynamic-conditions' ),
+                    'not_contains' => __( 'Does not contain', 'dynamic-conditions' ),
+                    'empty' => __( 'Is empty', 'dynamic-conditions' ),
+                    'not_empty' => __( 'Is not empty', 'dynamic-conditions' ),
+                ],
+                'render_type' => 'none',
+                'description' => __( 'Select your condition for this widget visibility.', 'dynamic-conditions' ),
+            ],
+            [
+                'overwrite' => true,
+            ]
+        );
+        $element->add_control(
+            'dynamicconditions_value',
+            [
+                'type' => Controls_Manager::TEXTAREA,
+                'label' => __( 'Conditional value', 'dynamic-conditions' ),
+                'description' => __( 'Add your conditional value here if you selected equal to, not equal to or contains on the selection above.', 'dynamic-conditions' ),
+                // 'separator'     => 'none',
+            ],
+            [
+                'overwrite' => true,
+            ]
+        );
+
+        $element->end_controls_section();
     }
 }

@@ -54,51 +54,6 @@ class DynamicConditionsPublic {
 
     }
 
-    /**
-     * Register the stylesheets for the public-facing side of the site.
-     *
-     * @since    1.0.0
-     */
-    public function enqueueStyles() {
-
-        /**
-         * This function is provided for demonstration purposes only.
-         *
-         * An instance of this class should be passed to the run() function
-         * defined in DynamicConditionsLoader as all of the hooks are defined
-         * in that particular class.
-         *
-         * The DynamicConditionsLoader will then create the relationship
-         * between the defined hooks and the functions defined in this
-         * class.
-         */
-
-        //wp_enqueue_style( $this->pluginName, plugin_dir_url( __FILE__ ) . 'css/dynamic-conditions-public.css', array(), $this->version, 'all' );
-
-    }
-
-    /**
-     * Register the stylesheets for the public-facing side of the site.
-     *
-     * @since    1.0.0
-     */
-    public function enqueueScripts() {
-
-        /**
-         * This function is provided for demonstration purposes only.
-         *
-         * An instance of this class should be passed to the run() function
-         * defined in DynamicConditionsLoader as all of the hooks are defined
-         * in that particular class.
-         *
-         * The DynamicConditionsLoader will then create the relationship
-         * between the defined hooks and the functions defined in this
-         * class.
-         */
-
-        //wp_enqueue_script( $this->pluginName, plugin_dir_url( __FILE__ ) . 'js/dynamic-conditions-public.js', array( 'jquery' ), $this->version, false );
-
-    }
 
     /**
      * Stopp rendering of widget if its hidden
@@ -107,18 +62,66 @@ class DynamicConditionsPublic {
      * @param $widget
      * @return string
      */
-    public function hookRenderContent( $content, $widget ) {
-        if ( \Elementor\Plugin::$instance->editor->is_edit_mode() ) {
+    public function filterWidgetContent( $content, $widget = null ) {
+        if ( \Elementor\Plugin::$instance->editor->is_edit_mode() || empty( $widget ) ) {
             return $content;
         }
 
         $settings = $widget->get_settings_for_display();
-        //$settings2 = $widget->get_settings();
+
+        $hide = $this->checkCondition( $settings );
+
+
+        if ( $hide ) {
+            return '<!-- hidden widget -->';
+        }
+
+        return $content;
+    }
+
+    /**
+     * Check if section is hidden, before rendering
+     *
+     * @param $section
+     */
+    public function filterSectionContentBefore( $section ) {
+        $settings = $section->get_settings_for_display();
+        $hide = $this->checkCondition( $settings );
+
+        if ( !$hide ) {
+            return;
+        }
+
+        $section->dynamicConditionIsHidden = true;
+
+        ob_start();
+    }
+
+    /**
+     * Clean output of section if it is hidden
+     *
+     * @param $section
+     */
+    public function filterSectionContentAfter( $section ) {
+        if ( !empty( $section->dynamicConditionIsHidden ) ) {
+            ob_clean();
+            echo '<!-- hidden section -->';
+        }
+    }
+
+
+    /**
+     * Checks condition, return if element is hidden
+     *
+     * @param $settings
+     * @return bool
+     */
+    public function checkCondition( $settings ) {
 
         if ( empty( $settings['dynamicconditions_condition'] )
         ) {
             // no condition selected - disable conditions
-            return $content;
+            return false;
         }
 
         $checkValue = !empty( $settings['dynamicconditions_value'] ) ? $settings['dynamicconditions_value'] : '';
@@ -153,7 +156,7 @@ class DynamicConditionsPublic {
 
                 case 'contains':
                     if ( empty( $checkValue ) ) {
-                        continue;
+                        continue 2;
                     }
                     $condition = strpos( $widgetValue, $checkValue ) !== false;
                     $break = true;
@@ -161,7 +164,7 @@ class DynamicConditionsPublic {
 
                 case 'not_contains':
                     if ( empty( $checkValue ) ) {
-                        continue;
+                        continue 2;
                     }
                     $condition = strpos( $widgetValue, $checkValue ) === false;
                     $breakFalse = true;
@@ -205,10 +208,6 @@ class DynamicConditionsPublic {
                 break;
         }
 
-        if ( $hide ) {
-            return '<!-- hidden widget -->';
-        }
-
-        return $content;
+        return $hide;
     }
 }

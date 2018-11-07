@@ -2,8 +2,6 @@
 
 use Admin\DynamicConditionsAdmin;
 use Pub\DynamicConditionsPublic;
-use Elementor\Controls_Manager;
-use Elementor\Modules\DynamicTags\Module;
 
 /**
  * The file that defines the core plugin class
@@ -133,14 +131,10 @@ class DynamicConditions {
     private function defineAdminHooks() {
         $pluginAdmin = new DynamicConditionsAdmin( $this->getDynamicConditions(), $this->getVersion() );
 
-        $this->loader->addAction( 'admin_enqueue_scripts', $pluginAdmin, 'enqueueStyles' );
-        $this->loader->addAction( 'admin_enqueue_scripts', $pluginAdmin, 'enqueueScripts' );
+        $this->loader->addAction( 'elementor/element/section/section_advanced/after_section_end', $pluginAdmin, 'addConditionFields', 10, 3 );
+        $this->loader->addAction( 'elementor/element/common/_section_style/after_section_end', $pluginAdmin, 'addConditionFields', 10, 3 );
 
-        //add_action( 'elementor/element/after_section_end', [ $this, 'addConditionFields' ], 10, 3 );
-        add_action( 'elementor/element/section/section_advanced/after_section_end', [ $this, 'addConditionFields' ], 10, 3 );
-        add_action( 'elementor/element/common/_section_style/after_section_end', [ $this, 'addConditionFields' ], 10, 3 );
-
-        add_action( 'admin_notices', [ $pluginAdmin, 'addAdminNotices' ], 10, 3 );
+        $this->loader->addAction( 'admin_notices', $pluginAdmin, 'addAdminNotices', 10, 3 );
     }
 
     /**
@@ -154,14 +148,12 @@ class DynamicConditions {
 
         $pluginPublic = new DynamicConditionsPublic( $this->getDynamicConditions(), $this->getVersion() );
 
-        $this->loader->addAction( 'wp_enqueue_scripts', $pluginPublic, 'enqueueStyles' );
-        $this->loader->addAction( 'wp_enqueue_scripts', $pluginPublic, 'enqueueScripts' );
+        // filter widgets
+        $this->loader->addAction( 'elementor/widget/render_content', $pluginPublic, 'filterWidgetContent', 10, 2 );
 
-        //add_action( 'elementor/element/after_section_end', [ $this, 'addConditionFields' ], 10, 3 );
-        add_action( 'elementor/element/section/section_advanced/after_section_end', [ $this, 'addConditionFields' ], 10, 3 );
-        add_action( 'elementor/element/common/_section_style/after_section_end', [ $this, 'addConditionFields' ], 10, 3 );
-
-        add_action( 'elementor/widget/render_content', [ $pluginPublic, 'hookRenderContent' ], 10, 3 );
+        // filter sections
+        $this->loader->addAction( "elementor/frontend/section/before_render", $pluginPublic, 'filterSectionContentBefore', 10, 1 );
+        $this->loader->addAction( "elementor/frontend/section/after_render", $pluginPublic, 'filterSectionContentAfter', 10, 1 );
     }
 
     /**
@@ -203,102 +195,5 @@ class DynamicConditions {
     public static function run() {
         $plugin = new self();
         $plugin->loader->run();
-    }
-
-    /**
-     * Creates section for dynamic conditions in elementor-widgets
-     *
-     * @param $element
-     * @param $section_id
-     * @param $args
-     */
-    public function addConditionFields( $element, $section_id, $args = null ) {
-        $element->start_controls_section(
-            'dynamicconditions_section',
-            [
-                'tab' => Controls_Manager::TAB_ADVANCED,
-                'label' => __( 'Dynamic Conditions', 'dynamic-conditions' ),
-            ],
-            [
-                'overwrite' => true,
-            ]
-        );
-
-        $element->add_control(
-            'dynamicconditions_dynamic',
-            [
-                'label' => __( 'Dynamic Tag', 'dynamic-condtions' ),
-                'type' => Controls_Manager::MEDIA,
-                'dynamic' => [
-                    'active' => true,
-                    'categories' => [
-                        Module::TEXT_CATEGORY,
-                        Module::URL_CATEGORY,
-                        Module::GALLERY_CATEGORY,
-                        Module::IMAGE_CATEGORY,
-                        Module::MEDIA_CATEGORY,
-                        Module::POST_META_CATEGORY,
-                    ],
-                ],
-                'returnType' => 'array',
-                'placeholder' => __( 'Select condition field', 'dynamic-condtions' ),
-            ]
-        );
-
-
-        $element->add_control(
-            'dynamicconditions_visibility',
-            [
-                'label' => __( 'Show/Hide', 'dynamic-conditions' ),
-                'type' => Controls_Manager::SELECT,
-                'default' => 'hide',
-                'options' => [
-                    'show' => __( 'Show when condition met', 'dynamic-conditions' ),
-                    'hide' => __( 'Hide when condition met', 'dynamic-conditions' ),
-                ],
-                'separator' => 'before',
-            ],
-            [
-                'overwrite' => true,
-            ]
-        );
-
-
-        $element->add_control(
-            'dynamicconditions_condition',
-            [
-                'label' => __( 'Condition', 'dynamic-conditions' ),
-                'type' => Controls_Manager::SELECT2,
-                'multiple' => false,
-                'label_block' => true,
-                'options' => [
-                    'equal' => __( 'Is equal to', 'dynamic-conditions' ),
-                    'not_equal' => __( 'Is not equal to', 'dynamic-conditions' ),
-                    'contains' => __( 'Contains', 'dynamic-conditions' ),
-                    'not_contains' => __( 'Does not contain', 'dynamic-conditions' ),
-                    'empty' => __( 'Is empty', 'dynamic-conditions' ),
-                    'not_empty' => __( 'Is not empty', 'dynamic-conditions' ),
-                ],
-                'render_type' => 'none',
-                'description' => __( 'Select your condition for this widget visibility.', 'dynamic-conditions' ),
-            ],
-            [
-                'overwrite' => true,
-            ]
-        );
-        $element->add_control(
-            'dynamicconditions_value',
-            [
-                'type' => Controls_Manager::TEXTAREA,
-                'label' => __( 'Conditional value', 'dynamic-conditions' ),
-                'description' => __( 'Add your conditional value here if you selected equal to, not equal to or contains on the selection above.', 'dynamic-conditions' ),
-                // 'separator'     => 'none',
-            ],
-            [
-                'overwrite' => true,
-            ]
-        );
-
-        $element->end_controls_section();
     }
 }
