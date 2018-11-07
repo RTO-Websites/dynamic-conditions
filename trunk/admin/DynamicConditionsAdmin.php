@@ -151,8 +151,8 @@ class DynamicConditionsAdmin {
                     'not_contains' => __( 'Does not contain', 'dynamic-conditions' ),
                     'empty' => __( 'Is empty', 'dynamic-conditions' ),
                     'not_empty' => __( 'Is not empty', 'dynamic-conditions' ),
-                    'smaller' => __( 'Smaller than', 'dynamic-conditions' ),
-                    'bigger' => __( 'Bigger than', 'dynamic-conditions' ),
+                    'less' => __( 'Less than', 'dynamic-conditions' ),
+                    'greater' => __( 'Greater than', 'dynamic-conditions' ),
                 ],
                 'render_type' => 'none',
                 'description' => __( 'Select your condition for this widget visibility.', 'dynamic-conditions' ),
@@ -169,7 +169,7 @@ class DynamicConditionsAdmin {
                 'description' => __( 'Add your conditional value here if you selected equal to, not equal to or contains on the selection above.', 'dynamic-conditions' ),
 
                 'condition' => [
-                    'dynamicconditions_condition' => [ 'equal', 'not_equal', 'contains', 'not_contains', 'smaller', 'bigger' ],
+                    'dynamicconditions_condition' => [ 'equal', 'not_equal', 'contains', 'not_contains', 'less', 'greater' ],
                 ],
             ],
             [

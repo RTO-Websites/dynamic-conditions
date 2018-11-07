@@ -81,11 +81,11 @@ msgid "Is not empty"
 msgstr ""
 
 #: admin/DynamicConditionsAdmin.php:154
-msgid "Smaller than"
+msgid "Less than"
 msgstr "Kleiner als"
 
 #: admin/DynamicConditionsAdmin.php:155
-msgid "Bigger than"
+msgid "Greater than"
 msgstr "Größer als"
 
 #: admin/DynamicConditionsAdmin.php:158

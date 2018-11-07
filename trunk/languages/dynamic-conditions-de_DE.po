@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dynamic-conditions\n"
 "POT-Creation-Date: 2018-11-07 09:29+0100\n"
-"PO-Revision-Date: 2018-11-07 14:44+0100\n"
+"PO-Revision-Date: 2018-11-07 15:58+0100\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -80,11 +80,11 @@ msgid "Is not empty"
 msgstr "Ist nicht leer"
 
 #: admin/DynamicConditionsAdmin.php:154
-msgid "Smaller than"
+msgid "Less than"
 msgstr "Kleiner als"
 
 #: admin/DynamicConditionsAdmin.php:155
-msgid "Bigger than"
+msgid "Greater than"
 msgstr "Größer als"
 
 #: admin/DynamicConditionsAdmin.php:158
