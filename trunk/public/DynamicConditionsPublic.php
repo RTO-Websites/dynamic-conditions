@@ -179,6 +179,26 @@ class DynamicConditionsPublic {
                     $condition = !empty( $widgetValue );
                     $break = true;
                     break;
+
+                case 'smaller':
+                    if ( is_numeric( $widgetValue ) ) {
+                        echo 'checkInt'.$widgetValue . '-'.$checkValue;
+                        $condition = $widgetValue < $checkValue;
+                    } else {
+                        echo 'checkString'.$widgetValue . '-'.$checkValue;
+                        $condition = strlen( $widgetValue ) < strlen( $checkValue );
+                    }
+                    $break = true;
+                    break;
+
+                case 'bigger':
+                    if ( is_numeric( $widgetValue ) ) {
+                        $condition = $widgetValue > $checkValue;
+                    } else {
+                        $condition = strlen( $widgetValue ) > strlen( $checkValue );
+                    }
+                    $break = true;
+                    break;
             }
 
             if ( $break && $condition ) {

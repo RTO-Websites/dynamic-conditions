@@ -31,6 +31,9 @@ Just download, install and activate
 
 == Changelog ==
 
+= 1.1 =
+* Add condition bigger and smaller than
+
 = 1.0.1 =
 * Fix sections
 * Some refactoring

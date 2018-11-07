@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dynamic-conditions\n"
 "POT-Creation-Date: 2018-11-07 09:29+0100\n"
-"PO-Revision-Date: 2018-11-07 09:36+0100\n"
+"PO-Revision-Date: 2018-11-07 14:44+0100\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -79,15 +79,23 @@ msgstr "Ist leer"
 msgid "Is not empty"
 msgstr "Ist nicht leer"
 
-#: admin/DynamicConditionsAdmin.php:156
+#: admin/DynamicConditionsAdmin.php:154
+msgid "Smaller than"
+msgstr "Kleiner als"
+
+#: admin/DynamicConditionsAdmin.php:155
+msgid "Bigger than"
+msgstr "Größer als"
+
+#: admin/DynamicConditionsAdmin.php:158
 msgid "Select your condition for this widget visibility."
 msgstr "Wähle die Bedingung um das Widget anzuzeigen."
 
-#: admin/DynamicConditionsAdmin.php:166
+#: admin/DynamicConditionsAdmin.php:168
 msgid "Conditional value"
 msgstr "Bedingter Wert"
 
-#: admin/DynamicConditionsAdmin.php:167
+#: admin/DynamicConditionsAdmin.php:169
 msgid ""
 "Add your conditional value here if you selected equal to, not equal to or "
 "contains on the selection above."
