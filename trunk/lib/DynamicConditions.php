@@ -115,7 +115,8 @@ class DynamicConditions {
     private function setLocale() {
 
         $pluginI18n = new DynamicConditionsI18n();
-        $pluginI18n->setDomain( $this->getDynamicConditions() );
+        //$pluginI18n->setDomain( $this->getDynamicConditions() );
+        $pluginI18n->setDomain( 'dynamicconditions' );
 
         $this->loader->addAction( 'plugins_loaded', $pluginI18n, 'loadPluginTextdomain' );
 
@@ -132,7 +133,7 @@ class DynamicConditions {
         $pluginAdmin = new DynamicConditionsAdmin( $this->getDynamicConditions(), $this->getVersion() );
 
         $this->loader->addAction( 'elementor/element/section/section_advanced/after_section_end', $pluginAdmin, 'addConditionFields', 10, 3 );
-        $this->loader->addAction( 'elementor/element/common/_section_style/after_section_end', $pluginAdmin, 'addConditionFields', 10, 3 );
+        $this->loader->addAction( 'elementor/element/common/section_advanced/after_section_end', $pluginAdmin, 'addConditionFields', 10, 3 );
 
         $this->loader->addAction( 'admin_notices', $pluginAdmin, 'addAdminNotices', 10, 3 );
     }

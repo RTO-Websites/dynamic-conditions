@@ -90,7 +90,7 @@ class DynamicConditionsAdmin {
             'dynamicconditions_section',
             [
                 'tab' => Controls_Manager::TAB_ADVANCED,
-                'label' => __( 'Dynamic Conditions', 'dynamic-conditions' ),
+                'label' => __( 'Dynamic Conditions', 'dynamicconditions' ),
             ],
             [
                 'overwrite' => true,
@@ -100,7 +100,7 @@ class DynamicConditionsAdmin {
         $element->add_control(
             'dynamicconditions_dynamic',
             [
-                'label' => __( 'Dynamic Tag', 'dynamic-condtions' ),
+                'label' => __( 'Dynamic Tag', 'dynamiccondtions' ),
                 'type' => Controls_Manager::MEDIA,
                 'dynamic' => [
                     'active' => true,
@@ -114,7 +114,7 @@ class DynamicConditionsAdmin {
                     ],
                 ],
                 'returnType' => 'array',
-                'placeholder' => __( 'Select condition field', 'dynamic-condtions' ),
+                'placeholder' => __( 'Select condition field', 'dynamiccondtions' ),
             ]
         );
 
@@ -126,8 +126,8 @@ class DynamicConditionsAdmin {
                 'type' => Controls_Manager::SELECT,
                 'default' => 'hide',
                 'options' => [
-                    'show' => __( 'Show when condition met', 'dynamic-conditions' ),
-                    'hide' => __( 'Hide when condition met', 'dynamic-conditions' ),
+                    'show' => __( 'Show when condition met', 'dynamicconditions' ),
+                    'hide' => __( 'Hide when condition met', 'dynamicconditions' ),
                 ],
                 'separator' => 'before',
             ],
@@ -140,22 +140,22 @@ class DynamicConditionsAdmin {
         $element->add_control(
             'dynamicconditions_condition',
             [
-                'label' => __( 'Condition', 'dynamic-conditions' ),
+                'label' => __( 'Condition', 'dynamicconditions' ),
                 'type' => Controls_Manager::SELECT2,
                 'multiple' => false,
                 'label_block' => true,
                 'options' => [
-                    'equal' => __( 'Is equal to', 'dynamic-conditions' ),
-                    'not_equal' => __( 'Is not equal to', 'dynamic-conditions' ),
-                    'contains' => __( 'Contains', 'dynamic-conditions' ),
-                    'not_contains' => __( 'Does not contain', 'dynamic-conditions' ),
-                    'empty' => __( 'Is empty', 'dynamic-conditions' ),
-                    'not_empty' => __( 'Is not empty', 'dynamic-conditions' ),
-                    'less' => __( 'Less than', 'dynamic-conditions' ),
-                    'greater' => __( 'Greater than', 'dynamic-conditions' ),
+                    'equal' => __( 'Is equal to', 'dynamicconditions' ),
+                    'not_equal' => __( 'Is not equal to', 'dynamicconditions' ),
+                    'contains' => __( 'Contains', 'dynamicconditions' ),
+                    'not_contains' => __( 'Does not contain', 'dynamicconditions' ),
+                    'empty' => __( 'Is empty', 'dynamicconditions' ),
+                    'not_empty' => __( 'Is not empty', 'dynamicconditions' ),
+                    'less' => __( 'Less than', 'dynamicconditions' ),
+                    'greater' => __( 'Greater than', 'dynamicconditions' ),
                 ],
                 'render_type' => 'none',
-                'description' => __( 'Select your condition for this widget visibility.', 'dynamic-conditions' ),
+                'description' => __( 'Select your condition for this widget visibility.', 'dynamicconditions' ),
             ],
             [
                 'overwrite' => true,
@@ -165,8 +165,8 @@ class DynamicConditionsAdmin {
             'dynamicconditions_value',
             [
                 'type' => Controls_Manager::TEXTAREA,
-                'label' => __( 'Conditional value', 'dynamic-conditions' ),
-                'description' => __( 'Add your conditional value here if you selected equal to, not equal to or contains on the selection above.', 'dynamic-conditions' ),
+                'label' => __( 'Conditional value', 'dynamicconditions' ),
+                'description' => __( 'Add your conditional value here if you selected equal to, not equal to or contains on the selection above.', 'dynamicconditions' ),
 
                 'condition' => [
                     'dynamicconditions_condition' => [ 'equal', 'not_equal', 'contains', 'not_contains', 'less', 'greater' ],

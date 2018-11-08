@@ -180,7 +180,6 @@ class DynamicConditionsPublic {
                     $break = true;
                     break;
 
-                case 'smaller':
                 case 'less':
                     if ( is_numeric( $widgetValue ) ) {
                         $condition = $widgetValue < $checkValue;
@@ -191,7 +190,6 @@ class DynamicConditionsPublic {
                     break;
 
                 case 'greater':
-                case 'bigger':
                     if ( is_numeric( $widgetValue ) ) {
                         $condition = $widgetValue > $checkValue;
                     } else {

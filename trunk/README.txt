@@ -32,7 +32,7 @@ Just download, install and activate
 == Changelog ==
 
 = 1.1 =
-* Add condition bigger and smaller than
+* Add condition greater and less than
 
 = 1.0.1 =
 * Fix sections
