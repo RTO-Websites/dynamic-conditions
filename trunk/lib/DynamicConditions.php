@@ -115,7 +115,6 @@ class DynamicConditions {
     private function setLocale() {
 
         $pluginI18n = new DynamicConditionsI18n();
-        //$pluginI18n->setDomain( $this->getDynamicConditions() );
         $pluginI18n->setDomain( 'dynamicconditions' );
 
         $this->loader->addAction( 'plugins_loaded', $pluginI18n, 'loadPluginTextdomain' );
