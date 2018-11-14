@@ -132,7 +132,7 @@ class DynamicConditions {
         $pluginAdmin = new DynamicConditionsAdmin( $this->getDynamicConditions(), $this->getVersion() );
 
         $this->loader->addAction( 'elementor/element/section/section_advanced/after_section_end', $pluginAdmin, 'addConditionFields', 10, 3 );
-        $this->loader->addAction( 'elementor/element/common/section_advanced/after_section_end', $pluginAdmin, 'addConditionFields', 10, 3 );
+        $this->loader->addAction( 'elementor/element/common/_section_style/after_section_end', $pluginAdmin, 'addConditionFields', 10, 3 );
 
         $this->loader->addAction( 'admin_notices', $pluginAdmin, 'addAdminNotices', 10, 3 );
     }
