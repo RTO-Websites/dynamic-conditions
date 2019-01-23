@@ -2,3 +2,11 @@
  * All of the CSS for your admin-specific functionality should be
  * included in this file.
  */
+
+.elementor-control-dynamicconditions_dynamic .elementor-control-input-wrapper {
+  border: 0 none !important;
+}
+
+.elementor-control-dynamicconditions_dynamic .elementor-control-media {
+  display: none;
+}
