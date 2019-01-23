@@ -58,6 +58,18 @@ class DynamicConditionsAdmin {
 
     }
 
+
+    /**
+     * Register the stylesheets for the admin area.
+     *
+     * @since    1.0.0
+     */
+    public function enqueueStyles() {
+
+        wp_enqueue_style( $this->pluginName, plugin_dir_url( __FILE__ ) . 'css/dynamic-conditions-admin.css', [], $this->version, 'all' );
+
+    }
+
     public function addAdminNotices() {
         $message = '';
         $class = 'notice notice-error';
