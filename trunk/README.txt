@@ -30,6 +30,8 @@ Just download, install and activate
 1. Widget options for conditions
 
 == Changelog ==
+= 1.1.2 =
+* Fix issue with section
 
 = 1.1 =
 * Add condition greater and less than
