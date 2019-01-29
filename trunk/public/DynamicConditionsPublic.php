@@ -104,7 +104,7 @@ class DynamicConditionsPublic {
      */
     public function filterSectionContentAfter( $section ) {
         if ( !empty( $section->dynamicConditionIsHidden ) ) {
-            ob_clean();
+            ob_end_clean();
             echo '<!-- hidden section -->';
         }
     }
