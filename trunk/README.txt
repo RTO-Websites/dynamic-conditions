@@ -8,12 +8,14 @@ Stable tag: 4.9
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Activates conditions for dynamic tags to show/hides a widget.
+Activates conditions for dynamic tags to show/hides a widget or section.
 
 == Description ==
 
-Activates conditions for dynamic tags to show/hides a widget.
-You can check every field which support dynamic-tags (also advanced custom fields) and check for empty, contain, equal.
+Activates conditions for dynamic tags to show/hides a widget or section.
+You can check every field which support dynamic-tags (also advanced custom fields) and check for empty, contain, equal, greater/smaller than and between.
+You can also compare dates, days and months.
+If you check for empty user-id, you can show widget/section only for logged in or logged out users.
 
 Requires elementor and elementor pro.
 
@@ -30,6 +32,10 @@ Just download, install and activate
 1. Widget options for conditions
 
 == Changelog ==
+= 1.2.0 =
+* Add condition between
+* Add date, day and month compare options
+
 = 1.1.2 =
 * Fix issue with section
 
