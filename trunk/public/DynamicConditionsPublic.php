@@ -40,6 +40,8 @@ class DynamicConditionsPublic {
      */
     private $version;
 
+    private $elementSettings = [];
+
     /**
      * Initialize the class and set its properties.
      *
@@ -54,6 +56,30 @@ class DynamicConditionsPublic {
 
     }
 
+    /**
+     * Gets settings with english locale (needed for date)
+     *
+     * @param $element
+     * @return mixed
+     */
+    private function getElementSettings( $element ) {
+        $id = $element->get_id();
+        if ( !empty( $this->elementSettings[$id] ) ) {
+            return $this->elementSettings[$id];
+        }
+
+        global $wp_locale;
+        $currentLocale = get_locale();
+        setlocale( LC_ALL, 'en_US' );
+        $wp_locale = get_locale();
+
+        $this->elementSettings[$id] = $element->get_settings_for_display();
+
+        setlocale( LC_ALL, $currentLocale );
+        $wp_locale = get_locale();
+
+        return $this->elementSettings[$id];
+    }
 
     /**
      * Stopp rendering of widget if its hidden
@@ -67,7 +93,7 @@ class DynamicConditionsPublic {
             return $content;
         }
 
-        $settings = $widget->get_settings_for_display();
+        $settings = $this->getElementSettings( $widget );
 
         $hide = $this->checkCondition( $settings );
 
@@ -85,7 +111,7 @@ class DynamicConditionsPublic {
      * @param $section
      */
     public function filterSectionContentBefore( $section ) {
-        $settings = $section->get_settings_for_display();
+        $settings = $this->getElementSettings( $section );
         $hide = $this->checkCondition( $settings );
 
         if ( !$hide ) {
@@ -116,40 +142,18 @@ class DynamicConditionsPublic {
      * @return bool
      */
     public function checkCondition( $settings ) {
-
         if ( empty( $settings['dynamicconditions_condition'] )
         ) {
             // no condition selected - disable conditions
             return false;
         }
 
+        // get value form conditions
         $compareType = self::checkEmpty( $settings, 'dynamicconditions_type', 'default' );
+        list( $checkValue, $checkValue2 ) = $this->getCheckValue( $compareType, $settings );
 
-        switch ( $compareType ) {
-            case 'days':
-                $checkValue = self::checkEmpty( $settings, 'dynamicconditions_day_value' );
-                $checkValue2 = self::checkEmpty( $settings, 'dynamicconditions_day_value2' );
-                break;
-            case 'months':
-                $checkValue = self::checkEmpty( $settings, 'dynamicconditions_month_value' );
-                $checkValue2 = self::checkEmpty( $settings, 'dynamicconditions_month_value2' );
-                break;
-            case 'date':
-                $checkValue = self::checkEmpty( $settings, 'dynamicconditions_date_value' );
-                $checkValue2 = self::checkEmpty( $settings, 'dynamicconditions_date_value2' );
-                $checkValue = strtotime( $checkValue );
-                $checkValue2 = strtotime( $checkValue2 );
-                break;
-
-            case 'default':
-            default:
-                $checkValue = self::checkEmpty( $settings, 'dynamicconditions_value' );
-                $checkValue2 = self::checkEmpty( $settings, 'dynamicconditions_value2' );
-                break;
-        }
-
-        echo 'check1:'.$checkValue;
-        echo '<br>check2:' . $checkValue2;
+        #echo 'check1:' . $checkValue;
+        #echo '<br>check2:' . $checkValue2;
 
         $widgetValueArray = self::checkEmpty( $settings, 'dynamicconditions_dynamic' );
 
@@ -158,8 +162,8 @@ class DynamicConditionsPublic {
         }
 
         $condition = false;
-        $break = false;
-        $breakFalse = false;
+
+        // loop values
         foreach ( $widgetValueArray as $widgetValue ) {
             if ( is_array( $widgetValue ) ) {
                 if ( !empty( $widgetValue['id'] ) ) {
@@ -169,87 +173,28 @@ class DynamicConditionsPublic {
                 }
             }
 
-            switch ( $compareType ) {
-                case 'days':
-                    $widgetValue = date('N', strtotime( $widgetValue ));
-                    break;
-                case 'months':
-                    $widgetValue = date('n', strtotime( $widgetValue ));
-                    break;
-                case 'date':
-                    $widgetValue = strtotime( $widgetValue );
-                    break;
-            }
-            echo '<br>value:' . $widgetValue;
+            #echo '<br>value:' . $widgetValue;
+            // parse value based on compare-type
+            $this->parseWidgetValue( $widgetValue, $compareType );
 
-            switch ( $settings['dynamicconditions_condition'] ) {
-                case 'equal':
-                    $condition = $checkValue == $widgetValue;
-                    $break = true;
-                    break;
+            #echo '<br>valueparsed:' . $widgetValue;
 
-                case 'not_equal':
-                    $condition = $checkValue != $widgetValue;
-                    $breakFalse = true;
-                    break;
-
-                case 'contains':
-                    if ( empty( $checkValue ) ) {
-                        continue 2;
-                    }
-                    $condition = strpos( $widgetValue, $checkValue ) !== false;
-                    $break = true;
-                    break;
-
-                case 'not_contains':
-                    if ( empty( $checkValue ) ) {
-                        continue 2;
-                    }
-                    $condition = strpos( $widgetValue, $checkValue ) === false;
-                    $breakFalse = true;
-                    break;
-
-                case 'empty':
-                    $condition = empty( $widgetValue );
-                    $breakFalse = true;
-                    break;
-
-                case 'not_empty':
-                    $condition = !empty( $widgetValue );
-                    $break = true;
-                    break;
-
-                case 'less':
-                    if ( is_numeric( $widgetValue ) ) {
-                        $condition = $widgetValue < $checkValue;
-                    } else {
-                        $condition = strlen( $widgetValue ) < strlen( $checkValue );
-                    }
-                    $break = true;
-                    break;
-
-                case 'greater':
-                    if ( is_numeric( $widgetValue ) ) {
-                        $condition = $widgetValue > $checkValue;
-                    } else {
-                        $condition = strlen( $widgetValue ) > strlen( $checkValue );
-                    }
-                    $break = true;
-                    break;
-
-                case 'between':
-                    $condition = $widgetValue >= $checkValue && $widgetValue <= $checkValue2;
-                    $break = true;
-                    break;
-            }
+            // compare widget-value with check-values
+            list( $condition, $break, $breakFalse, $continue )
+                = $this->compareValues( $settings['dynamicconditions_condition'], $widgetValue, $checkValue, $checkValue2 );
 
             if ( $break && $condition ) {
                 // break if condition is true
                 break;
             }
+
             if ( $breakFalse && !$condition ) {
                 // break if condition is false
                 break;
+            }
+
+            if ( $continue !== false ) {
+                continue;
             }
         }
 
@@ -273,6 +218,166 @@ class DynamicConditionsPublic {
         return $hide;
     }
 
+
+    /**
+     * Compare values
+     *
+     * @param $widgetValue
+     * @param $checkValue
+     * @param $checkValue2
+     * @return array
+     */
+    private function compareValues( $compare, $widgetValue, $checkValue, $checkValue2 ) {
+        $continue = false;
+        $break = false;
+        $breakFalse = false;
+        $condition = false;
+
+        switch ( $compare ) {
+            case 'equal':
+                $condition = $checkValue == $widgetValue;
+                $break = true;
+                break;
+
+            case 'not_equal':
+                $condition = $checkValue != $widgetValue;
+                $breakFalse = true;
+                break;
+
+            case 'contains':
+                if ( empty( $checkValue ) ) {
+                    $continue = 2;
+                }
+                $condition = strpos( $widgetValue, $checkValue ) !== false;
+                $break = true;
+                break;
+
+            case 'not_contains':
+                if ( empty( $checkValue ) ) {
+                    $continue = 2;
+                }
+                $condition = strpos( $widgetValue, $checkValue ) === false;
+                $breakFalse = true;
+                break;
+
+            case 'empty':
+                $condition = empty( $widgetValue );
+                $breakFalse = true;
+                break;
+
+            case 'not_empty':
+                $condition = !empty( $widgetValue );
+                $break = true;
+                break;
+
+            case 'less':
+                if ( is_numeric( $widgetValue ) ) {
+                    $condition = $widgetValue < $checkValue;
+                } else {
+                    $condition = strlen( $widgetValue ) < strlen( $checkValue );
+                }
+                $break = true;
+                break;
+
+            case 'greater':
+                if ( is_numeric( $widgetValue ) ) {
+                    $condition = $widgetValue > $checkValue;
+                } else {
+                    $condition = strlen( $widgetValue ) > strlen( $checkValue );
+                }
+                $break = true;
+                break;
+
+            case 'between':
+                $condition = $widgetValue >= $checkValue && $widgetValue <= $checkValue2;
+                $break = true;
+                break;
+        }
+
+        return [
+            $condition,
+            $break,
+            $breakFalse,
+            $continue,
+        ];
+    }
+
+    /**
+     * Parse value of widget to timestamp, day or month
+     *
+     * @param $widgetValue
+     * @param $compareType
+     */
+    private function parseWidgetValue( &$widgetValue, $compareType ) {
+        switch ( $compareType ) {
+            case 'days':
+                $widgetValue = date( 'N', strtotime( $widgetValue ) );
+                break;
+
+            case 'months':
+                $widgetValue = date( 'n', strtotime( $widgetValue ) );
+                break;
+
+            case 'strtotime':
+                // nobreak
+            case 'date':
+                $widgetValue = strtotime( $widgetValue );
+                break;
+        }
+    }
+
+    /**
+     * Get value to compare
+     *
+     * @param $compareType
+     * @param $settings
+     * @return array
+     */
+    private function getCheckValue( $compareType, $settings ) {
+        switch ( $compareType ) {
+            case 'days':
+                $checkValue = self::checkEmpty( $settings, 'dynamicconditions_day_value' );
+                $checkValue2 = self::checkEmpty( $settings, 'dynamicconditions_day_value2' );
+                $checkValue = self::unTranslateDate( $checkValue );
+                $checkValue2 = self::unTranslateDate( $checkValue2 );
+                break;
+
+            case 'months':
+                $checkValue = self::checkEmpty( $settings, 'dynamicconditions_month_value' );
+                $checkValue2 = self::checkEmpty( $settings, 'dynamicconditions_month_value2' );
+                $checkValue = self::unTranslateDate( $checkValue );
+                $checkValue2 = self::unTranslateDate( $checkValue2 );
+                break;
+
+            case 'date':
+                $checkValue = self::checkEmpty( $settings, 'dynamicconditions_date_value' );
+                $checkValue2 = self::checkEmpty( $settings, 'dynamicconditions_date_value2' );
+                $checkValue = strtotime( $checkValue );
+                $checkValue2 = strtotime( $checkValue2 );
+                break;
+
+            case 'strtotime':
+                $checkValue = self::checkEmpty( $settings, 'dynamicconditions_value' );
+                $checkValue2 = self::checkEmpty( $settings, 'dynamicconditions_value2' );
+                $checkValue = self::unTranslateDate( $checkValue );
+                $checkValue2 = self::unTranslateDate( $checkValue2 );
+                $checkValue = strtotime( $checkValue );
+                $checkValue2 = strtotime( $checkValue2 );
+                break;
+
+            case 'default':
+            default:
+                $checkValue = self::checkEmpty( $settings, 'dynamicconditions_value' );
+                $checkValue2 = self::checkEmpty( $settings, 'dynamicconditions_value2' );
+                break;
+        }
+
+        return [
+            $checkValue,
+            $checkValue2,
+        ];
+    }
+
     /**
      * Checks if an array or entry in array is empty and return its value
      *
@@ -286,5 +391,55 @@ class DynamicConditionsPublic {
         }
 
         return !empty( $array[$key] ) ? $array[$key] : $fallback;
+    }
+
+    /**
+     * Untranslate a date-string to english date
+     *
+     * @param string $needle
+     * @param null $setLocale
+     * @return mixed|string
+     */
+    public static function unTranslateDate( $needle = '', $setLocale = null ) {
+        if ( empty( $setLocale ) ) {
+            $setLocale = get_locale();
+        }
+        $currentLocale = get_locale();
+        $year = date( 'o', time() );
+        $week = date( 'W', time() );
+
+        $englishMonths = [];
+        $englishDays = [];
+        $translatedMonths = [];
+        $translatedDays = [];
+
+        setlocale( LC_ALL, $setLocale );
+
+        // get in translated lang
+        for ( $i = 1; $i <= 12; ++$i ) {
+            $translatedMonths[$i] = strftime( '%B', mktime( 0, 0, 0, $i, 1 ) );
+        }
+
+        for ( $i = 1; $i <= 7; $i++ ) {
+            $time = strtotime( $year . 'W' . $week . $i );
+            $translatedDays[$i] = strftime( "%A", $time );
+        }
+
+        setlocale( LC_ALL, $currentLocale );
+
+        // get in english
+        for ( $i = 1; $i <= 12; ++$i ) {
+            $englishMonths[$i] = date( 'F', mktime( 0, 0, 0, $i, 1 ) );
+        }
+
+        for ( $i = 1; $i <= 7; $i++ ) {
+            $time = strtotime( $year . 'W' . $week . $i );
+            $englishDays[$i] = date( "l", $time );
+        }
+
+        $needle = str_ireplace( $translatedDays, $englishDays, $needle );
+        $needle = str_ireplace( $translatedMonths, $englishMonths, $needle );
+
+        return $needle;
     }
 }

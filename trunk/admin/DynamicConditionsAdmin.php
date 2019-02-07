@@ -134,7 +134,7 @@ class DynamicConditionsAdmin {
         $element->add_control(
             'dynamicconditions_visibility',
             [
-                'label' => __( 'Show/Hide', 'dynamic-conditions' ),
+                'label' => __( 'Show/Hide', 'dynamicconditions' ),
                 'type' => Controls_Manager::SELECT,
                 'default' => 'hide',
                 'options' => [
@@ -177,10 +177,11 @@ class DynamicConditionsAdmin {
                 'multiple' => false,
                 'label_block' => true,
                 'options' => [
-                    'default' => __( 'Default', 'dynamicconditions' ),
+                    'default' => __( 'Default', 'elementor' ),
                     'date' => __( 'Date', 'dynamicconditions' ),
                     'days' => __( 'Days', 'dynamicconditions' ),
                     'months' => __( 'Months', 'dynamicconditions' ),
+                    'strtotime' => __( 'String to time', 'dynamicconditions' ),
                 ],
                 'default' => 'default',
                 'render_type' => 'none',
@@ -197,7 +198,7 @@ class DynamicConditionsAdmin {
 
                 'condition' => [
                     'dynamicconditions_condition' => $valueCondition,
-                    'dynamicconditions_type' => 'default',
+                    'dynamicconditions_type' => [ 'default', 'strtotime' ],
                 ],
             ]
         );
@@ -211,7 +212,7 @@ class DynamicConditionsAdmin {
 
                 'condition' => [
                     'dynamicconditions_condition' => [ 'between' ],
-                    'dynamicconditions_type' => 'default',
+                    'dynamicconditions_type' => [ 'default', 'strtotime' ],
                 ],
             ]
         );
@@ -306,9 +307,10 @@ class DynamicConditionsAdmin {
      * @return array
      */
     public function getMonths() {
+        setlocale( LC_ALL, get_locale() );
         $monthList = [];
         for ( $i = 1; $i <= 12; ++$i ) {
-            $monthList[$i] = date( 'F', mktime( 0, 0, 0, $i, 1 ) );
+            $monthList[$i] = strftime( '%B', mktime( 0, 0, 0, $i, 1 ) );
         }
 
         return $monthList;
@@ -320,12 +322,13 @@ class DynamicConditionsAdmin {
      * @return array
      */
     public function getDays() {
+        setlocale( LC_ALL, get_locale() );
         $dayList = [];
         $year = date( 'o', time() );
         $week = date( 'W', time() );
         for ( $i = 1; $i <= 7; $i++ ) {
             $time = strtotime( $year . 'W' . $week . $i );
-            $dayList[$i] = date( "l", $time );
+            $dayList[$i] = strftime( "%A", $time );
         }
 
         return $dayList;
