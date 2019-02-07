@@ -109,7 +109,6 @@ class DynamicConditionsPublic {
         }
     }
 
-
     /**
      * Checks condition, return if element is hidden
      *
@@ -124,8 +123,35 @@ class DynamicConditionsPublic {
             return false;
         }
 
-        $checkValue = !empty( $settings['dynamicconditions_value'] ) ? $settings['dynamicconditions_value'] : '';
-        $widgetValueArray = !empty( $settings['dynamicconditions_dynamic'] ) ? $settings['dynamicconditions_dynamic'] : '';
+        $compareType = self::checkEmpty( $settings, 'dynamicconditions_type', 'default' );
+
+        switch ( $compareType ) {
+            case 'days':
+                $checkValue = self::checkEmpty( $settings, 'dynamicconditions_day_value' );
+                $checkValue2 = self::checkEmpty( $settings, 'dynamicconditions_day_value2' );
+                break;
+            case 'months':
+                $checkValue = self::checkEmpty( $settings, 'dynamicconditions_month_value' );
+                $checkValue2 = self::checkEmpty( $settings, 'dynamicconditions_month_value2' );
+                break;
+            case 'date':
+                $checkValue = self::checkEmpty( $settings, 'dynamicconditions_date_value' );
+                $checkValue2 = self::checkEmpty( $settings, 'dynamicconditions_date_value2' );
+                $checkValue = strtotime( $checkValue );
+                $checkValue2 = strtotime( $checkValue2 );
+                break;
+
+            case 'default':
+            default:
+                $checkValue = self::checkEmpty( $settings, 'dynamicconditions_value' );
+                $checkValue2 = self::checkEmpty( $settings, 'dynamicconditions_value2' );
+                break;
+        }
+
+        echo 'check1:'.$checkValue;
+        echo '<br>check2:' . $checkValue2;
+
+        $widgetValueArray = self::checkEmpty( $settings, 'dynamicconditions_dynamic' );
 
         if ( !is_array( $widgetValueArray ) ) {
             $widgetValueArray = [ $widgetValueArray ];
@@ -142,6 +168,19 @@ class DynamicConditionsPublic {
                     continue;
                 }
             }
+
+            switch ( $compareType ) {
+                case 'days':
+                    $widgetValue = date('N', strtotime( $widgetValue ));
+                    break;
+                case 'months':
+                    $widgetValue = date('n', strtotime( $widgetValue ));
+                    break;
+                case 'date':
+                    $widgetValue = strtotime( $widgetValue );
+                    break;
+            }
+            echo '<br>value:' . $widgetValue;
 
             switch ( $settings['dynamicconditions_condition'] ) {
                 case 'equal':
@@ -197,6 +236,11 @@ class DynamicConditionsPublic {
                     }
                     $break = true;
                     break;
+
+                case 'between':
+                    $condition = $widgetValue >= $checkValue && $widgetValue <= $checkValue2;
+                    $break = true;
+                    break;
             }
 
             if ( $break && $condition ) {
@@ -211,7 +255,7 @@ class DynamicConditionsPublic {
 
         $hide = false;
 
-        $visibility = !empty( $settings['dynamicconditions_visibility'] ) ? $settings['dynamicconditions_visibility'] : 'hide';
+        $visibility = self::checkEmpty( $settings, 'dynamicconditions_visibility', 'hide' );
         switch ( $visibility ) {
             case 'show':
                 if ( !$condition ) {
@@ -227,5 +271,20 @@ class DynamicConditionsPublic {
         }
 
         return $hide;
+    }
+
+    /**
+     * Checks if an array or entry in array is empty and return its value
+     *
+     * @param array $array
+     * @param null $key
+     * @return array|mixed|null
+     */
+    public static function checkEmpty( $array = [], $key = null, $fallback = null ) {
+        if ( empty( $key ) ) {
+            return !empty( $array ) ? $array : $fallback;
+        }
+
+        return !empty( $array[$key] ) ? $array[$key] : $fallback;
     }
 }
