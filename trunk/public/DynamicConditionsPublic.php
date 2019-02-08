@@ -68,17 +68,24 @@ class DynamicConditionsPublic {
             return $this->elementSettings[$id];
         }
 
-        global $wp_locale;
-        $currentLocale = get_locale();
-        setlocale( LC_ALL, 'en_US' );
-        $wp_locale = get_locale();
-
+        add_filter( 'date_i18n', [ $this, 'filterDate' ], 10, 4 );
         $this->elementSettings[$id] = $element->get_settings_for_display();
-
-        setlocale( LC_ALL, $currentLocale );
-        $wp_locale = get_locale();
+        remove_filter( 'date_i18n', [ $this, 'filterDate' ] );
 
         return $this->elementSettings[$id];
+    }
+
+    /**
+     * Filter date-output from date_i18n() to return always a timestamp
+     *
+     * @param $j
+     * @param $req_format
+     * @param $i
+     * @param $gmt
+     * @return mixed
+     */
+    public function filterDate( $j, $req_format, $i, $gmt ) {
+        return $i;
     }
 
     /**
@@ -173,11 +180,11 @@ class DynamicConditionsPublic {
                 }
             }
 
-            #echo '<br>value:' . $widgetValue;
+            echo '<br>value:' . $widgetValue;
             // parse value based on compare-type
             $this->parseWidgetValue( $widgetValue, $compareType );
 
-            #echo '<br>valueparsed:' . $widgetValue;
+            echo '<br>valueparsed:' . $widgetValue;
 
             // compare widget-value with check-values
             list( $condition, $break, $breakFalse, $continue )
@@ -321,7 +328,10 @@ class DynamicConditionsPublic {
             case 'strtotime':
                 // nobreak
             case 'date':
-                $widgetValue = strtotime( $widgetValue );
+                $newWidgetValue = strtotime( $widgetValue );
+                if ( !empty( $newWidgetValue ) && !is_numeric( $widgetValue ) ) {
+                    $widgetValue = $newWidgetValue;
+                }
                 break;
         }
     }
