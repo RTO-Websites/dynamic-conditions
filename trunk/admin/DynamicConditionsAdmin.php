@@ -297,6 +297,24 @@ class DynamicConditionsAdmin {
             ]
         );
 
+        $languageArray = explode( '_', get_locale() );
+        $language = array_shift( $languageArray );
+        $element->add_control(
+            'dynamicconditions_date_description',
+            [
+                'type' => Controls_Manager::RAW_HTML,
+                'label' => __( 'Conditional value', 'dynamicconditions' ) . ' 2',
+                'condition' => [
+                    'dynamicconditions_condition' => $valueCondition,
+                    'dynamicconditions_type' => 'strtotime',
+                ],
+                'show_label' => false,
+                'raw' => '<div class="elementor-control-field-description">'
+                    . '<a href="https://php.net/manual/' . $language . '/datetime.formats.php" target="_blank">'
+                    . __( 'Supported Date and Time Formats', 'dynamicconditions' ) . '</a></div>',
+            ]
+        );
+
         $element->end_controls_section();
     }
 
