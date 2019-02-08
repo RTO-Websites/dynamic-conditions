@@ -68,9 +68,23 @@ class DynamicConditionsPublic {
             return $this->elementSettings[$id];
         }
 
-        add_filter( 'date_i18n', [ $this, 'filterDate' ], 10, 4 );
+        global $wp_locale;
+
+        $currentLocale = get_locale();
+        setlocale( LC_ALL, 'en_GB' );
+        $wp_locale = 'en_GB';
+
+        add_filter( 'date_i18n', [ $this, 'filterDateI18n' ], 10, 4 );
+        add_filter( 'get_the_date', [ $this, 'filterPostDate' ], 10, 3 );
+        add_filter( 'get_the_modified_date', [ $this, 'filterPostDate' ], 10, 3 );
         $this->elementSettings[$id] = $element->get_settings_for_display();
-        remove_filter( 'date_i18n', [ $this, 'filterDate' ] );
+        remove_filter( 'date_i18n', [ $this, 'filterDateI18n' ] );
+        remove_filter( 'get_the_date', [ $this, 'filterPostDate' ] );
+        remove_filter( 'get_the_modified_date', [ $this, 'filterPostDate' ] );
+
+
+        setlocale( LC_ALL, $currentLocale );
+        $wp_locale = $currentLocale;
 
         return $this->elementSettings[$id];
     }
@@ -78,15 +92,38 @@ class DynamicConditionsPublic {
     /**
      * Filter date-output from date_i18n() to return always a timestamp
      *
-     * @param $j
-     * @param $req_format
-     * @param $i
-     * @param $gmt
-     * @return mixed
+     * @param string $j Formatted date string.
+     * @param string $req_format Format to display the date.
+     * @param int $i Unix timestamp.
+     * @param bool $gmt Whether to convert to GMT for time. Default false.
+     * @return int Unix timestamp
      */
-    public function filterDate( $j, $req_format, $i, $gmt ) {
+    public function filterDateI18n( $j, $req_format, $i, $gmt ) {
         return $i;
     }
+
+    /**
+     * Filters the date of a post to return a timestamp
+     *
+     * @param string|bool $the_time The formatted date or false if no post is found.
+     * @param string $d PHP date format. Defaults to value specified in
+     *                               'date_format' option.
+     * @param WP_Post|null $post WP_Post object or null if no post is found.
+     *
+     * @return mixed
+     */
+    public function filterPostDate( $the_time, $d, $post ) {
+        if ( empty( $d ) ) {
+            return $the_time;
+        }
+        $date = \DateTime::createFromFormat( $d, $the_time );
+        if ( empty( $date ) ) {
+            return $the_time;
+        }
+
+        return $date->getTimestamp();
+    }
+
 
     /**
      * Stopp rendering of widget if its hidden
@@ -138,7 +175,12 @@ class DynamicConditionsPublic {
     public function filterSectionContentAfter( $section ) {
         if ( !empty( $section->dynamicConditionIsHidden ) ) {
             ob_end_clean();
-            echo '<!-- hidden section -->';
+            $type = $section->get_type();
+            if ( !empty( $section->get_settings( 'dynamicconditions_hideContentOnly' ) ) ) {
+                $section->before_render();
+                $section->after_render();
+            }
+            echo '<!-- hidden ' . $type . ' -->';
         }
     }
 
@@ -155,22 +197,47 @@ class DynamicConditionsPublic {
             return false;
         }
 
-        // get value form conditions
-        $compareType = self::checkEmpty( $settings, 'dynamicconditions_type', 'default' );
-        list( $checkValue, $checkValue2 ) = $this->getCheckValue( $compareType, $settings );
+        // loop values
+        $condition = $this->loopValues( $settings );
 
-        #echo 'check1:' . $checkValue;
-        #echo '<br>check2:' . $checkValue2;
+        $hide = false;
 
+        $visibility = self::checkEmpty( $settings, 'dynamicconditions_visibility', 'hide' );
+        switch ( $visibility ) {
+            case 'show':
+                if ( !$condition ) {
+                    $hide = true;
+                }
+                break;
+            case 'hide':
+            default:
+                if ( $condition ) {
+                    $hide = true;
+                }
+                break;
+        }
+
+        return $hide;
+    }
+
+    /**
+     * Loop widget-values and check the condition
+     *
+     * @param $settings
+     * @return bool|mixed
+     */
+    private function loopValues( $settings ) {
+        $condition = false;
         $widgetValueArray = self::checkEmpty( $settings, 'dynamicconditions_dynamic' );
 
         if ( !is_array( $widgetValueArray ) ) {
             $widgetValueArray = [ $widgetValueArray ];
         }
 
-        $condition = false;
+        // get value form conditions
+        $compareType = self::checkEmpty( $settings, 'dynamicconditions_type', 'default' );
+        list( $checkValue, $checkValue2 ) = $this->getCheckValue( $compareType, $settings );
 
-        // loop values
         foreach ( $widgetValueArray as $widgetValue ) {
             if ( is_array( $widgetValue ) ) {
                 if ( !empty( $widgetValue['id'] ) ) {
@@ -205,26 +272,8 @@ class DynamicConditionsPublic {
             }
         }
 
-        $hide = false;
-
-        $visibility = self::checkEmpty( $settings, 'dynamicconditions_visibility', 'hide' );
-        switch ( $visibility ) {
-            case 'show':
-                if ( !$condition ) {
-                    $hide = true;
-                }
-                break;
-            case 'hide':
-            default:
-                if ( $condition ) {
-                    $hide = true;
-                }
-                break;
-        }
-
-        return $hide;
+        return $condition;
     }
-
 
     /**
      * Compare values
@@ -318,22 +367,35 @@ class DynamicConditionsPublic {
     private function parseWidgetValue( &$widgetValue, $compareType ) {
         switch ( $compareType ) {
             case 'days':
-                $widgetValue = date( 'N', strtotime( $widgetValue ) );
+                $widgetValue = date( 'N', $this->stringToTime( $widgetValue ) );
                 break;
 
             case 'months':
-                $widgetValue = date( 'n', strtotime( $widgetValue ) );
+                $widgetValue = date( 'n', $this->stringToTime( $widgetValue ) );
                 break;
 
             case 'strtotime':
                 // nobreak
             case 'date':
-                $newWidgetValue = strtotime( $widgetValue );
-                if ( !empty( $newWidgetValue ) && !is_numeric( $widgetValue ) ) {
-                    $widgetValue = $newWidgetValue;
-                }
+                $widgetValue = $this->stringToTime( $widgetValue );
                 break;
         }
+    }
+
+    /**
+     * Convert string to timestamp or return string if it´s already a timestamp
+     *
+     * @param $string
+     * @return false|int
+     */
+    public function stringToTime( $string = '' ) {
+        $timestamp = $string;
+        $strToTime = strtotime( $string );
+        if ( !empty( $strToTime ) ) {
+            $timestamp = $strToTime;
+        }
+
+        return $timestamp;
     }
 
     /**
@@ -362,8 +424,8 @@ class DynamicConditionsPublic {
             case 'date':
                 $checkValue = self::checkEmpty( $settings, 'dynamicconditions_date_value' );
                 $checkValue2 = self::checkEmpty( $settings, 'dynamicconditions_date_value2' );
-                $checkValue = strtotime( $checkValue );
-                $checkValue2 = strtotime( $checkValue2 );
+                $checkValue = $this->stringToTime( $checkValue );
+                $checkValue2 = $this->stringToTime( $checkValue2 );
                 break;
 
             case 'strtotime':
@@ -371,8 +433,8 @@ class DynamicConditionsPublic {
                 $checkValue2 = self::checkEmpty( $settings, 'dynamicconditions_value2' );
                 $checkValue = self::unTranslateDate( $checkValue );
                 $checkValue2 = self::unTranslateDate( $checkValue2 );
-                $checkValue = strtotime( $checkValue );
-                $checkValue2 = strtotime( $checkValue2 );
+                $checkValue = $this->stringToTime( $checkValue );
+                $checkValue2 = $this->stringToTime( $checkValue2 );
                 break;
 
             case 'default':

@@ -131,6 +131,7 @@ class DynamicConditionsAdmin {
         );
 
 
+
         $element->add_control(
             'dynamicconditions_visibility',
             [
@@ -145,6 +146,15 @@ class DynamicConditionsAdmin {
             ]
         );
 
+        if ( $element->get_type() === 'column' ) {
+            $element->add_control(
+                'dynamicconditions_hideContentOnly',
+                [
+                    'type' => Controls_Manager::SWITCHER,
+                    'label' => __( 'Hide only content', 'dynamicconditions' ) ,
+                ]
+            );
+        }
 
         $element->add_control(
             'dynamicconditions_condition',
