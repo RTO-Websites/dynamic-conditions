@@ -42,6 +42,8 @@ class DynamicConditionsPublic {
 
     private $elementSettings = [];
 
+    private $dateInstance;
+
     /**
      * Initialize the class and set its properties.
      *
@@ -53,6 +55,7 @@ class DynamicConditionsPublic {
 
         $this->pluginName = $pluginName;
         $this->version = $version;
+        $this->dateInstance = new DynamicConditionsDate();
 
     }
 
@@ -74,54 +77,19 @@ class DynamicConditionsPublic {
         setlocale( LC_ALL, 'en_GB' );
         $wp_locale = 'en_GB';
 
-        add_filter( 'date_i18n', [ $this, 'filterDateI18n' ], 10, 4 );
-        add_filter( 'get_the_date', [ $this, 'filterPostDate' ], 10, 3 );
-        add_filter( 'get_the_modified_date', [ $this, 'filterPostDate' ], 10, 3 );
+        add_filter( 'date_i18n', [ $this->dateInstance, 'filterDateI18n' ], 10, 4 );
+        add_filter( 'get_the_date', [ $this->dateInstance, 'filterPostDate' ], 10, 3 );
+        add_filter( 'get_the_modified_date', [ $this->dateInstance, 'filterPostDate' ], 10, 3 );
         $this->elementSettings[$id] = $element->get_settings_for_display();
-        remove_filter( 'date_i18n', [ $this, 'filterDateI18n' ] );
-        remove_filter( 'get_the_date', [ $this, 'filterPostDate' ] );
-        remove_filter( 'get_the_modified_date', [ $this, 'filterPostDate' ] );
+        remove_filter( 'date_i18n', [ $this->dateInstance, 'filterDateI18n' ] );
+        remove_filter( 'get_the_date', [ $this->dateInstance, 'filterPostDate' ] );
+        remove_filter( 'get_the_modified_date', [ $this->dateInstance, 'filterPostDate' ] );
 
 
         setlocale( LC_ALL, $currentLocale );
         $wp_locale = $currentLocale;
 
         return $this->elementSettings[$id];
-    }
-
-    /**
-     * Filter date-output from date_i18n() to return always a timestamp
-     *
-     * @param string $j Formatted date string.
-     * @param string $req_format Format to display the date.
-     * @param int $i Unix timestamp.
-     * @param bool $gmt Whether to convert to GMT for time. Default false.
-     * @return int Unix timestamp
-     */
-    public function filterDateI18n( $j, $req_format, $i, $gmt ) {
-        return $i;
-    }
-
-    /**
-     * Filters the date of a post to return a timestamp
-     *
-     * @param string|bool $the_time The formatted date or false if no post is found.
-     * @param string $d PHP date format. Defaults to value specified in
-     *                               'date_format' option.
-     * @param WP_Post|null $post WP_Post object or null if no post is found.
-     *
-     * @return mixed
-     */
-    public function filterPostDate( $the_time, $d, $post ) {
-        if ( empty( $d ) ) {
-            return $the_time;
-        }
-        $date = \DateTime::createFromFormat( $d, $the_time );
-        if ( empty( $date ) ) {
-            return $the_time;
-        }
-
-        return $date->getTimestamp();
     }
 
 
@@ -247,11 +215,8 @@ class DynamicConditionsPublic {
                 }
             }
 
-            echo '<br>value:' . $widgetValue;
             // parse value based on compare-type
             $this->parseWidgetValue( $widgetValue, $compareType );
-
-            echo '<br>valueparsed:' . $widgetValue;
 
             // compare widget-value with check-values
             list( $condition, $break, $breakFalse, $continue )
@@ -367,35 +332,19 @@ class DynamicConditionsPublic {
     private function parseWidgetValue( &$widgetValue, $compareType ) {
         switch ( $compareType ) {
             case 'days':
-                $widgetValue = date( 'N', $this->stringToTime( $widgetValue ) );
+                $widgetValue = date( 'N', DynamicConditionsDate::stringToTime( $widgetValue ) );
                 break;
 
             case 'months':
-                $widgetValue = date( 'n', $this->stringToTime( $widgetValue ) );
+                $widgetValue = date( 'n', DynamicConditionsDate::stringToTime( $widgetValue ) );
                 break;
 
             case 'strtotime':
                 // nobreak
             case 'date':
-                $widgetValue = $this->stringToTime( $widgetValue );
+                $widgetValue = DynamicConditionsDate::stringToTime( $widgetValue );
                 break;
         }
-    }
-
-    /**
-     * Convert string to timestamp or return string if it´s already a timestamp
-     *
-     * @param $string
-     * @return false|int
-     */
-    public function stringToTime( $string = '' ) {
-        $timestamp = $string;
-        $strToTime = strtotime( $string );
-        if ( !empty( $strToTime ) ) {
-            $timestamp = $strToTime;
-        }
-
-        return $timestamp;
     }
 
     /**
@@ -410,31 +359,31 @@ class DynamicConditionsPublic {
             case 'days':
                 $checkValue = self::checkEmpty( $settings, 'dynamicconditions_day_value' );
                 $checkValue2 = self::checkEmpty( $settings, 'dynamicconditions_day_value2' );
-                $checkValue = self::unTranslateDate( $checkValue );
-                $checkValue2 = self::unTranslateDate( $checkValue2 );
+                $checkValue = DynamicConditionsDate::unTranslateDate( $checkValue );
+                $checkValue2 = DynamicConditionsDate::unTranslateDate( $checkValue2 );
                 break;
 
             case 'months':
                 $checkValue = self::checkEmpty( $settings, 'dynamicconditions_month_value' );
                 $checkValue2 = self::checkEmpty( $settings, 'dynamicconditions_month_value2' );
-                $checkValue = self::unTranslateDate( $checkValue );
-                $checkValue2 = self::unTranslateDate( $checkValue2 );
+                $checkValue = DynamicConditionsDate::unTranslateDate( $checkValue );
+                $checkValue2 = DynamicConditionsDate::unTranslateDate( $checkValue2 );
                 break;
 
             case 'date':
                 $checkValue = self::checkEmpty( $settings, 'dynamicconditions_date_value' );
                 $checkValue2 = self::checkEmpty( $settings, 'dynamicconditions_date_value2' );
-                $checkValue = $this->stringToTime( $checkValue );
-                $checkValue2 = $this->stringToTime( $checkValue2 );
+                $checkValue = DynamicConditionsDate::stringToTime( $checkValue );
+                $checkValue2 = DynamicConditionsDate::stringToTime( $checkValue2 );
                 break;
 
             case 'strtotime':
                 $checkValue = self::checkEmpty( $settings, 'dynamicconditions_value' );
                 $checkValue2 = self::checkEmpty( $settings, 'dynamicconditions_value2' );
-                $checkValue = self::unTranslateDate( $checkValue );
-                $checkValue2 = self::unTranslateDate( $checkValue2 );
-                $checkValue = $this->stringToTime( $checkValue );
-                $checkValue2 = $this->stringToTime( $checkValue2 );
+                $checkValue = DynamicConditionsDate::unTranslateDate( $checkValue );
+                $checkValue2 = DynamicConditionsDate::unTranslateDate( $checkValue2 );
+                $checkValue = DynamicConditionsDate::stringToTime( $checkValue );
+                $checkValue2 = DynamicConditionsDate::stringToTime( $checkValue2 );
                 break;
 
             case 'default':
@@ -465,53 +414,4 @@ class DynamicConditionsPublic {
         return !empty( $array[$key] ) ? $array[$key] : $fallback;
     }
 
-    /**
-     * Untranslate a date-string to english date
-     *
-     * @param string $needle
-     * @param null $setLocale
-     * @return mixed|string
-     */
-    public static function unTranslateDate( $needle = '', $setLocale = null ) {
-        if ( empty( $setLocale ) ) {
-            $setLocale = get_locale();
-        }
-        $currentLocale = get_locale();
-        $year = date( 'o', time() );
-        $week = date( 'W', time() );
-
-        $englishMonths = [];
-        $englishDays = [];
-        $translatedMonths = [];
-        $translatedDays = [];
-
-        setlocale( LC_ALL, $setLocale );
-
-        // get in translated lang
-        for ( $i = 1; $i <= 12; ++$i ) {
-            $translatedMonths[$i] = strftime( '%B', mktime( 0, 0, 0, $i, 1 ) );
-        }
-
-        for ( $i = 1; $i <= 7; $i++ ) {
-            $time = strtotime( $year . 'W' . $week . $i );
-            $translatedDays[$i] = strftime( "%A", $time );
-        }
-
-        setlocale( LC_ALL, $currentLocale );
-
-        // get in english
-        for ( $i = 1; $i <= 12; ++$i ) {
-            $englishMonths[$i] = date( 'F', mktime( 0, 0, 0, $i, 1 ) );
-        }
-
-        for ( $i = 1; $i <= 7; $i++ ) {
-            $time = strtotime( $year . 'W' . $week . $i );
-            $englishDays[$i] = date( "l", $time );
-        }
-
-        $needle = str_ireplace( $translatedDays, $englishDays, $needle );
-        $needle = str_ireplace( $translatedMonths, $englishMonths, $needle );
-
-        return $needle;
-    }
 }

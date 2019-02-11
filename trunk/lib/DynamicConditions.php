@@ -148,7 +148,6 @@ class DynamicConditions {
      * @access   private
      */
     private function definePublicHooks() {
-
         $pluginPublic = new DynamicConditionsPublic( $this->getDynamicConditions(), $this->getVersion() );
 
         // filter widgets
