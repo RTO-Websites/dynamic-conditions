@@ -150,6 +150,8 @@ class DynamicConditions {
     private function definePublicHooks() {
         $pluginPublic = new DynamicConditionsPublic( $this->getDynamicConditions(), $this->getVersion() );
 
+        $this->loader->addAction( 'wp_enqueue_scripts', $pluginPublic, 'enqueueScripts' );
+
         // filter widgets
         $this->loader->addAction( 'elementor/widget/render_content', $pluginPublic, 'filterWidgetContent', 10, 2 );
 

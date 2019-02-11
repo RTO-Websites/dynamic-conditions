@@ -144,9 +144,12 @@ class DynamicConditionsPublic {
         if ( !empty( $section->dynamicConditionIsHidden ) ) {
             ob_end_clean();
             $type = $section->get_type();
+            $settings = $this->getElementSettings( $section );
             if ( !empty( $section->get_settings( 'dynamicconditions_hideContentOnly' ) ) ) {
                 $section->before_render();
                 $section->after_render();
+            } else if ( $type == 'column' && $settings['dynamicconditions_resizeOtherColumns']) {
+                echo '<div class="dc-elementor-hidden-column" data-size="' . $settings['_inline_size'] . '"></div>';
             }
             echo '<!-- hidden ' . $type . ' -->';
         }
@@ -412,6 +415,17 @@ class DynamicConditionsPublic {
         }
 
         return !empty( $array[$key] ) ? $array[$key] : $fallback;
+    }
+
+
+
+    /**
+     * Register the stylesheets for the public-facing side of the site.
+     *
+     * @since    1.0.0
+     */
+    public function enqueueScripts() {
+        wp_enqueue_script( $this->pluginName, plugin_dir_url( __FILE__ ) . 'js/dynamic-conditions-public.js', [ 'jquery' ], $this->version, true );
     }
 
 }

@@ -2,6 +2,7 @@
 
 use Elementor\Controls_Manager;
 use Elementor\Modules\DynamicTags\Module;
+use Pub\DynamicConditionsDate;
 
 
 /**
@@ -153,6 +154,18 @@ class DynamicConditionsAdmin {
                     'label' => __( 'Hide only content', 'dynamicconditions' ),
                 ]
             );
+
+
+            $element->add_control(
+                'dynamicconditions_resizeOtherColumns',
+                [
+                    'type' => Controls_Manager::SWITCHER,
+                    'label' => __( 'Resize other columns', 'dynamicconditions' ),
+                    'condition' => [
+                        'dynamicconditions_hideContentOnly' => '',
+                    ]
+                ]
+            );
         }
 
         $element->add_control(
@@ -263,7 +276,7 @@ class DynamicConditionsAdmin {
                     'dynamicconditions_condition' => $valueCondition,
                     'dynamicconditions_type' => 'days',
                 ],
-                'options' => $this->getDays(),
+                'options' => DynamicConditionsDate::getDays(),
             ]
         );
 
@@ -276,7 +289,7 @@ class DynamicConditionsAdmin {
                     'dynamicconditions_condition' => [ 'between' ],
                     'dynamicconditions_type' => 'days',
                 ],
-                'options' => $this->getDays(),
+                'options' => DynamicConditionsDate::getDays(),
             ]
         );
 
@@ -289,7 +302,7 @@ class DynamicConditionsAdmin {
                     'dynamicconditions_condition' => $valueCondition,
                     'dynamicconditions_type' => 'months',
                 ],
-                'options' => $this->getMonths(),
+                'options' => DynamicConditionsDate::getMonths(),
             ]
         );
 
@@ -302,7 +315,7 @@ class DynamicConditionsAdmin {
                     'dynamicconditions_condition' => [ 'between' ],
                     'dynamicconditions_type' => 'months',
                 ],
-                'options' => $this->getMonths(),
+                'options' => DynamicConditionsDate::getMonths(),
             ]
         );
 
@@ -327,41 +340,4 @@ class DynamicConditionsAdmin {
         $element->end_controls_section();
     }
 
-
-    /**
-     * Get a list of months (january, february,...)
-     *
-     * @return array
-     */
-    public function getMonths() {
-        $currentLocale = setlocale( LC_TIME, 0 );
-        setlocale( LC_TIME, get_locale() );
-        $monthList = [];
-        for ( $i = 1; $i <= 12; ++$i ) {
-            $monthList[$i] = strftime( '%B', mktime( 0, 0, 0, $i, 1 ) );
-        }
-        setlocale( LC_TIME, $currentLocale );
-
-        return $monthList;
-    }
-
-    /**
-     * Get a list of days (monday, tuesday,...)
-     *
-     * @return array
-     */
-    public function getDays() {
-        $currentLocale = setlocale( LC_TIME, 0 );
-        setlocale( LC_TIME, get_locale() );
-        $dayList = [];
-        $year = date( 'o', time() );
-        $week = date( 'W', time() );
-        for ( $i = 1; $i <= 7; $i++ ) {
-            $time = strtotime( $year . 'W' . $week . $i );
-            $dayList[$i] = strftime( "%A", $time );
-        }
-        setlocale( LC_TIME, $currentLocale );
-
-        return $dayList;
-    }
 }

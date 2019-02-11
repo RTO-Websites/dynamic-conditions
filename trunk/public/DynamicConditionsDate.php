@@ -103,4 +103,42 @@ class DynamicConditionsDate {
 
         return $needle;
     }
+
+
+    /**
+     * Get a list of months (january, february,...)
+     *
+     * @return array
+     */
+    public static function getMonths() {
+        $currentLocale = setlocale( LC_TIME, 0 );
+        setlocale( LC_TIME, get_locale() );
+        $monthList = [];
+        for ( $i = 1; $i <= 12; ++$i ) {
+            $monthList[$i] = strftime( '%B', mktime( 0, 0, 0, $i, 1 ) );
+        }
+        setlocale( LC_TIME, $currentLocale );
+
+        return $monthList;
+    }
+
+    /**
+     * Get a list of days (monday, tuesday,...)
+     *
+     * @return array
+     */
+    public static function getDays() {
+        $currentLocale = setlocale( LC_TIME, 0 );
+        setlocale( LC_TIME, get_locale() );
+        $dayList = [];
+        $year = date( 'o', time() );
+        $week = date( 'W', time() );
+        for ( $i = 1; $i <= 7; $i++ ) {
+            $time = strtotime( $year . 'W' . $week . $i );
+            $dayList[$i] = strftime( "%A", $time );
+        }
+        setlocale( LC_TIME, $currentLocale );
+
+        return $dayList;
+    }
 }
