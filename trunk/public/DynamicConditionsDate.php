@@ -64,7 +64,8 @@ class DynamicConditionsDate {
         if ( empty( $setLocale ) ) {
             $setLocale = get_locale();
         }
-        $currentLocale = get_locale();
+        $currentLocale = setlocale( LC_TIME, 0 );
+
         $year = date( 'o', time() );
         $week = date( 'W', time() );
 
@@ -73,7 +74,7 @@ class DynamicConditionsDate {
         $translatedMonths = [];
         $translatedDays = [];
 
-        setlocale( LC_ALL, $setLocale );
+        setlocale( LC_TIME, $setLocale );
 
         // get in translated lang
         for ( $i = 1; $i <= 12; ++$i ) {
@@ -85,7 +86,7 @@ class DynamicConditionsDate {
             $translatedDays[$i] = strftime( "%A", $time );
         }
 
-        setlocale( LC_ALL, $currentLocale );
+        setlocale( LC_TIME, $currentLocale );
 
         // get in english
         for ( $i = 1; $i <= 12; ++$i ) {

@@ -73,7 +73,8 @@ class DynamicConditionsPublic {
 
         global $wp_locale;
 
-        $currentLocale = get_locale();
+        $currentWpLocale = get_locale();
+        $currentLocale = setlocale( LC_TIME, 0 );
         setlocale( LC_ALL, 'en_GB' );
         $wp_locale = 'en_GB';
 
@@ -85,9 +86,8 @@ class DynamicConditionsPublic {
         remove_filter( 'get_the_date', [ $this->dateInstance, 'filterPostDate' ] );
         remove_filter( 'get_the_modified_date', [ $this->dateInstance, 'filterPostDate' ] );
 
-
-        setlocale( LC_ALL, $currentLocale );
-        $wp_locale = $currentLocale;
+        setlocale( LC_TIME, $currentLocale );
+        $wp_locale = $currentWpLocale;
 
         return $this->elementSettings[$id];
     }

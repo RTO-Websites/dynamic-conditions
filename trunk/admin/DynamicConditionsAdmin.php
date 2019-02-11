@@ -131,7 +131,6 @@ class DynamicConditionsAdmin {
         );
 
 
-
         $element->add_control(
             'dynamicconditions_visibility',
             [
@@ -151,7 +150,7 @@ class DynamicConditionsAdmin {
                 'dynamicconditions_hideContentOnly',
                 [
                     'type' => Controls_Manager::SWITCHER,
-                    'label' => __( 'Hide only content', 'dynamicconditions' ) ,
+                    'label' => __( 'Hide only content', 'dynamicconditions' ),
                 ]
             );
         }
@@ -335,11 +334,13 @@ class DynamicConditionsAdmin {
      * @return array
      */
     public function getMonths() {
-        setlocale( LC_ALL, get_locale() );
+        $currentLocale = setlocale( LC_TIME, 0 );
+        setlocale( LC_TIME, get_locale() );
         $monthList = [];
         for ( $i = 1; $i <= 12; ++$i ) {
             $monthList[$i] = strftime( '%B', mktime( 0, 0, 0, $i, 1 ) );
         }
+        setlocale( LC_TIME, $currentLocale );
 
         return $monthList;
     }
@@ -350,7 +351,8 @@ class DynamicConditionsAdmin {
      * @return array
      */
     public function getDays() {
-        setlocale( LC_ALL, get_locale() );
+        $currentLocale = setlocale( LC_TIME, 0 );
+        setlocale( LC_TIME, get_locale() );
         $dayList = [];
         $year = date( 'o', time() );
         $week = date( 'W', time() );
@@ -358,6 +360,7 @@ class DynamicConditionsAdmin {
             $time = strtotime( $year . 'W' . $week . $i );
             $dayList[$i] = strftime( "%A", $time );
         }
+        setlocale( LC_TIME, $currentLocale );
 
         return $dayList;
     }
