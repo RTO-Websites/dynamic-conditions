@@ -74,6 +74,9 @@ Class NumberPostsTag extends \Elementor\Core\DynamicTags\Tag {
         $posts = get_posts( [
             'category' => implode( ',', $settings['category'] ),
             'post_type' => empty( $settings['posttypes'] ) ? 'any' : $settings['posttypes'],
+            'numberposts' => -1,
+            'posts_per_page' => -1,
+            'fields' => 'ids',
         ] );
 
         echo count( $posts );
