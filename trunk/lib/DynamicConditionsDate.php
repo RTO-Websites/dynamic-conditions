@@ -1,4 +1,4 @@
-<?php namespace Pub;
+<?php namespace Lib;
 
 class DynamicConditionsDate {
 
@@ -41,7 +41,7 @@ class DynamicConditionsDate {
      * Convert string to timestamp or return string if it´s already a timestamp
      *
      * @param $string
-     * @return false|int
+     * @return int
      */
     public static function stringToTime( $string = '' ) {
         $timestamp = $string;

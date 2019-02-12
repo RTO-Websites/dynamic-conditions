@@ -1,6 +1,7 @@
 <?php namespace Lib;
 
 use Admin\DynamicConditionsAdmin;
+use Lib\DynamicTags\NumberPostsTag;
 use Pub\DynamicConditionsPublic;
 
 /**
@@ -175,7 +176,7 @@ class DynamicConditions {
      * @param $dynamicTags
      */
     public function registerDynamicTags( $dynamicTags ) {
-        $dynamicTags->register_tag( '\Lib\DynamicTags\NumberPosts' );
+        $dynamicTags->register_tag( NumberPostsTag::class );
     }
 
     /**

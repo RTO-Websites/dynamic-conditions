@@ -5,7 +5,7 @@ namespace Lib\DynamicTags;
 use Elementor\Controls_Manager;
 use ElementorPro\Modules\DynamicTags\Module;
 
-Class NumberPosts extends \Elementor\Core\DynamicTags\Tag {
+Class NumberPostsTag extends \Elementor\Core\DynamicTags\Tag {
     const WRAPPED_TAG = false;
     public static $dtCount = 0;
 
@@ -18,7 +18,7 @@ Class NumberPosts extends \Elementor\Core\DynamicTags\Tag {
     }
 
     public function get_group() {
-        return [ Module::POST_GROUP ];;
+        return [ Module::POST_GROUP ];
     }
 
     public function get_categories() {
@@ -66,6 +66,9 @@ Class NumberPosts extends \Elementor\Core\DynamicTags\Tag {
     }
 
 
+    /**
+     * Print the number of posts in category/post-type
+     */
     public function render() {
         $settings = $this->get_settings();
         $posts = get_posts( [

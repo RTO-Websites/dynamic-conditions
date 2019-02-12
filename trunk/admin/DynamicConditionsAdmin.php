@@ -2,7 +2,7 @@
 
 use Elementor\Controls_Manager;
 use Elementor\Modules\DynamicTags\Module;
-use Pub\DynamicConditionsDate;
+use Lib\DynamicConditionsDate;
 
 
 /**
@@ -146,7 +146,7 @@ class DynamicConditionsAdmin {
             ]
         );
 
-        if ( $element->get_type() === 'column' ) {
+        if ( in_array( $element->get_type(), [ 'column', 'section' ], true ) ) {
             $element->add_control(
                 'dynamicconditions_hideContentOnly',
                 [
@@ -154,8 +154,9 @@ class DynamicConditionsAdmin {
                     'label' => __( 'Hide only content', 'dynamicconditions' ),
                 ]
             );
+        }
 
-
+        if ( $element->get_type() === 'column' ) {
             $element->add_control(
                 'dynamicconditions_resizeOtherColumns',
                 [
@@ -163,7 +164,7 @@ class DynamicConditionsAdmin {
                     'label' => __( 'Resize other columns', 'dynamicconditions' ),
                     'condition' => [
                         'dynamicconditions_hideContentOnly' => '',
-                    ]
+                    ],
                 ]
             );
         }
