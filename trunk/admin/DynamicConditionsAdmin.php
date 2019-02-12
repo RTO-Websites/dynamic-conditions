@@ -277,7 +277,7 @@ class DynamicConditionsAdmin {
                     'dynamicconditions_condition' => $valueCondition,
                     'dynamicconditions_type' => 'days',
                 ],
-                'options' => DynamicConditionsDate::getDays(),
+                'options' => DynamicConditionsDate::getDaysTranslated(),
             ]
         );
 
@@ -290,7 +290,7 @@ class DynamicConditionsAdmin {
                     'dynamicconditions_condition' => [ 'between' ],
                     'dynamicconditions_type' => 'days',
                 ],
-                'options' => DynamicConditionsDate::getDays(),
+                'options' => DynamicConditionsDate::getDaysTranslated(),
             ]
         );
 
@@ -303,7 +303,7 @@ class DynamicConditionsAdmin {
                     'dynamicconditions_condition' => $valueCondition,
                     'dynamicconditions_type' => 'months',
                 ],
-                'options' => DynamicConditionsDate::getMonths(),
+                'options' => DynamicConditionsDate::getMonthsTranslated(),
             ]
         );
 
@@ -316,7 +316,7 @@ class DynamicConditionsAdmin {
                     'dynamicconditions_condition' => [ 'between' ],
                     'dynamicconditions_type' => 'months',
                 ],
-                'options' => DynamicConditionsDate::getMonths(),
+                'options' => DynamicConditionsDate::getMonthsTranslated(),
             ]
         );
 

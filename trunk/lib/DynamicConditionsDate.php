@@ -68,13 +68,13 @@ class DynamicConditionsDate {
 
         // get in translated lang
         setlocale( LC_ALL, $setLocale );
-        $translatedMonths = self::loopMonths();
-        $translatedDays = self::loopDays();
+        $translatedMonths = self::getMonths();
+        $translatedDays = self::getDays();
 
         // get in english
         setlocale( LC_ALL, 'en_GB' );
-        $englishMonths = self::loopMonths();
-        $englishDays = self::loopDays();
+        $englishMonths = self::getMonths();
+        $englishDays = self::getDays();
         setlocale( LC_ALL, $currentLocale );
 
         // replace translated days/months with english ones
@@ -89,10 +89,10 @@ class DynamicConditionsDate {
      *
      * @return array
      */
-    public static function getMonths() {
+    public static function getMonthsTranslated() {
         $currentLocale = setlocale( LC_ALL, 0 );
         setlocale( LC_ALL, get_locale() );
-        $monthList = self::loopMonths();
+        $monthList = self::getMonths();
         setlocale( LC_ALL, $currentLocale );
 
         return $monthList;
@@ -103,7 +103,7 @@ class DynamicConditionsDate {
      *
      * @return array
      */
-    private static function loopMonths() {
+    private static function getMonths() {
         $monthList = [];
         for ( $i = 1; $i <= 12; ++$i ) {
             $monthList[$i] = strftime( '%B', mktime( 0, 0, 0, $i, 1 ) );
@@ -117,10 +117,10 @@ class DynamicConditionsDate {
      *
      * @return array
      */
-    public static function getDays() {
+    public static function getDaysTranslated() {
         $currentLocale = setlocale( LC_ALL, 0 );
         setlocale( LC_ALL, get_locale() );
-        $dayList = self::loopDays();
+        $dayList = self::getDays();
         setlocale( LC_ALL, $currentLocale );
 
         return $dayList;
@@ -131,7 +131,7 @@ class DynamicConditionsDate {
      *
      * @return array
      */
-    private static function loopDays() {
+    private static function getDays() {
         $dayList = [];
         $year = date( 'o', time() );
         $week = date( 'W', time() );
