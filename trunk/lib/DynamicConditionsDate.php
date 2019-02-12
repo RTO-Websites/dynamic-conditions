@@ -68,7 +68,6 @@ class DynamicConditionsDate {
 
         // get in translated lang
         setlocale( LC_ALL, $setLocale );
-        var_dump(setlocale( LC_ALL, 0 ));
         $translatedMonths = self::loopMonths();
         $translatedDays = self::loopDays();
 
