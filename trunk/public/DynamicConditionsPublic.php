@@ -73,6 +73,7 @@ class DynamicConditionsPublic {
 
         global $wp_locale;
 
+        // set locale to english, for better parsing
         $currentWpLocale = get_locale();
         $currentLocale = setlocale( LC_TIME, 0 );
         setlocale( LC_ALL, 'en_GB' );
@@ -86,6 +87,7 @@ class DynamicConditionsPublic {
         remove_filter( 'get_the_date', [ $this->dateInstance, 'filterPostDate' ] );
         remove_filter( 'get_the_modified_date', [ $this->dateInstance, 'filterPostDate' ] );
 
+        // reset locale
         setlocale( LC_TIME, $currentLocale );
         $wp_locale = $currentWpLocale;
 
@@ -141,18 +143,24 @@ class DynamicConditionsPublic {
      * @param $section
      */
     public function filterSectionContentAfter( $section ) {
-        if ( !empty( $section->dynamicConditionIsHidden ) ) {
-            ob_end_clean();
-            $type = $section->get_type();
-            $settings = $this->getElementSettings( $section );
-            if ( !empty( $section->get_settings( 'dynamicconditions_hideContentOnly' ) ) ) {
-                $section->before_render();
-                $section->after_render();
-            } else if ( $type == 'column' && $settings['dynamicconditions_resizeOtherColumns']) {
-                echo '<div class="dc-elementor-hidden-column" data-size="' . $settings['_inline_size'] . '"></div>';
-            }
-            echo '<!-- hidden ' . $type . ' -->';
+        if ( empty( $section->dynamicConditionIsHidden ) ) {
+            return;
         }
+
+        ob_end_clean();
+
+        $type = $section->get_type();
+        $settings = $this->getElementSettings( $section );
+
+        if ( !empty( $section->get_settings( 'dynamicconditions_hideContentOnly' ) ) ) {
+            // render wrapper
+            $section->before_render();
+            $section->after_render();
+        } else if ( $type == 'column' && $settings['dynamicconditions_resizeOtherColumns'] ) {
+            echo '<div class="dc-elementor-hidden-column" data-size="' . $settings['_inline_size'] . '"></div>';
+        }
+
+        echo '<!-- hidden ' . $type . ' -->';
     }
 
     /**
@@ -221,9 +229,19 @@ class DynamicConditionsPublic {
             // parse value based on compare-type
             $this->parseWidgetValue( $widgetValue, $compareType );
 
+
             // compare widget-value with check-values
             list( $condition, $break, $breakFalse, $continue )
                 = $this->compareValues( $settings['dynamicconditions_condition'], $widgetValue, $checkValue, $checkValue2 );
+
+            if ( $settings['debug'] ) {
+                echo '<!--dynamicConditions debug' . PHP_EOL;
+                echo 'widgetValue: ' . $widgetValue . PHP_EOL;
+                echo 'checkValue: ' . $checkValue . PHP_EOL;
+                echo 'checkValue2: ' . $checkValue2 . PHP_EOL;
+                echo 'condition: ' . $settings['dynamicconditions_condition'] . PHP_EOL;
+                echo '-->';
+            }
 
             if ( $break && $condition ) {
                 // break if condition is true
@@ -416,7 +434,6 @@ class DynamicConditionsPublic {
 
         return !empty( $array[$key] ) ? $array[$key] : $fallback;
     }
-
 
 
     /**

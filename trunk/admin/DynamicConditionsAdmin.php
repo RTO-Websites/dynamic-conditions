@@ -337,6 +337,13 @@ class DynamicConditionsAdmin {
             ]
         );
 
+        $element->add_control(
+            'debug',
+            [
+                'type' => Controls_Manager::SWITCHER,
+                'label' => __( 'Debug-Mode', 'dynamicconditions' ),
+            ]
+        );
         $element->end_controls_section();
     }
 
