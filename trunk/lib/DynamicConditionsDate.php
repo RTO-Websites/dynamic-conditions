@@ -64,17 +64,19 @@ class DynamicConditionsDate {
         if ( empty( $setLocale ) ) {
             $setLocale = get_locale();
         }
-        $currentLocale = setlocale( LC_TIME, 0 );
+        $currentLocale = setlocale( LC_ALL, 0 );
 
         // get in translated lang
-        setlocale( LC_TIME, $setLocale );
+        setlocale( LC_ALL, $setLocale );
+        var_dump(setlocale( LC_ALL, 0 ));
         $translatedMonths = self::loopMonths();
         $translatedDays = self::loopDays();
-        setlocale( LC_TIME, $currentLocale );
 
         // get in english
-        $englishMonths = self::getEnglishMonths();
-        $englishDays = self::getEnglishDays();
+        setlocale( LC_ALL, 'en_GB' );
+        $englishMonths = self::loopMonths();
+        $englishDays = self::loopDays();
+        setlocale( LC_ALL, $currentLocale );
 
         // replace translated days/months with english ones
         $needle = str_ireplace( $translatedDays, $englishDays, $needle );
@@ -84,47 +86,15 @@ class DynamicConditionsDate {
     }
 
     /**
-     * Return a list of english days
-     *
-     * @return array
-     */
-    private static function getEnglishDays() {
-        $englishDays = [];
-        $year = date( 'o', time() );
-        $week = date( 'W', time() );
-
-        for ( $i = 1; $i <= 7; $i++ ) {
-            $time = strtotime( $year . 'W' . $week . $i );
-            $englishDays[$i] = date( "l", $time );
-        }
-
-        return $englishDays;
-    }
-
-    /**
-     * Return a list of english months
-     *
-     * @return array
-     */
-    private static function getEnglishMonths() {
-        $englishMonths = [];
-        for ( $i = 1; $i <= 12; ++$i ) {
-            $englishMonths[$i] = date( 'F', mktime( 0, 0, 0, $i, 1 ) );
-        }
-
-        return $englishMonths;
-    }
-
-    /**
      * Get a list of months (january, february,...)
      *
      * @return array
      */
     public static function getMonths() {
-        $currentLocale = setlocale( LC_TIME, 0 );
-        setlocale( LC_TIME, get_locale() );
+        $currentLocale = setlocale( LC_ALL, 0 );
+        setlocale( LC_ALL, get_locale() );
         $monthList = self::loopMonths();
-        setlocale( LC_TIME, $currentLocale );
+        setlocale( LC_ALL, $currentLocale );
 
         return $monthList;
     }
@@ -149,10 +119,10 @@ class DynamicConditionsDate {
      * @return array
      */
     public static function getDays() {
-        $currentLocale = setlocale( LC_TIME, 0 );
-        setlocale( LC_TIME, get_locale() );
+        $currentLocale = setlocale( LC_ALL, 0 );
+        setlocale( LC_ALL, get_locale() );
         $dayList = self::loopDays();
-        setlocale( LC_TIME, $currentLocale );
+        setlocale( LC_ALL, $currentLocale );
 
         return $dayList;
     }
