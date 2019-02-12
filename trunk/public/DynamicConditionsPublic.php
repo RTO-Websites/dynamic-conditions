@@ -233,7 +233,7 @@ class DynamicConditionsPublic {
 
 
             // compare widget-value with check-values
-            list( $condition, $break, $breakFalse, $continue )
+            list( $condition, $break, $breakFalse )
                 = $this->compareValues( $settings['dynamicconditions_condition'], $widgetValue, $checkValue, $checkValue2 );
 
             if ( $settings['debug'] ) {
@@ -254,10 +254,6 @@ class DynamicConditionsPublic {
                 // break if condition is false
                 break;
             }
-
-            if ( $continue !== false ) {
-                continue;
-            }
         }
 
         return $condition;
@@ -266,13 +262,13 @@ class DynamicConditionsPublic {
     /**
      * Compare values
      *
+     * @param $compare
      * @param $widgetValue
      * @param $checkValue
      * @param $checkValue2
      * @return array
      */
     private function compareValues( $compare, $widgetValue, $checkValue, $checkValue2 ) {
-        $continue = false;
         $break = false;
         $breakFalse = false;
         $condition = false;
@@ -290,7 +286,7 @@ class DynamicConditionsPublic {
 
             case 'contains':
                 if ( empty( $checkValue ) ) {
-                    $continue = 2;
+                    break;
                 }
                 $condition = strpos( $widgetValue, $checkValue ) !== false;
                 $break = true;
@@ -298,7 +294,7 @@ class DynamicConditionsPublic {
 
             case 'not_contains':
                 if ( empty( $checkValue ) ) {
-                    $continue = 2;
+                    break;
                 }
                 $condition = strpos( $widgetValue, $checkValue ) === false;
                 $breakFalse = true;
@@ -342,7 +338,6 @@ class DynamicConditionsPublic {
             $condition,
             $break,
             $breakFalse,
-            $continue,
         ];
     }
 

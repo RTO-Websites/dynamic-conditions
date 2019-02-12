@@ -85,7 +85,7 @@ class DynamicConditionsDate {
     }
 
     /**
-     * Get a list of months (january, february,...)
+     * Get a list of months (january, february,...) in current language
      *
      * @return array
      */
@@ -113,7 +113,7 @@ class DynamicConditionsDate {
     }
 
     /**
-     * Get a list of days (monday, tuesday,...)
+     * Get a list of days (monday, tuesday,...) in current language
      *
      * @return array
      */
