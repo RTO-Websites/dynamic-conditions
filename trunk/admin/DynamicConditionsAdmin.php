@@ -152,6 +152,7 @@ class DynamicConditionsAdmin {
                 [
                     'type' => Controls_Manager::SWITCHER,
                     'label' => __( 'Hide only content', 'dynamicconditions' ),
+                    'description' => __('If checked, only the inner content will be hidden, so you will see an empty section'),
                 ]
             );
         }
@@ -183,9 +184,9 @@ class DynamicConditionsAdmin {
                     'not_contains' => __( 'Does not contain', 'dynamicconditions' ),
                     'empty' => __( 'Is empty', 'dynamicconditions' ),
                     'not_empty' => __( 'Is not empty', 'dynamicconditions' ),
+                    'between' => __( 'Between', 'dynamicconditions' ),
                     'less' => __( 'Less than', 'dynamicconditions' ),
                     'greater' => __( 'Greater than', 'dynamicconditions' ),
-                    'between' => __( 'Between', 'dynamicconditions' ),
                 ],
                 'render_type' => 'none',
                 'description' => __( 'Select your condition for this widget visibility.', 'dynamicconditions' ),
@@ -196,19 +197,22 @@ class DynamicConditionsAdmin {
             'dynamicconditions_type',
             [
                 'label' => __( 'Compare Type', 'dynamicconditions' ),
-                'type' => Controls_Manager::SELECT2,
+                'type' => Controls_Manager::SELECT,
                 'multiple' => false,
                 'label_block' => true,
                 'options' => [
-                    'default' => __( 'Default', 'elementor' ),
+                    'default' => __( 'Text', 'dynamicconditions' ),
                     'date' => __( 'Date', 'dynamicconditions' ),
-                    'days' => __( 'Days', 'dynamicconditions' ),
+                    'days' => __( 'Weekdays', 'dynamicconditions' ),
                     'months' => __( 'Months', 'dynamicconditions' ),
                     'strtotime' => __( 'String to time', 'dynamicconditions' ),
                 ],
                 'default' => 'default',
                 'render_type' => 'none',
                 'description' => __( 'Select what to you want to compare', 'dynamicconditions' ),
+                'condition' => [
+                    'dynamicconditions_condition' => $valueCondition,
+                ]
             ]
         );
 
@@ -217,7 +221,7 @@ class DynamicConditionsAdmin {
             [
                 'type' => Controls_Manager::TEXTAREA,
                 'label' => __( 'Conditional value', 'dynamicconditions' ),
-                'description' => __( 'Add your conditional value here if you selected equal to, not equal to or contains on the selection above.', 'dynamicconditions' ),
+                'description' => __( 'Add your conditional value to compare here.', 'dynamicconditions' ),
 
                 'condition' => [
                     'dynamicconditions_condition' => $valueCondition,
@@ -246,7 +250,7 @@ class DynamicConditionsAdmin {
             [
                 'type' => Controls_Manager::DATE_TIME,
                 'label' => __( 'Conditional value', 'dynamicconditions' ),
-                'description' => __( 'Add a second condition value, if between is selected', 'dynamicconditions' ),
+                'description' => __( 'Add your conditional value to compare here.', 'dynamicconditions' ),
 
                 'condition' => [
                     'dynamicconditions_condition' => $valueCondition,
@@ -277,6 +281,7 @@ class DynamicConditionsAdmin {
                     'dynamicconditions_condition' => $valueCondition,
                     'dynamicconditions_type' => 'days',
                 ],
+                'description' => __( 'Add your conditional value to compare here.', 'dynamicconditions' ),
                 'options' => DynamicConditionsDate::getDaysTranslated(),
             ]
         );
@@ -290,6 +295,7 @@ class DynamicConditionsAdmin {
                     'dynamicconditions_condition' => [ 'between' ],
                     'dynamicconditions_type' => 'days',
                 ],
+                'description' => __( 'Add a second condition value, if between is selected', 'dynamicconditions' ),
                 'options' => DynamicConditionsDate::getDaysTranslated(),
             ]
         );
@@ -303,6 +309,7 @@ class DynamicConditionsAdmin {
                     'dynamicconditions_condition' => $valueCondition,
                     'dynamicconditions_type' => 'months',
                 ],
+                'description' => __( 'Add your conditional value to compare here.', 'dynamicconditions' ),
                 'options' => DynamicConditionsDate::getMonthsTranslated(),
             ]
         );
@@ -316,6 +323,7 @@ class DynamicConditionsAdmin {
                     'dynamicconditions_condition' => [ 'between' ],
                     'dynamicconditions_type' => 'months',
                 ],
+                'description' => __( 'Add a second condition value, if between is selected', 'dynamicconditions' ),
                 'options' => DynamicConditionsDate::getMonthsTranslated(),
             ]
         );
@@ -333,7 +341,7 @@ class DynamicConditionsAdmin {
                 ],
                 'show_label' => false,
                 'raw' => '<div class="elementor-control-field-description">'
-                    . '<a href="https://php.net/manual/' . $language . '/datetime.formats.php" target="_blank">'
+                    . '<a href="https://php.net/manual/' . $language . '/function.strtotime.php" target="_blank">'
                     . __( 'Supported Date and Time Formats', 'dynamicconditions' ) . '</a></div>',
             ]
         );

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dynamic-conditions\n"
 "POT-Creation-Date: 2018-11-07 09:29+0100\n"
-"PO-Revision-Date: 2019-02-08 16:07+0100\n"
+"PO-Revision-Date: 2019-02-13 13:22+0100\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -99,15 +99,15 @@ msgstr "Datum"
 msgid "Months"
 msgstr "Monate"
 
-msgid "Days"
-msgstr "Tage"
+msgid "Weekdays"
+msgstr "Wochentage"
 
 #: admin/DynamicConditionsAdmin.php:158
 msgid "Select your condition for this widget visibility."
-msgstr "Wähle die Bedingung um das Widget anzuzeigen."
+msgstr "Wähle die Bedingung um das Widget anzuzeigen/verstecken."
 
 msgid "Add a second condition value, if between is selected"
-msgstr "Zweite Bedingung falls dazwischen gewählt wurde"
+msgstr "Zweite Bedingung falls zwischen gewählt wurde"
 
 #: admin/DynamicConditionsAdmin.php:168
 msgid "Conditional value"
@@ -117,15 +117,17 @@ msgid "Select what to you want to compare"
 msgstr "Wähle aus was du vergleichen möchtest"
 
 #: admin/DynamicConditionsAdmin.php:169
-msgid ""
-"Add your conditional value here if you selected equal to, not equal to or "
-"contains on the selection above."
-msgstr ""
-"Gib hier deine Bedingung an, falls du identisch zu, nicht identisch zu "
-"oder enthält ausgewählt hast."
+msgid "Add your conditional value to compare here."
+msgstr "Gib hier deine Vergleichs-Bedingung an."
 
 msgid "Supported Date and Time Formats"
 msgstr "Unterstützte Datums- und Zeitformate"
 
 msgid "Hide only content"
 msgstr "Verstecke nur den Inhalt"
+
+msgid "Resize other columns"
+msgstr "Vergrößere andere Spalten"
+
+msgid "If checked, only the inner content will be hidden, so you will see an empty section"
+msgstr "Wenn aktiviert, wird nur der innere Inhalt versteckt und eine leere Section angezeigt"
