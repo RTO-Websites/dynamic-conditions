@@ -50,7 +50,7 @@ class DynamicConditionsDate {
             $timestamp = $strToTime;
         }
 
-        return $timestamp;
+        return intval( $timestamp );
     }
 
     /**
