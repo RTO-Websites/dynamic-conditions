@@ -70,7 +70,8 @@ class DynamicConditionsPublic {
     private function getElementSettings( $element ) {
         $id = $element->get_id();
         if ( !empty( $this->elementSettings[$id] ) ) {
-            return $this->elementSettings[$id];
+            // dont work in a loop?
+            //return $this->elementSettings[$id];
         }
 
         global $wp_locale;

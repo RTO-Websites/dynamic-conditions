@@ -3,7 +3,7 @@ Contributors: rtowebsites
 Donate link: https://www.rto.de
 Tags: elementor, conditions, dynamic, fields, rto
 Requires at least: 4.3.0
-Tested up to: 5.0
+Tested up to: 5.1
 Stable tag: 4.9
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -12,20 +12,20 @@ Activates conditions for dynamic tags to show/hides a widget or section.
 
 == Description ==
 
-Activates conditions for dynamic tags to show/hides a widget or section.
-You can check every field which support dynamic-tags (also advanced custom fields) and check for empty, contain, equal, greater/smaller than and between.
+Activates conditions for dynamic tags to show/hide a widget or section.
+You can check every field which supports dynamic-tags (also advanced custom fields) and check for empty, contains, equal, greater/smaller than and between.
 You can also compare dates, days and months.
-If you check for empty user-id, you can show widget/section only for logged in or logged out users.
+If you check for an empty user-id, you can display a widget/section only for logged in or logged out users.
 
 Requires elementor and elementor pro.
 
 
-Special thanks to [WPTuts](http://wptuts.co.uk) for making a nice Tutorial-Video!
+Special thanks to [WPTuts](http://wptuts.co.uk) for making a nice tutorial video!
 
 https://www.youtube.com/watch?v=bRqW4Oaxtls&feature=youtu.be&fbclid=IwAR3E1ObKXcPa5X5vqpJEreaLyv-m1MP8UcTBAJgl6m0FwwdagdGIpSoaxP8
 
 
-You can help develop on
+You can support development under
 https://github.com/RTO-Websites/dynamic-conditions
 
 == Installation ==
@@ -35,21 +35,20 @@ Just download, install and activate
 == Documentation ==
 
 First you have to select a dynamic field which you want to compare.
-You can use every field which support dynamic-tags (also pods, acf).
-You can also select current date or post-date.
+Any field which supports dynamic-tags (also pods or acf) may be selected.
+You can also select the current date or post-date.
 
-Than you have to choose in "Show/Hide"-Field what happens if the condition be true.
-You can hide or show if its true.
+Choose in "Show/Hide"-Field what happens if the condition is true - either show or hide.
 
-Than you have to choose in "Condition"-Field for what to you want to compare.
-You can compare if field is empty/not-empty or check if it has a specific value, or if it is between two value.
+Under the "Condition"-Field, select what you wish to compare.
+You can compare whether the field is empty/not-empty, check if it has a specific value or if ist value is between two other values.
 
-Now you can select in "Compare-Type"-Field what type of fields do you want to compare.
-Default it compares two strings.
-But if you want to show a widget/section only on monday or only in december, than you can select Days or Month as Compare-Type.
+The "Compare-Type"-Field defines what type of fields do you want to compare.
+Default compares two strings (text).
+But if you want to show a widget/section only on Monday or only in December, you can select Days or Month as Compare-Type.
 
 At last you have to enter the value to compare the dynamic-field with.
-Or two values, if you have select "between".
+Or two values, if you have selected the "between" condition.
 
 
 == Screenshots ==
