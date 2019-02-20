@@ -31,7 +31,6 @@
 
   function resizeColumns() {
     var columns = $('.dc-elementor-hidden-column');
-
     columns.each(function (index, column) {
       column = $(column);
       var hiddenSize = parseFloat(column.data('size')),

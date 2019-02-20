@@ -100,6 +100,10 @@ class DynamicConditionsAdmin {
      */
     public function addConditionFields( $element, $section_id = null, $args = null ) {
         $valueCondition = [ 'equal', 'not_equal', 'contains', 'not_contains', 'less', 'greater', 'between' ];
+        $type = 'element';
+        if ( !empty( $element ) && is_object( $element ) && method_exists( $element, 'get_type' ) ) {
+            $type = $element->get_type();
+        }
 
         $element->start_controls_section(
             'dynamicconditions_section',
@@ -125,8 +129,10 @@ class DynamicConditionsAdmin {
                         Module::MEDIA_CATEGORY,
                         Module::POST_META_CATEGORY,
                     ],
+                    'render_type' => 'none',
                 ],
                 'returnType' => 'array',
+                'render_type' => 'ui',
                 'placeholder' => __( 'Select condition field', 'dynamiccondtions' ),
             ]
         );
@@ -146,26 +152,28 @@ class DynamicConditionsAdmin {
             ]
         );
 
-        if ( in_array( $element->get_type(), [ 'column', 'section' ], true ) ) {
+        if ( in_array( $type, [ 'column', 'section' ], true ) ) {
             $element->add_control(
                 'dynamicconditions_hideContentOnly',
                 [
                     'type' => Controls_Manager::SWITCHER,
                     'label' => __( 'Hide only content', 'dynamicconditions' ),
-                    'description' => __('If checked, only the inner content will be hidden, so you will see an empty section'),
+                    'description' => __( 'If checked, only the inner content will be hidden, so you will see an empty section' ),
+                    'return_value' => 'on',
                 ]
             );
         }
 
-        if ( $element->get_type() === 'column' ) {
+        if ( $type === 'column' ) {
             $element->add_control(
                 'dynamicconditions_resizeOtherColumns',
                 [
                     'type' => Controls_Manager::SWITCHER,
                     'label' => __( 'Resize other columns', 'dynamicconditions' ),
                     'condition' => [
-                        'dynamicconditions_hideContentOnly' => '',
+                        'dynamicconditions_hideContentOnly!' => 'on',
                     ],
+                    'return_value' => 'on',
                 ]
             );
         }
@@ -212,7 +220,7 @@ class DynamicConditionsAdmin {
                 'description' => __( 'Select what to you want to compare', 'dynamicconditions' ),
                 'condition' => [
                     'dynamicconditions_condition' => $valueCondition,
-                ]
+                ],
             ]
         );
 
