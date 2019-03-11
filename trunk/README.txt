@@ -22,7 +22,7 @@ Requires elementor and elementor pro.
 
 Special thanks to [WPTuts](http://wptuts.co.uk) for making a nice tutorial video!
 
-https://www.youtube.com/watch?v=bRqW4Oaxtls&feature=youtu.be&fbclid=IwAR3E1ObKXcPa5X5vqpJEreaLyv-m1MP8UcTBAJgl6m0FwwdagdGIpSoaxP8
+https://www.youtube.com/watch?v=bRqW4Oaxtls
 
 
 You can support development under
