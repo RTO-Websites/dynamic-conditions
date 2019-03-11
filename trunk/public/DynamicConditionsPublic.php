@@ -92,31 +92,6 @@ class DynamicConditionsPublic {
         return $this->elementSettings[$id];
     }
 
-
-    /**
-     * Stopp rendering of widget if its hidden
-     *
-     * @param $content
-     * @param $widget
-     * @return string
-     */
-    public function filterWidgetContent( $content, $widget = null ) {
-        if ( \Elementor\Plugin::$instance->editor->is_edit_mode() || empty( $widget ) ) {
-            return $content;
-        }
-
-        $settings = $this->getElementSettings( $widget );
-
-        $hide = $this->checkCondition( $settings );
-
-
-        if ( $hide ) {
-            return '<!-- hidden widget -->';
-        }
-
-        return $content;
-    }
-
     /**
      * Check if section is hidden, before rendering
      *
@@ -427,7 +402,6 @@ class DynamicConditionsPublic {
 
         return !empty( $array[$key] ) ? $array[$key] : $fallback;
     }
-
 
     /**
      * Register the stylesheets for the public-facing side of the site.

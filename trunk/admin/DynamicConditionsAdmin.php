@@ -137,7 +137,6 @@ class DynamicConditionsAdmin {
             ]
         );
 
-
         $element->add_control(
             'dynamicconditions_visibility',
             [

@@ -38,26 +38,27 @@
         children = row.find('> .elementor-column'),
         rowSize = 0;
 
+      if (children.length === 0) {
+        return;
+      }
+
       // get percent-width of row
       children.each(function (cIndex, child) {
         child = $(child);
         rowSize += parseFloat(child.width() / row.width() * 100);
       });
 
-      if (children.length === 1) {
-        children.css({width: rowSize + '%'});
-      } else {
-        children.each(function (cIndex, child) {
-          // resize columns
-          child = $(child);
-          var childSize = parseFloat(child.width() / row.width() * 100),
-            newSize = childSize + (hiddenSize * (childSize / rowSize));
+      children.each(function (cIndex, child) {
+        // resize columns
+        child = $(child);
+        var childSize = parseFloat(child.width() / row.width() * 100),
+          newSize = childSize + (hiddenSize * (childSize / rowSize));
 
-          if (childSize < 100 && newSize < 100) {
-            child.css({width: newSize + '%'});
-          }
-        })
-      }
+        if (childSize < 100 && newSize < 100) {
+          child.css({width: newSize + '%'});
+        }
+      });
+
     });
   }
 

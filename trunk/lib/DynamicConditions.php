@@ -155,7 +155,8 @@ class DynamicConditions {
         $this->loader->addAction( 'wp_enqueue_scripts', $pluginPublic, 'enqueueScripts' );
 
         // filter widgets
-        $this->loader->addAction( 'elementor/widget/render_content', $pluginPublic, 'filterWidgetContent', 10, 2 );
+        $this->loader->addAction( "elementor/frontend/widget/before_render", $pluginPublic, 'filterSectionContentBefore', 10, 1 );
+        $this->loader->addAction( "elementor/frontend/widget/after_render", $pluginPublic, 'filterSectionContentAfter', 10, 1 );
 
         // filter sections
         $this->loader->addAction( "elementor/frontend/section/before_render", $pluginPublic, 'filterSectionContentBefore', 10, 1 );
