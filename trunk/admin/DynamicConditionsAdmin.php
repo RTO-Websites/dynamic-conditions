@@ -131,6 +131,7 @@ class DynamicConditionsAdmin {
                     ],
                     'render_type' => 'none',
                 ],
+                'fallback' => 'empty',
                 'returnType' => 'array',
                 'render_type' => 'ui',
                 'placeholder' => __( 'Select condition field', 'dynamiccondtions' ),

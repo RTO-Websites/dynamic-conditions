@@ -46,6 +46,8 @@ class DynamicConditionsPublic {
 
     private $dateInstance;
 
+    private static $debugCssRendered = false;
+
     /**
      * Initialize the class and set its properties.
      *
@@ -88,6 +90,11 @@ class DynamicConditionsPublic {
 
         // reset locale
         setlocale( LC_ALL, $currentLocale );
+
+        $this->elementSettings[$id]['dtData'] = [
+            'id' => $id,
+            'type' => $element->get_type(),
+        ];
 
         return $this->elementSettings[$id];
     }
@@ -180,41 +187,35 @@ class DynamicConditionsPublic {
      */
     private function loopValues( $settings ) {
         $condition = false;
-        $widgetValueArray = self::checkEmpty( $settings, 'dynamicconditions_dynamic' );
+        $dynamicTagValueArray = self::checkEmpty( $settings, 'dynamicconditions_dynamic' );
 
-        if ( !is_array( $widgetValueArray ) ) {
-            $widgetValueArray = [ $widgetValueArray ];
+        if ( !is_array( $dynamicTagValueArray ) ) {
+            $dynamicTagValueArray = [ $dynamicTagValueArray ];
         }
 
         // get value form conditions
         $compareType = self::checkEmpty( $settings, 'dynamicconditions_type', 'default' );
         list( $checkValue, $checkValue2 ) = $this->getCheckValue( $compareType, $settings );
 
-        foreach ( $widgetValueArray as $widgetValue ) {
-            if ( is_array( $widgetValue ) ) {
-                if ( !empty( $widgetValue['id'] ) ) {
-                    $widgetValue = get_attachment_link( $widgetValue['id'] );
+        foreach ( $dynamicTagValueArray as $dynamicTagValue ) {
+            if ( is_array( $dynamicTagValue ) ) {
+                if ( !empty( $dynamicTagValue['id'] ) ) {
+                    $dynamicTagValue = get_attachment_link( $dynamicTagValue['id'] );
                 } else {
                     continue;
                 }
             }
 
             // parse value based on compare-type
-            $this->parseWidgetValue( $widgetValue, $compareType );
+            $this->parseWidgetValue( $dynamicTagValue, $compareType );
 
 
             // compare widget-value with check-values
             list( $condition, $break, $breakFalse )
-                = $this->compareValues( $settings['dynamicconditions_condition'], $widgetValue, $checkValue, $checkValue2 );
+                = $this->compareValues( $settings['dynamicconditions_condition'], $dynamicTagValue, $checkValue, $checkValue2 );
 
-            if ( $settings['debug'] ) {
-                echo '<!--dynamicConditions debug' . PHP_EOL;
-                echo 'widgetValue: ' . $widgetValue . PHP_EOL;
-                echo 'checkValue: ' . $checkValue . PHP_EOL;
-                echo 'checkValue2: ' . $checkValue2 . PHP_EOL;
-                echo 'condition: ' . $settings['dynamicconditions_condition'] . PHP_EOL;
-                echo '-->';
-            }
+            // debug output
+            $this->renderDebugInfo( $settings, $dynamicTagValue, $checkValue, $checkValue2 );
 
             if ( $break && $condition ) {
                 // break if condition is true
@@ -401,6 +402,40 @@ class DynamicConditionsPublic {
         }
 
         return !empty( $array[$key] ) ? $array[$key] : $fallback;
+    }
+
+    /**
+     * Renders debug info
+     *
+     * @param $settings
+     * @param $dynamicTagValue
+     * @param $checkValue
+     * @param $checkValue2
+     */
+    private function renderDebugInfo( $settings, $dynamicTagValue, $checkValue, $checkValue2 ) {
+        if ( !$settings['debug'] ) {
+            return;
+        }
+
+        $visibility = self::checkEmpty( $settings, 'dynamicconditions_visibility', 'hide' );
+
+        include( 'partials/debug.php' );
+
+        $this->renderDebugCss();
+    }
+
+    /**
+     * Renders css for debug-output
+     */
+    private function renderDebugCss() {
+        if ( self::$debugCssRendered ) {
+            return;
+        }
+        self::$debugCssRendered = true;
+
+        echo '<style>';
+        include( 'css/debug.css' );
+        echo '</style>';
     }
 
     /**
