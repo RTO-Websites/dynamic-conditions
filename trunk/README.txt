@@ -61,6 +61,7 @@ Or two values, if you have selected the "between" condition.
 * Add date, day and month compare options
 * Add NumberPostsTag
 * Add short documentation
+* Add debug-mode
 
 = 1.1.2 =
 * Fix issue with section

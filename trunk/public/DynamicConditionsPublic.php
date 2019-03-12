@@ -417,6 +417,10 @@ class DynamicConditionsPublic {
             return;
         }
 
+        if ( !current_user_can( 'edit_posts' ) && !current_user_can( 'edit_pages' ) ) {
+            return;
+        }
+
         $visibility = self::checkEmpty( $settings, 'dynamicconditions_visibility', 'hide' );
 
         include( 'partials/debug.php' );
