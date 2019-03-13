@@ -148,10 +148,7 @@ class DynamicConditionsAdmin {
                     'hide' => __( 'Hide when condition met', 'dynamicconditions' ),
                 ],
                 'condition' => [
-                    'dynamicconditions_dynamic!' => [
-                        'id' => '',
-                        'url' => '',
-                    ]
+
                 ],
                 'separator' => 'before',
             ]
@@ -166,10 +163,6 @@ class DynamicConditionsAdmin {
                     'description' => __( 'If checked, only the inner content will be hidden, so you will see an empty section' ),
                     'return_value' => 'on',
                     'condition' => [
-                        'dynamicconditions_dynamic!' => [
-                            'id' => '',
-                            'url' => '',
-                        ]
                     ],
                 ]
             );
@@ -183,10 +176,6 @@ class DynamicConditionsAdmin {
                     'label' => __( 'Resize other columns', 'dynamicconditions' ),
                     'condition' => [
                         'dynamicconditions_hideContentOnly!' => 'on',
-                        'dynamicconditions_dynamic!' => [
-                            'id' => '',
-                            'url' => '',
-                        ]
                     ],
                     'return_value' => 'on',
                 ]
@@ -214,10 +203,6 @@ class DynamicConditionsAdmin {
                 'render_type' => 'none',
                 'description' => __( 'Select your condition for this widget visibility.', 'dynamicconditions' ),
                 'condition' => [
-                    'dynamicconditions_dynamic!' => [
-                        'id' => '',
-                        'url' => '',
-                    ]
                 ],
             ]
         );
@@ -241,10 +226,6 @@ class DynamicConditionsAdmin {
                 'description' => __( 'Select what to you want to compare', 'dynamicconditions' ),
                 'condition' => [
                     'dynamicconditions_condition' => $valueCondition,
-                    'dynamicconditions_dynamic!' => [
-                        'id' => '',
-                        'url' => '',
-                    ]
                 ],
             ]
         );
@@ -259,10 +240,6 @@ class DynamicConditionsAdmin {
                 'condition' => [
                     'dynamicconditions_condition' => $valueCondition,
                     'dynamicconditions_type' => [ 'default', 'strtotime' ],
-                    'dynamicconditions_dynamic!' => [
-                        'id' => '',
-                        'url' => '',
-                    ]
                 ],
             ]
         );
@@ -277,10 +254,6 @@ class DynamicConditionsAdmin {
                 'condition' => [
                     'dynamicconditions_condition' => [ 'between' ],
                     'dynamicconditions_type' => [ 'default', 'strtotime' ],
-                    'dynamicconditions_dynamic!' => [
-                        'id' => '',
-                        'url' => '',
-                    ]
                 ],
             ]
         );
@@ -296,10 +269,6 @@ class DynamicConditionsAdmin {
                 'condition' => [
                     'dynamicconditions_condition' => $valueCondition,
                     'dynamicconditions_type' => 'date',
-                    'dynamicconditions_dynamic!' => [
-                        'id' => '',
-                        'url' => '',
-                    ]
                 ],
             ]
         );
@@ -313,10 +282,6 @@ class DynamicConditionsAdmin {
                 'condition' => [
                     'dynamicconditions_condition' => [ 'between' ],
                     'dynamicconditions_type' => 'date',
-                    'dynamicconditions_dynamic!' => [
-                        'id' => '',
-                        'url' => '',
-                    ]
                 ],
             ]
         );
@@ -329,10 +294,6 @@ class DynamicConditionsAdmin {
                 'condition' => [
                     'dynamicconditions_condition' => $valueCondition,
                     'dynamicconditions_type' => 'days',
-                    'dynamicconditions_dynamic!' => [
-                        'id' => '',
-                        'url' => '',
-                    ]
                 ],
                 'description' => __( 'Add your conditional value to compare here.', 'dynamicconditions' ),
                 'options' => DynamicConditionsDate::getDaysTranslated(),
@@ -347,10 +308,6 @@ class DynamicConditionsAdmin {
                 'condition' => [
                     'dynamicconditions_condition' => [ 'between' ],
                     'dynamicconditions_type' => 'days',
-                    'dynamicconditions_dynamic!' => [
-                        'id' => '',
-                        'url' => '',
-                    ]
                 ],
                 'description' => __( 'Add a second condition value, if between is selected', 'dynamicconditions' ),
                 'options' => DynamicConditionsDate::getDaysTranslated(),
@@ -365,10 +322,6 @@ class DynamicConditionsAdmin {
                 'condition' => [
                     'dynamicconditions_condition' => $valueCondition,
                     'dynamicconditions_type' => 'months',
-                    'dynamicconditions_dynamic!' => [
-                        'id' => '',
-                        'url' => '',
-                    ]
                 ],
                 'description' => __( 'Add your conditional value to compare here.', 'dynamicconditions' ),
                 'options' => DynamicConditionsDate::getMonthsTranslated(),
@@ -383,10 +336,6 @@ class DynamicConditionsAdmin {
                 'condition' => [
                     'dynamicconditions_condition' => [ 'between' ],
                     'dynamicconditions_type' => 'months',
-                    'dynamicconditions_dynamic!' => [
-                        'id' => '',
-                        'url' => '',
-                    ]
                 ],
                 'description' => __( 'Add a second condition value, if between is selected', 'dynamicconditions' ),
                 'options' => DynamicConditionsDate::getMonthsTranslated(),
@@ -403,10 +352,6 @@ class DynamicConditionsAdmin {
                 'condition' => [
                     'dynamicconditions_condition' => $valueCondition,
                     'dynamicconditions_type' => 'strtotime',
-                    'dynamicconditions_dynamic!' => [
-                        'id' => '',
-                        'url' => '',
-                    ]
                 ],
                 'show_label' => false,
                 'raw' => '<div class="elementor-control-field-description">'

@@ -105,6 +105,7 @@ class DynamicConditionsPublic {
         $this->elementSettings[$id]['dynamicConditionsData'] = [
             'id' => $id,
             'type' => $element->get_type(),
+            'name' => $element->get_name(),
             'selectedTag' => $selectedTag,
         ];
 
@@ -165,6 +166,10 @@ class DynamicConditionsPublic {
         if ( empty( $settings['dynamicconditions_condition'] ) || empty( $settings['dynamicConditionsData']['selectedTag'] )
         ) {
             // no condition or no tag selected - disable conditions
+            return false;
+        }
+
+        if ( \Elementor\Plugin::$instance->editor->is_edit_mode() ) {
             return false;
         }
 
@@ -243,7 +248,7 @@ class DynamicConditionsPublic {
         }
 
         // debug output
-        $this->renderDebugInfo( $settings, $dynamicTagValue, $checkValue, $checkValue2, $condition );
+        $this->renderDebugInfo( $settings, $debugValue, $checkValue, $checkValue2, $condition );
 
         return $condition;
     }
