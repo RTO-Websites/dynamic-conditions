@@ -91,9 +91,21 @@ class DynamicConditionsPublic {
         // reset locale
         setlocale( LC_ALL, $currentLocale );
 
-        $this->elementSettings[$id]['dtData'] = [
+        $selectedTag = null;
+
+        if ( !empty( $this->elementSettings[$id]['__dynamic__'] ) && !empty( $this->elementSettings[$id]['__dynamic__']['dynamicconditions_dynamic'] ) ) {
+            $tag = $this->elementSettings[$id]['__dynamic__']['dynamicconditions_dynamic'];
+            $splitTag = explode( ' name="', $tag );
+            if ( !empty( $splitTag[1] ) ) {
+                $splitTag2 = explode( '"', $splitTag[1] );
+                $selectedTag = $splitTag2[0];
+            }
+        }
+
+        $this->elementSettings[$id]['dynamicConditionsData'] = [
             'id' => $id,
             'type' => $element->get_type(),
+            'selectedTag' => $selectedTag,
         ];
 
         return $this->elementSettings[$id];
@@ -150,9 +162,9 @@ class DynamicConditionsPublic {
      * @return bool
      */
     public function checkCondition( $settings ) {
-        if ( empty( $settings['dynamicconditions_condition'] )
+        if ( empty( $settings['dynamicconditions_condition'] ) || empty( $settings['dynamicConditionsData']['selectedTag'] )
         ) {
-            // no condition selected - disable conditions
+            // no condition or no tag selected - disable conditions
             return false;
         }
 
@@ -197,6 +209,8 @@ class DynamicConditionsPublic {
         $compareType = self::checkEmpty( $settings, 'dynamicconditions_type', 'default' );
         list( $checkValue, $checkValue2 ) = $this->getCheckValue( $compareType, $settings );
 
+        $debugValue = '';
+
         foreach ( $dynamicTagValueArray as $dynamicTagValue ) {
             if ( is_array( $dynamicTagValue ) ) {
                 if ( !empty( $dynamicTagValue['id'] ) ) {
@@ -206,6 +220,8 @@ class DynamicConditionsPublic {
                 }
             }
 
+            $debugValue .= $dynamicTagValue . '<br />';
+
             // parse value based on compare-type
             $this->parseWidgetValue( $dynamicTagValue, $compareType );
 
@@ -214,8 +230,6 @@ class DynamicConditionsPublic {
             list( $condition, $break, $breakFalse )
                 = $this->compareValues( $settings['dynamicconditions_condition'], $dynamicTagValue, $checkValue, $checkValue2 );
 
-            // debug output
-            $this->renderDebugInfo( $settings, $dynamicTagValue, $checkValue, $checkValue2 );
 
             if ( $break && $condition ) {
                 // break if condition is true
@@ -227,6 +241,9 @@ class DynamicConditionsPublic {
                 break;
             }
         }
+
+        // debug output
+        $this->renderDebugInfo( $settings, $dynamicTagValue, $checkValue, $checkValue2, $condition );
 
         return $condition;
     }
@@ -412,7 +429,7 @@ class DynamicConditionsPublic {
      * @param $checkValue
      * @param $checkValue2
      */
-    private function renderDebugInfo( $settings, $dynamicTagValue, $checkValue, $checkValue2 ) {
+    private function renderDebugInfo( $settings, $dynamicTagValue, $checkValue, $checkValue2, $conditionMets ) {
         if ( !$settings['debug'] ) {
             return;
         }
