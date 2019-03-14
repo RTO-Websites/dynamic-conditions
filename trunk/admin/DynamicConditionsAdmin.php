@@ -147,40 +147,11 @@ class DynamicConditionsAdmin {
                     'show' => __( 'Show when condition met', 'dynamicconditions' ),
                     'hide' => __( 'Hide when condition met', 'dynamicconditions' ),
                 ],
-                'condition' => [
+                'render_type' => 'ui',
 
-                ],
                 'separator' => 'before',
             ]
         );
-
-        if ( in_array( $type, [ 'column', 'section' ], true ) ) {
-            $element->add_control(
-                'dynamicconditions_hideContentOnly',
-                [
-                    'type' => Controls_Manager::SWITCHER,
-                    'label' => __( 'Hide only content', 'dynamicconditions' ),
-                    'description' => __( 'If checked, only the inner content will be hidden, so you will see an empty section' ),
-                    'return_value' => 'on',
-                    'condition' => [
-                    ],
-                ]
-            );
-        }
-
-        if ( $type === 'column' ) {
-            $element->add_control(
-                'dynamicconditions_resizeOtherColumns',
-                [
-                    'type' => Controls_Manager::SWITCHER,
-                    'label' => __( 'Resize other columns', 'dynamicconditions' ),
-                    'condition' => [
-                        'dynamicconditions_hideContentOnly!' => 'on',
-                    ],
-                    'return_value' => 'on',
-                ]
-            );
-        }
 
         $element->add_control(
             'dynamicconditions_condition',
@@ -236,6 +207,7 @@ class DynamicConditionsAdmin {
                 'type' => Controls_Manager::TEXTAREA,
                 'label' => __( 'Conditional value', 'dynamicconditions' ),
                 'description' => __( 'Add your conditional value to compare here.', 'dynamicconditions' ),
+                'render_type' => 'none',
 
                 'condition' => [
                     'dynamicconditions_condition' => $valueCondition,
@@ -250,6 +222,7 @@ class DynamicConditionsAdmin {
                 'type' => Controls_Manager::TEXTAREA,
                 'label' => __( 'Conditional value', 'dynamicconditions' ) . ' 2',
                 'description' => __( 'Add a second condition value, if between is selected', 'dynamicconditions' ),
+                'render_type' => 'none',
 
                 'condition' => [
                     'dynamicconditions_condition' => [ 'between' ],
@@ -265,6 +238,7 @@ class DynamicConditionsAdmin {
                 'type' => Controls_Manager::DATE_TIME,
                 'label' => __( 'Conditional value', 'dynamicconditions' ),
                 'description' => __( 'Add your conditional value to compare here.', 'dynamicconditions' ),
+                'render_type' => 'none',
 
                 'condition' => [
                     'dynamicconditions_condition' => $valueCondition,
@@ -279,6 +253,7 @@ class DynamicConditionsAdmin {
                 'type' => Controls_Manager::DATE_TIME,
                 'label' => __( 'Conditional value', 'dynamicconditions' ) . ' 2',
                 'description' => __( 'Add a second condition value, if between is selected', 'dynamicconditions' ),
+                'render_type' => 'none',
                 'condition' => [
                     'dynamicconditions_condition' => [ 'between' ],
                     'dynamicconditions_type' => 'date',
@@ -291,6 +266,7 @@ class DynamicConditionsAdmin {
             [
                 'type' => Controls_Manager::SELECT,
                 'label' => __( 'Conditional value', 'dynamicconditions' ),
+                'render_type' => 'none',
                 'condition' => [
                     'dynamicconditions_condition' => $valueCondition,
                     'dynamicconditions_type' => 'days',
@@ -305,6 +281,7 @@ class DynamicConditionsAdmin {
             [
                 'type' => Controls_Manager::SELECT,
                 'label' => __( 'Conditional value', 'dynamicconditions' ) . ' 2',
+                'render_type' => 'none',
                 'condition' => [
                     'dynamicconditions_condition' => [ 'between' ],
                     'dynamicconditions_type' => 'days',
@@ -319,6 +296,7 @@ class DynamicConditionsAdmin {
             [
                 'type' => Controls_Manager::SELECT,
                 'label' => __( 'Conditional value', 'dynamicconditions' ),
+                'render_type' => 'none',
                 'condition' => [
                     'dynamicconditions_condition' => $valueCondition,
                     'dynamicconditions_type' => 'months',
@@ -333,6 +311,7 @@ class DynamicConditionsAdmin {
             [
                 'type' => Controls_Manager::SELECT,
                 'label' => __( 'Conditional value', 'dynamicconditions' ) . ' 2',
+                'render_type' => 'none',
                 'condition' => [
                     'dynamicconditions_condition' => [ 'between' ],
                     'dynamicconditions_type' => 'months',
@@ -349,6 +328,7 @@ class DynamicConditionsAdmin {
             [
                 'type' => Controls_Manager::RAW_HTML,
                 'label' => __( 'Conditional value', 'dynamicconditions' ) . ' 2',
+                'render_type' => 'none',
                 'condition' => [
                     'dynamicconditions_condition' => $valueCondition,
                     'dynamicconditions_type' => 'strtotime',
@@ -361,10 +341,60 @@ class DynamicConditionsAdmin {
         );
 
         $element->add_control(
-            'debug',
+            'dynamicconditions_hr',
+            [
+                'type' => Controls_Manager::DIVIDER,
+                'style' => 'thick',
+                'condition' => [
+                    'dynamicconditions_condition' => $valueCondition,
+                ],
+            ]
+        );
+
+        $element->add_control(
+            'dynamicconditions_hideContentOnly',
+            [
+                'type' => Controls_Manager::SWITCHER,
+                'label' => __( 'Hide only content', 'dynamicconditions' ),
+                'description' => __( 'If checked, only the inner content will be hidden, so you will see an empty section', 'dynamicconditions' ),
+                'return_value' => 'on',
+                'render_type' => 'none',
+                'condition' => [
+                    'dynamicconditions_condition' => $valueCondition,
+                ],
+            ]
+        );
+
+        if ( $type === 'column' ) {
+            $element->add_control(
+                'dynamicconditions_resizeOtherColumns',
+                [
+                    'type' => Controls_Manager::SWITCHER,
+                    'label' => __( 'Resize other columns', 'dynamicconditions' ),
+                    'render_type' => 'none',
+                    'condition' => [
+                        'dynamicconditions_condition' => $valueCondition,
+                        'dynamicconditions_hideContentOnly!' => 'on',
+                    ],
+                    'return_value' => 'on',
+                ]
+            );
+        }
+
+        $element->add_control(
+            'dynamicconditions_hr2',
+            [
+                'type' => Controls_Manager::DIVIDER,
+                'style' => 'thick',
+            ]
+        );
+
+        $element->add_control(
+            'dynamicconditions_debug',
             [
                 'type' => Controls_Manager::SWITCHER,
                 'label' => __( 'Debug-Mode', 'dynamicconditions' ),
+                'render_type' => 'none',
             ]
         );
         $element->end_controls_section();

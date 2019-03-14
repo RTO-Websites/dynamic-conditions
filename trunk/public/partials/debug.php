@@ -41,4 +41,7 @@
         <div class="dc-debug-label">Condition met:</div>
         <div class="dc-debug-value"><?php echo $conditionMets ? 'yes' : 'no'; ?></div>
     </div>
+
+    <i class="fa fa-window-close dc-debug-remove" aria-hidden="true" onclick="this.parentNode.remove();"></i>
+
 </div>

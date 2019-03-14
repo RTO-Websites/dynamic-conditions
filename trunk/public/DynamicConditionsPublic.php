@@ -435,7 +435,7 @@ class DynamicConditionsPublic {
      * @param $checkValue2
      */
     private function renderDebugInfo( $settings, $dynamicTagValue, $checkValue, $checkValue2, $conditionMets ) {
-        if ( !$settings['debug'] ) {
+        if ( !$settings['dynamicconditions_debug'] ) {
             return;
         }
 
