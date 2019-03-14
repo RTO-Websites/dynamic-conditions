@@ -225,11 +225,10 @@ class DynamicConditionsPublic {
                 }
             }
 
-            $debugValue .= $dynamicTagValue . '<br />';
-
             // parse value based on compare-type
-            $this->parseWidgetValue( $dynamicTagValue, $compareType );
+            $this->parseDynamicTagValue( $dynamicTagValue, $compareType );
 
+            $debugValue .= $dynamicTagValue . '<br />';
 
             // compare widget-value with check-values
             list( $condition, $break, $breakFalse )
@@ -257,24 +256,24 @@ class DynamicConditionsPublic {
      * Compare values
      *
      * @param $compare
-     * @param $widgetValue
+     * @param $dynamicTagValue
      * @param $checkValue
      * @param $checkValue2
      * @return array
      */
-    private function compareValues( $compare, $widgetValue, $checkValue, $checkValue2 ) {
+    private function compareValues( $compare, $dynamicTagValue, $checkValue, $checkValue2 ) {
         $break = false;
         $breakFalse = false;
         $condition = false;
 
         switch ( $compare ) {
             case 'equal':
-                $condition = $checkValue == $widgetValue;
+                $condition = $checkValue == $dynamicTagValue;
                 $break = true;
                 break;
 
             case 'not_equal':
-                $condition = $checkValue != $widgetValue;
+                $condition = $checkValue != $dynamicTagValue;
                 $breakFalse = true;
                 break;
 
@@ -282,7 +281,7 @@ class DynamicConditionsPublic {
                 if ( empty( $checkValue ) ) {
                     break;
                 }
-                $condition = strpos( $widgetValue, $checkValue ) !== false;
+                $condition = strpos( $dynamicTagValue, $checkValue ) !== false;
                 $break = true;
                 break;
 
@@ -290,40 +289,40 @@ class DynamicConditionsPublic {
                 if ( empty( $checkValue ) ) {
                     break;
                 }
-                $condition = strpos( $widgetValue, $checkValue ) === false;
+                $condition = strpos( $dynamicTagValue, $checkValue ) === false;
                 $breakFalse = true;
                 break;
 
             case 'empty':
-                $condition = empty( $widgetValue );
+                $condition = empty( $dynamicTagValue );
                 $breakFalse = true;
                 break;
 
             case 'not_empty':
-                $condition = !empty( $widgetValue );
+                $condition = !empty( $dynamicTagValue );
                 $break = true;
                 break;
 
             case 'less':
-                if ( is_numeric( $widgetValue ) ) {
-                    $condition = $widgetValue < $checkValue;
+                if ( is_numeric( $dynamicTagValue ) ) {
+                    $condition = $dynamicTagValue < $checkValue;
                 } else {
-                    $condition = strlen( $widgetValue ) < strlen( $checkValue );
+                    $condition = strlen( $dynamicTagValue ) < strlen( $checkValue );
                 }
                 $break = true;
                 break;
 
             case 'greater':
-                if ( is_numeric( $widgetValue ) ) {
-                    $condition = $widgetValue > $checkValue;
+                if ( is_numeric( $dynamicTagValue ) ) {
+                    $condition = $dynamicTagValue > $checkValue;
                 } else {
-                    $condition = strlen( $widgetValue ) > strlen( $checkValue );
+                    $condition = strlen( $dynamicTagValue ) > strlen( $checkValue );
                 }
                 $break = true;
                 break;
 
             case 'between':
-                $condition = $widgetValue >= $checkValue && $widgetValue <= $checkValue2;
+                $condition = $dynamicTagValue >= $checkValue && $dynamicTagValue <= $checkValue2;
                 $break = true;
                 break;
         }
@@ -338,23 +337,23 @@ class DynamicConditionsPublic {
     /**
      * Parse value of widget to timestamp, day or month
      *
-     * @param $widgetValue
+     * @param $dynamicTagValue
      * @param $compareType
      */
-    private function parseWidgetValue( &$widgetValue, $compareType ) {
+    private function parseDynamicTagValue( &$dynamicTagValue, $compareType ) {
         switch ( $compareType ) {
             case 'days':
-                $widgetValue = date( 'N', DynamicConditionsDate::stringToTime( $widgetValue ) );
+                $dynamicTagValue = date( 'N', DynamicConditionsDate::stringToTime( $dynamicTagValue ) );
                 break;
 
             case 'months':
-                $widgetValue = date( 'n', DynamicConditionsDate::stringToTime( $widgetValue ) );
+                $dynamicTagValue = date( 'n', DynamicConditionsDate::stringToTime( $dynamicTagValue ) );
                 break;
 
             case 'strtotime':
                 // nobreak
             case 'date':
-                $widgetValue = DynamicConditionsDate::stringToTime( $widgetValue );
+                $dynamicTagValue = DynamicConditionsDate::stringToTime( $dynamicTagValue );
                 break;
         }
     }

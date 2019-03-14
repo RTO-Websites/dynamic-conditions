@@ -46,11 +46,24 @@ class DynamicConditionsDate {
     public static function stringToTime( $string = '' ) {
         $timestamp = $string;
         $strToTime = strtotime( $string );
-        if ( !empty( $strToTime ) ) {
+        if ( !empty( $strToTime ) && !self::isTimestamp($timestamp) ) {
             $timestamp = $strToTime;
         }
 
         return intval( $timestamp );
+    }
+
+    /**
+     * @param string $string
+     * @return bool
+     */
+    public static function isTimestamp( $string ) {
+        try {
+            new \DateTime( '@' . $string );
+        } catch ( \Exception $e ) {
+            return false;
+        }
+        return true;
     }
 
     /**
