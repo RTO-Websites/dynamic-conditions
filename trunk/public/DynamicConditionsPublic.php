@@ -1,5 +1,7 @@
 <?php namespace Pub;
 
+use Lib\DynamicConditionsDate;
+
 /**
  * The public-facing functionality of the plugin.
  *
@@ -40,6 +42,12 @@ class DynamicConditionsPublic {
      */
     private $version;
 
+    private $elementSettings = [];
+
+    private $dateInstance;
+
+    private static $debugCssRendered = false;
+
     /**
      * Initialize the class and set its properties.
      *
@@ -51,32 +59,57 @@ class DynamicConditionsPublic {
 
         $this->pluginName = $pluginName;
         $this->version = $version;
+        $this->dateInstance = new DynamicConditionsDate();
 
     }
 
-
     /**
-     * Stopp rendering of widget if its hidden
+     * Gets settings with english locale (needed for date)
      *
-     * @param $content
-     * @param $widget
-     * @return string
+     * @param $element
+     * @return mixed
      */
-    public function filterWidgetContent( $content, $widget = null ) {
-        if ( \Elementor\Plugin::$instance->editor->is_edit_mode() || empty( $widget ) ) {
-            return $content;
+    private function getElementSettings( $element ) {
+        $id = $element->get_id();
+        if ( !empty( $this->elementSettings[$id] ) ) {
+            // dont work in a loop?
+            //return $this->elementSettings[$id];
         }
 
-        $settings = $widget->get_settings_for_display();
+        // set locale to english, for better parsing
+        $currentLocale = setlocale( LC_ALL, 0 );
+        setlocale( LC_ALL, 'en_GB' );
 
-        $hide = $this->checkCondition( $settings );
+        add_filter( 'date_i18n', [ $this->dateInstance, 'filterDateI18n' ], 10, 4 );
+        add_filter( 'get_the_date', [ $this->dateInstance, 'filterPostDate' ], 10, 3 );
+        add_filter( 'get_the_modified_date', [ $this->dateInstance, 'filterPostDate' ], 10, 3 );
+        $this->elementSettings[$id] = $element->get_settings_for_display();
+        remove_filter( 'date_i18n', [ $this->dateInstance, 'filterDateI18n' ] );
+        remove_filter( 'get_the_date', [ $this->dateInstance, 'filterPostDate' ] );
+        remove_filter( 'get_the_modified_date', [ $this->dateInstance, 'filterPostDate' ] );
 
+        // reset locale
+        setlocale( LC_ALL, $currentLocale );
 
-        if ( $hide ) {
-            return '<!-- hidden widget -->';
+        $selectedTag = null;
+
+        if ( !empty( $this->elementSettings[$id]['__dynamic__'] ) && !empty( $this->elementSettings[$id]['__dynamic__']['dynamicconditions_dynamic'] ) ) {
+            $tag = $this->elementSettings[$id]['__dynamic__']['dynamicconditions_dynamic'];
+            $splitTag = explode( ' name="', $tag );
+            if ( !empty( $splitTag[1] ) ) {
+                $splitTag2 = explode( '"', $splitTag[1] );
+                $selectedTag = $splitTag2[0];
+            }
         }
 
-        return $content;
+        $this->elementSettings[$id]['dynamicConditionsData'] = [
+            'id' => $id,
+            'type' => $element->get_type(),
+            'name' => $element->get_name(),
+            'selectedTag' => $selectedTag,
+        ];
+
+        return $this->elementSettings[$id];
     }
 
     /**
@@ -85,7 +118,7 @@ class DynamicConditionsPublic {
      * @param $section
      */
     public function filterSectionContentBefore( $section ) {
-        $settings = $section->get_settings_for_display();
+        $settings = $this->getElementSettings( $section );
         $hide = $this->checkCondition( $settings );
 
         if ( !$hide ) {
@@ -103,12 +136,25 @@ class DynamicConditionsPublic {
      * @param $section
      */
     public function filterSectionContentAfter( $section ) {
-        if ( !empty( $section->dynamicConditionIsHidden ) ) {
-            ob_end_clean();
-            echo '<!-- hidden section -->';
+        if ( empty( $section->dynamicConditionIsHidden ) ) {
+            return;
         }
-    }
 
+        ob_end_clean();
+
+        $type = $section->get_type();
+        $settings = $this->getElementSettings( $section );
+
+        if ( !empty( $section->get_settings( 'dynamicconditions_hideContentOnly' ) ) ) {
+            // render wrapper
+            $section->before_render();
+            $section->after_render();
+        } else if ( $type == 'column' && $settings['dynamicconditions_resizeOtherColumns'] ) {
+            echo '<div class="dc-elementor-hidden-column" data-size="' . $settings['_inline_size'] . '"></div>';
+        }
+
+        echo '<!-- hidden ' . $type . ' -->';
+    }
 
     /**
      * Checks condition, return if element is hidden
@@ -117,101 +163,22 @@ class DynamicConditionsPublic {
      * @return bool
      */
     public function checkCondition( $settings ) {
-
-        if ( empty( $settings['dynamicconditions_condition'] )
+        if ( empty( $settings['dynamicconditions_condition'] ) || empty( $settings['dynamicConditionsData']['selectedTag'] )
         ) {
-            // no condition selected - disable conditions
+            // no condition or no tag selected - disable conditions
             return false;
         }
 
-        $checkValue = !empty( $settings['dynamicconditions_value'] ) ? $settings['dynamicconditions_value'] : '';
-        $widgetValueArray = !empty( $settings['dynamicconditions_dynamic'] ) ? $settings['dynamicconditions_dynamic'] : '';
-
-        if ( !is_array( $widgetValueArray ) ) {
-            $widgetValueArray = [ $widgetValueArray ];
+        if ( \Elementor\Plugin::$instance->editor->is_edit_mode() ) {
+            return false;
         }
 
-        $condition = false;
-        $break = false;
-        $breakFalse = false;
-        foreach ( $widgetValueArray as $widgetValue ) {
-            if ( is_array( $widgetValue ) ) {
-                if ( !empty( $widgetValue['id'] ) ) {
-                    $widgetValue = get_attachment_link( $widgetValue['id'] );
-                } else {
-                    continue;
-                }
-            }
-
-            switch ( $settings['dynamicconditions_condition'] ) {
-                case 'equal':
-                    $condition = $checkValue == $widgetValue;
-                    $break = true;
-                    break;
-
-                case 'not_equal':
-                    $condition = $checkValue != $widgetValue;
-                    $breakFalse = true;
-                    break;
-
-                case 'contains':
-                    if ( empty( $checkValue ) ) {
-                        continue 2;
-                    }
-                    $condition = strpos( $widgetValue, $checkValue ) !== false;
-                    $break = true;
-                    break;
-
-                case 'not_contains':
-                    if ( empty( $checkValue ) ) {
-                        continue 2;
-                    }
-                    $condition = strpos( $widgetValue, $checkValue ) === false;
-                    $breakFalse = true;
-                    break;
-
-                case 'empty':
-                    $condition = empty( $widgetValue );
-                    $breakFalse = true;
-                    break;
-
-                case 'not_empty':
-                    $condition = !empty( $widgetValue );
-                    $break = true;
-                    break;
-
-                case 'less':
-                    if ( is_numeric( $widgetValue ) ) {
-                        $condition = $widgetValue < $checkValue;
-                    } else {
-                        $condition = strlen( $widgetValue ) < strlen( $checkValue );
-                    }
-                    $break = true;
-                    break;
-
-                case 'greater':
-                    if ( is_numeric( $widgetValue ) ) {
-                        $condition = $widgetValue > $checkValue;
-                    } else {
-                        $condition = strlen( $widgetValue ) > strlen( $checkValue );
-                    }
-                    $break = true;
-                    break;
-            }
-
-            if ( $break && $condition ) {
-                // break if condition is true
-                break;
-            }
-            if ( $breakFalse && !$condition ) {
-                // break if condition is false
-                break;
-            }
-        }
+        // loop values
+        $condition = $this->loopValues( $settings );
 
         $hide = false;
 
-        $visibility = !empty( $settings['dynamicconditions_visibility'] ) ? $settings['dynamicconditions_visibility'] : 'hide';
+        $visibility = self::checkEmpty( $settings, 'dynamicconditions_visibility', 'hide' );
         switch ( $visibility ) {
             case 'show':
                 if ( !$condition ) {
@@ -228,4 +195,281 @@ class DynamicConditionsPublic {
 
         return $hide;
     }
+
+    /**
+     * Loop widget-values and check the condition
+     *
+     * @param $settings
+     * @return bool|mixed
+     */
+    private function loopValues( $settings ) {
+        $condition = false;
+        $dynamicTagValueArray = self::checkEmpty( $settings, 'dynamicconditions_dynamic' );
+
+        if ( !is_array( $dynamicTagValueArray ) ) {
+            $dynamicTagValueArray = [ $dynamicTagValueArray ];
+        }
+
+        // get value form conditions
+        $compareType = self::checkEmpty( $settings, 'dynamicconditions_type', 'default' );
+        list( $checkValue, $checkValue2 ) = $this->getCheckValue( $compareType, $settings );
+
+        $debugValue = '';
+
+        foreach ( $dynamicTagValueArray as $dynamicTagValue ) {
+            if ( is_array( $dynamicTagValue ) ) {
+                if ( !empty( $dynamicTagValue['id'] ) ) {
+                    $dynamicTagValue = get_attachment_link( $dynamicTagValue['id'] );
+                } else {
+                    continue;
+                }
+            }
+
+            // parse value based on compare-type
+            $this->parseDynamicTagValue( $dynamicTagValue, $compareType );
+
+            $debugValue .= $dynamicTagValue . '<br />';
+
+            // compare widget-value with check-values
+            list( $condition, $break, $breakFalse )
+                = $this->compareValues( $settings['dynamicconditions_condition'], $dynamicTagValue, $checkValue, $checkValue2 );
+
+
+            if ( $break && $condition ) {
+                // break if condition is true
+                break;
+            }
+
+            if ( $breakFalse && !$condition ) {
+                // break if condition is false
+                break;
+            }
+        }
+
+        // debug output
+        $this->renderDebugInfo( $settings, $debugValue, $checkValue, $checkValue2, $condition );
+
+        return $condition;
+    }
+
+    /**
+     * Compare values
+     *
+     * @param $compare
+     * @param $dynamicTagValue
+     * @param $checkValue
+     * @param $checkValue2
+     * @return array
+     */
+    private function compareValues( $compare, $dynamicTagValue, $checkValue, $checkValue2 ) {
+        $break = false;
+        $breakFalse = false;
+        $condition = false;
+
+        switch ( $compare ) {
+            case 'equal':
+                $condition = $checkValue == $dynamicTagValue;
+                $break = true;
+                break;
+
+            case 'not_equal':
+                $condition = $checkValue != $dynamicTagValue;
+                $breakFalse = true;
+                break;
+
+            case 'contains':
+                if ( empty( $checkValue ) ) {
+                    break;
+                }
+                $condition = strpos( $dynamicTagValue, $checkValue ) !== false;
+                $break = true;
+                break;
+
+            case 'not_contains':
+                if ( empty( $checkValue ) ) {
+                    break;
+                }
+                $condition = strpos( $dynamicTagValue, $checkValue ) === false;
+                $breakFalse = true;
+                break;
+
+            case 'empty':
+                $condition = empty( $dynamicTagValue );
+                $breakFalse = true;
+                break;
+
+            case 'not_empty':
+                $condition = !empty( $dynamicTagValue );
+                $break = true;
+                break;
+
+            case 'less':
+                if ( is_numeric( $dynamicTagValue ) ) {
+                    $condition = $dynamicTagValue < $checkValue;
+                } else {
+                    $condition = strlen( $dynamicTagValue ) < strlen( $checkValue );
+                }
+                $break = true;
+                break;
+
+            case 'greater':
+                if ( is_numeric( $dynamicTagValue ) ) {
+                    $condition = $dynamicTagValue > $checkValue;
+                } else {
+                    $condition = strlen( $dynamicTagValue ) > strlen( $checkValue );
+                }
+                $break = true;
+                break;
+
+            case 'between':
+                $condition = $dynamicTagValue >= $checkValue && $dynamicTagValue <= $checkValue2;
+                $break = true;
+                break;
+        }
+
+        return [
+            $condition,
+            $break,
+            $breakFalse,
+        ];
+    }
+
+    /**
+     * Parse value of widget to timestamp, day or month
+     *
+     * @param $dynamicTagValue
+     * @param $compareType
+     */
+    private function parseDynamicTagValue( &$dynamicTagValue, $compareType ) {
+        switch ( $compareType ) {
+            case 'days':
+                $dynamicTagValue = date( 'N', DynamicConditionsDate::stringToTime( $dynamicTagValue ) );
+                break;
+
+            case 'months':
+                $dynamicTagValue = date( 'n', DynamicConditionsDate::stringToTime( $dynamicTagValue ) );
+                break;
+
+            case 'strtotime':
+                // nobreak
+            case 'date':
+                $dynamicTagValue = DynamicConditionsDate::stringToTime( $dynamicTagValue );
+                break;
+        }
+    }
+
+    /**
+     * Get value to compare
+     *
+     * @param $compareType
+     * @param $settings
+     * @return array
+     */
+    private function getCheckValue( $compareType, $settings ) {
+        switch ( $compareType ) {
+            case 'days':
+                $checkValue = self::checkEmpty( $settings, 'dynamicconditions_day_value' );
+                $checkValue2 = self::checkEmpty( $settings, 'dynamicconditions_day_value2' );
+                $checkValue = DynamicConditionsDate::unTranslateDate( $checkValue );
+                $checkValue2 = DynamicConditionsDate::unTranslateDate( $checkValue2 );
+                break;
+
+            case 'months':
+                $checkValue = self::checkEmpty( $settings, 'dynamicconditions_month_value' );
+                $checkValue2 = self::checkEmpty( $settings, 'dynamicconditions_month_value2' );
+                $checkValue = DynamicConditionsDate::unTranslateDate( $checkValue );
+                $checkValue2 = DynamicConditionsDate::unTranslateDate( $checkValue2 );
+                break;
+
+            case 'date':
+                $checkValue = self::checkEmpty( $settings, 'dynamicconditions_date_value' );
+                $checkValue2 = self::checkEmpty( $settings, 'dynamicconditions_date_value2' );
+                $checkValue = DynamicConditionsDate::stringToTime( $checkValue );
+                $checkValue2 = DynamicConditionsDate::stringToTime( $checkValue2 );
+                break;
+
+            case 'strtotime':
+                $checkValue = self::checkEmpty( $settings, 'dynamicconditions_value' );
+                $checkValue2 = self::checkEmpty( $settings, 'dynamicconditions_value2' );
+                $checkValue = DynamicConditionsDate::unTranslateDate( $checkValue );
+                $checkValue2 = DynamicConditionsDate::unTranslateDate( $checkValue2 );
+                $checkValue = DynamicConditionsDate::stringToTime( $checkValue );
+                $checkValue2 = DynamicConditionsDate::stringToTime( $checkValue2 );
+                break;
+
+            case 'default':
+            default:
+                $checkValue = self::checkEmpty( $settings, 'dynamicconditions_value' );
+                $checkValue2 = self::checkEmpty( $settings, 'dynamicconditions_value2' );
+                break;
+        }
+
+        return [
+            $checkValue,
+            $checkValue2,
+        ];
+    }
+
+    /**
+     * Checks if an array or entry in array is empty and return its value
+     *
+     * @param array $array
+     * @param null $key
+     * @return array|mixed|null
+     */
+    public static function checkEmpty( $array = [], $key = null, $fallback = null ) {
+        if ( empty( $key ) ) {
+            return !empty( $array ) ? $array : $fallback;
+        }
+
+        return !empty( $array[$key] ) ? $array[$key] : $fallback;
+    }
+
+    /**
+     * Renders debug info
+     *
+     * @param $settings
+     * @param $dynamicTagValue
+     * @param $checkValue
+     * @param $checkValue2
+     */
+    private function renderDebugInfo( $settings, $dynamicTagValue, $checkValue, $checkValue2, $conditionMets ) {
+        if ( !$settings['dynamicconditions_debug'] ) {
+            return;
+        }
+
+        if ( !current_user_can( 'edit_posts' ) && !current_user_can( 'edit_pages' ) ) {
+            return;
+        }
+
+        $visibility = self::checkEmpty( $settings, 'dynamicconditions_visibility', 'hide' );
+
+        include( 'partials/debug.php' );
+
+        $this->renderDebugCss();
+    }
+
+    /**
+     * Renders css for debug-output
+     */
+    private function renderDebugCss() {
+        if ( self::$debugCssRendered ) {
+            return;
+        }
+        self::$debugCssRendered = true;
+
+        echo '<style>';
+        include( 'css/debug.css' );
+        echo '</style>';
+    }
+
+    /**
+     * Register the stylesheets for the public-facing side of the site.
+     *
+     * @since    1.0.0
+     */
+    public function enqueueScripts() {
+        wp_enqueue_script( $this->pluginName, plugin_dir_url( __FILE__ ) . 'js/dynamic-conditions-public.js', [ 'jquery' ], $this->version, true );
+    }
+
 }

@@ -43,13 +43,13 @@ require_once plugin_dir_path( __FILE__ ) . 'vendor/autoload.php';
  * The code that runs during plugin activation.
  * This action is documented in includes/DynamicConditionsActivator.php
  */
-register_activation_hook( __FILE__, array( DynamicConditionsActivator::class, 'activate' ) );
+register_activation_hook( __FILE__, [ DynamicConditionsActivator::class, 'activate' ] );
 
 /**
  * The code that runs during plugin deactivation.
  * This action is documented in includes/DynamicConditionsDeactivator.php
  */
-register_deactivation_hook( __FILE__, array( DynamicConditionsDeactivator::class, 'deactivate' ) );
+register_deactivation_hook( __FILE__, [ DynamicConditionsDeactivator::class, 'deactivate' ] );
 
 /**
  * Begins execution of the plugin.

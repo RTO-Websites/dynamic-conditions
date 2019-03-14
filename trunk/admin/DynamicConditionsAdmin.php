@@ -2,6 +2,7 @@
 
 use Elementor\Controls_Manager;
 use Elementor\Modules\DynamicTags\Module;
+use Lib\DynamicConditionsDate;
 
 
 /**
@@ -98,14 +99,17 @@ class DynamicConditionsAdmin {
      * @param $args
      */
     public function addConditionFields( $element, $section_id = null, $args = null ) {
+        $valueCondition = [ 'equal', 'not_equal', 'contains', 'not_contains', 'less', 'greater', 'between' ];
+        $type = 'element';
+        if ( !empty( $element ) && is_object( $element ) && method_exists( $element, 'get_type' ) ) {
+            $type = $element->get_type();
+        }
+
         $element->start_controls_section(
             'dynamicconditions_section',
             [
                 'tab' => Controls_Manager::TAB_ADVANCED,
                 'label' => __( 'Dynamic Conditions', 'dynamicconditions' ),
-            ],
-            [
-                'overwrite' => true,
             ]
         );
 
@@ -117,6 +121,7 @@ class DynamicConditionsAdmin {
                 'dynamic' => [
                     'active' => true,
                     'categories' => [
+                        Module::BASE_GROUP,
                         Module::TEXT_CATEGORY,
                         Module::URL_CATEGORY,
                         Module::GALLERY_CATEGORY,
@@ -124,30 +129,29 @@ class DynamicConditionsAdmin {
                         Module::MEDIA_CATEGORY,
                         Module::POST_META_CATEGORY,
                     ],
+                    'render_type' => 'none',
                 ],
                 'returnType' => 'array',
+                'render_type' => 'ui',
                 'placeholder' => __( 'Select condition field', 'dynamiccondtions' ),
             ]
         );
 
-
         $element->add_control(
             'dynamicconditions_visibility',
             [
-                'label' => __( 'Show/Hide', 'dynamic-conditions' ),
+                'label' => __( 'Show/Hide', 'dynamicconditions' ),
                 'type' => Controls_Manager::SELECT,
                 'default' => 'hide',
                 'options' => [
                     'show' => __( 'Show when condition met', 'dynamicconditions' ),
                     'hide' => __( 'Hide when condition met', 'dynamicconditions' ),
                 ],
+                'render_type' => 'ui',
+
                 'separator' => 'before',
-            ],
-            [
-                'overwrite' => true,
             ]
         );
-
 
         $element->add_control(
             'dynamicconditions_condition',
@@ -163,32 +167,237 @@ class DynamicConditionsAdmin {
                     'not_contains' => __( 'Does not contain', 'dynamicconditions' ),
                     'empty' => __( 'Is empty', 'dynamicconditions' ),
                     'not_empty' => __( 'Is not empty', 'dynamicconditions' ),
+                    'between' => __( 'Between', 'dynamicconditions' ),
                     'less' => __( 'Less than', 'dynamicconditions' ),
                     'greater' => __( 'Greater than', 'dynamicconditions' ),
                 ],
                 'render_type' => 'none',
                 'description' => __( 'Select your condition for this widget visibility.', 'dynamicconditions' ),
-            ],
-            [
-                'overwrite' => true,
+                'condition' => [
+                ],
             ]
         );
+
+        $element->add_control(
+            'dynamicconditions_type',
+            [
+                'label' => __( 'Compare Type', 'dynamicconditions' ),
+                'type' => Controls_Manager::SELECT,
+                'multiple' => false,
+                'label_block' => true,
+                'options' => [
+                    'default' => __( 'Text', 'dynamicconditions' ),
+                    'date' => __( 'Date', 'dynamicconditions' ),
+                    'days' => __( 'Weekdays', 'dynamicconditions' ),
+                    'months' => __( 'Months', 'dynamicconditions' ),
+                    'strtotime' => __( 'String to time', 'dynamicconditions' ),
+                ],
+                'default' => 'default',
+                'render_type' => 'none',
+                'description' => __( 'Select what to you want to compare', 'dynamicconditions' ),
+                'condition' => [
+                    'dynamicconditions_condition' => $valueCondition,
+                ],
+            ]
+        );
+
         $element->add_control(
             'dynamicconditions_value',
             [
                 'type' => Controls_Manager::TEXTAREA,
                 'label' => __( 'Conditional value', 'dynamicconditions' ),
-                'description' => __( 'Add your conditional value here if you selected equal to, not equal to or contains on the selection above.', 'dynamicconditions' ),
+                'description' => __( 'Add your conditional value to compare here.', 'dynamicconditions' ),
+                'render_type' => 'none',
 
                 'condition' => [
-                    'dynamicconditions_condition' => [ 'equal', 'not_equal', 'contains', 'not_contains', 'less', 'greater' ],
+                    'dynamicconditions_condition' => $valueCondition,
+                    'dynamicconditions_type' => [ 'default', 'strtotime' ],
                 ],
-            ],
-            [
-                'overwrite' => true,
             ]
         );
 
+        $element->add_control(
+            'dynamicconditions_value2',
+            [
+                'type' => Controls_Manager::TEXTAREA,
+                'label' => __( 'Conditional value', 'dynamicconditions' ) . ' 2',
+                'description' => __( 'Add a second condition value, if between is selected', 'dynamicconditions' ),
+                'render_type' => 'none',
+
+                'condition' => [
+                    'dynamicconditions_condition' => [ 'between' ],
+                    'dynamicconditions_type' => [ 'default', 'strtotime' ],
+                ],
+            ]
+        );
+
+
+        $element->add_control(
+            'dynamicconditions_date_value',
+            [
+                'type' => Controls_Manager::DATE_TIME,
+                'label' => __( 'Conditional value', 'dynamicconditions' ),
+                'description' => __( 'Add your conditional value to compare here.', 'dynamicconditions' ),
+                'render_type' => 'none',
+
+                'condition' => [
+                    'dynamicconditions_condition' => $valueCondition,
+                    'dynamicconditions_type' => 'date',
+                ],
+            ]
+        );
+
+        $element->add_control(
+            'dynamicconditions_date_value2',
+            [
+                'type' => Controls_Manager::DATE_TIME,
+                'label' => __( 'Conditional value', 'dynamicconditions' ) . ' 2',
+                'description' => __( 'Add a second condition value, if between is selected', 'dynamicconditions' ),
+                'render_type' => 'none',
+                'condition' => [
+                    'dynamicconditions_condition' => [ 'between' ],
+                    'dynamicconditions_type' => 'date',
+                ],
+            ]
+        );
+
+        $element->add_control(
+            'dynamicconditions_day_value',
+            [
+                'type' => Controls_Manager::SELECT,
+                'label' => __( 'Conditional value', 'dynamicconditions' ),
+                'render_type' => 'none',
+                'condition' => [
+                    'dynamicconditions_condition' => $valueCondition,
+                    'dynamicconditions_type' => 'days',
+                ],
+                'description' => __( 'Add your conditional value to compare here.', 'dynamicconditions' ),
+                'options' => DynamicConditionsDate::getDaysTranslated(),
+            ]
+        );
+
+        $element->add_control(
+            'dynamicconditions_day_value2',
+            [
+                'type' => Controls_Manager::SELECT,
+                'label' => __( 'Conditional value', 'dynamicconditions' ) . ' 2',
+                'render_type' => 'none',
+                'condition' => [
+                    'dynamicconditions_condition' => [ 'between' ],
+                    'dynamicconditions_type' => 'days',
+                ],
+                'description' => __( 'Add a second condition value, if between is selected', 'dynamicconditions' ),
+                'options' => DynamicConditionsDate::getDaysTranslated(),
+            ]
+        );
+
+        $element->add_control(
+            'dynamicconditions_month_value',
+            [
+                'type' => Controls_Manager::SELECT,
+                'label' => __( 'Conditional value', 'dynamicconditions' ),
+                'render_type' => 'none',
+                'condition' => [
+                    'dynamicconditions_condition' => $valueCondition,
+                    'dynamicconditions_type' => 'months',
+                ],
+                'description' => __( 'Add your conditional value to compare here.', 'dynamicconditions' ),
+                'options' => DynamicConditionsDate::getMonthsTranslated(),
+            ]
+        );
+
+        $element->add_control(
+            'dynamicconditions_month_value2',
+            [
+                'type' => Controls_Manager::SELECT,
+                'label' => __( 'Conditional value', 'dynamicconditions' ) . ' 2',
+                'render_type' => 'none',
+                'condition' => [
+                    'dynamicconditions_condition' => [ 'between' ],
+                    'dynamicconditions_type' => 'months',
+                ],
+                'description' => __( 'Add a second condition value, if between is selected', 'dynamicconditions' ),
+                'options' => DynamicConditionsDate::getMonthsTranslated(),
+            ]
+        );
+
+        $languageArray = explode( '_', get_locale() );
+        $language = array_shift( $languageArray );
+        $element->add_control(
+            'dynamicconditions_date_description',
+            [
+                'type' => Controls_Manager::RAW_HTML,
+                'label' => __( 'Conditional value', 'dynamicconditions' ) . ' 2',
+                'render_type' => 'none',
+                'condition' => [
+                    'dynamicconditions_condition' => $valueCondition,
+                    'dynamicconditions_type' => 'strtotime',
+                ],
+                'show_label' => false,
+                'raw' => '<div class="elementor-control-field-description">'
+                    . '<a href="https://php.net/manual/' . $language . '/function.strtotime.php" target="_blank">'
+                    . __( 'Supported Date and Time Formats', 'dynamicconditions' ) . '</a></div>',
+            ]
+        );
+
+        $element->add_control(
+            'dynamicconditions_hr',
+            [
+                'type' => Controls_Manager::DIVIDER,
+                'style' => 'thick',
+                'condition' => [
+                    'dynamicconditions_condition' => $valueCondition,
+                ],
+            ]
+        );
+
+        $element->add_control(
+            'dynamicconditions_hideContentOnly',
+            [
+                'type' => Controls_Manager::SWITCHER,
+                'label' => __( 'Hide only content', 'dynamicconditions' ),
+                'description' => __( 'If checked, only the inner content will be hidden, so you will see an empty section', 'dynamicconditions' ),
+                'return_value' => 'on',
+                'render_type' => 'none',
+                'condition' => [
+                    'dynamicconditions_condition' => $valueCondition,
+                ],
+            ]
+        );
+
+        if ( $type === 'column' ) {
+            $element->add_control(
+                'dynamicconditions_resizeOtherColumns',
+                [
+                    'type' => Controls_Manager::SWITCHER,
+                    'label' => __( 'Resize other columns', 'dynamicconditions' ),
+                    'render_type' => 'none',
+                    'condition' => [
+                        'dynamicconditions_condition' => $valueCondition,
+                        'dynamicconditions_hideContentOnly!' => 'on',
+                    ],
+                    'return_value' => 'on',
+                ]
+            );
+        }
+
+        $element->add_control(
+            'dynamicconditions_hr2',
+            [
+                'type' => Controls_Manager::DIVIDER,
+                'style' => 'thick',
+            ]
+        );
+
+        $element->add_control(
+            'dynamicconditions_debug',
+            [
+                'type' => Controls_Manager::SWITCHER,
+                'label' => __( 'Debug-Mode', 'dynamicconditions' ),
+                'render_type' => 'none',
+            ]
+        );
         $element->end_controls_section();
     }
+
 }
