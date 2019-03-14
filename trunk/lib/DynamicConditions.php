@@ -1,6 +1,7 @@
 <?php namespace Lib;
 
 use Admin\DynamicConditionsAdmin;
+use Lib\DynamicTags\NumberPostsTag;
 use Pub\DynamicConditionsPublic;
 
 /**
@@ -78,6 +79,7 @@ class DynamicConditions {
         $this->setLocale();
         $this->defineAdminHooks();
         $this->definePublicHooks();
+        $this->defineElementorHooks();
 
     }
 
@@ -131,6 +133,7 @@ class DynamicConditions {
     private function defineAdminHooks() {
         $pluginAdmin = new DynamicConditionsAdmin( $this->getDynamicConditions(), $this->getVersion() );
 
+        $this->loader->addAction( 'elementor/element/column/section_advanced/after_section_end', $pluginAdmin, 'addConditionFields', 10, 3 );
         $this->loader->addAction( 'elementor/element/section/section_advanced/after_section_end', $pluginAdmin, 'addConditionFields', 10, 3 );
         $this->loader->addAction( 'elementor/element/common/_section_style/after_section_end', $pluginAdmin, 'addConditionFields', 10, 3 );
 
@@ -147,15 +150,34 @@ class DynamicConditions {
      * @access   private
      */
     private function definePublicHooks() {
-
         $pluginPublic = new DynamicConditionsPublic( $this->getDynamicConditions(), $this->getVersion() );
 
+        $this->loader->addAction( 'wp_enqueue_scripts', $pluginPublic, 'enqueueScripts' );
+
         // filter widgets
-        $this->loader->addAction( 'elementor/widget/render_content', $pluginPublic, 'filterWidgetContent', 10, 2 );
+        $this->loader->addAction( "elementor/frontend/widget/before_render", $pluginPublic, 'filterSectionContentBefore', 10, 1 );
+        $this->loader->addAction( "elementor/frontend/widget/after_render", $pluginPublic, 'filterSectionContentAfter', 10, 1 );
 
         // filter sections
         $this->loader->addAction( "elementor/frontend/section/before_render", $pluginPublic, 'filterSectionContentBefore', 10, 1 );
         $this->loader->addAction( "elementor/frontend/section/after_render", $pluginPublic, 'filterSectionContentAfter', 10, 1 );
+
+        // filter columns
+        $this->loader->addAction( "elementor/frontend/column/before_render", $pluginPublic, 'filterSectionContentBefore', 10, 1 );
+        $this->loader->addAction( "elementor/frontend/column/after_render", $pluginPublic, 'filterSectionContentAfter', 10, 1 );
+    }
+
+    private function defineElementorHooks() {
+        $this->loader->addAction( 'elementor/dynamic_tags/register_tags', $this, 'registerDynamicTags', 10, 1 );
+    }
+
+    /**
+     * Register some useful dynamic tags
+     *
+     * @param $dynamicTags
+     */
+    public function registerDynamicTags( $dynamicTags ) {
+        $dynamicTags->register_tag( NumberPostsTag::class );
     }
 
     /**
