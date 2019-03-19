@@ -56,6 +56,10 @@ Or two values, if you have selected the "between" condition.
 1. Widget options for conditions
 
 == Changelog ==
+= 1.2.1 =
+* Fix issue with date timestamp in custom skins
+* Improve performance
+
 = 1.2.0 =
 * Add condition between
 * Add date, day and month compare options
