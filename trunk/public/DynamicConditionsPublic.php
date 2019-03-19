@@ -76,6 +76,8 @@ class DynamicConditionsPublic {
             //return $this->elementSettings[$id];
         }
 
+        $clonedElement = clone $element;
+
         // set locale to english, for better parsing
         $currentLocale = setlocale( LC_ALL, 0 );
         setlocale( LC_ALL, 'en_GB' );
@@ -83,7 +85,30 @@ class DynamicConditionsPublic {
         add_filter( 'date_i18n', [ $this->dateInstance, 'filterDateI18n' ], 10, 4 );
         add_filter( 'get_the_date', [ $this->dateInstance, 'filterPostDate' ], 10, 3 );
         add_filter( 'get_the_modified_date', [ $this->dateInstance, 'filterPostDate' ], 10, 3 );
-        $this->elementSettings[$id] = $element->get_settings_for_display();
+        $fields = '__dynamic__
+            dynamicconditions_dynamic
+            dynamicconditions_condition
+            dynamicconditions_type
+            dynamicconditions_resizeOtherColumns
+            dynamicconditions_hideContentOnly
+            dynamicconditions_visibility
+            dynamicconditions_day_value
+            dynamicconditions_day_value2
+            dynamicconditions_month_value
+            dynamicconditions_month_value2
+            dynamicconditions_date_value
+            dynamicconditions_date_value2
+            dynamicconditions_value
+            dynamicconditions_value2
+            dynamicconditions_debug
+            _inline_size';
+
+        foreach ( explode( "\n", $fields ) as $field ) {
+            $field = trim( $field );
+            $this->elementSettings[$id][$field] = $clonedElement->get_settings_for_display( $field );
+        }
+        unset( $clonedElement );
+
         remove_filter( 'date_i18n', [ $this->dateInstance, 'filterDateI18n' ] );
         remove_filter( 'get_the_date', [ $this->dateInstance, 'filterPostDate' ] );
         remove_filter( 'get_the_modified_date', [ $this->dateInstance, 'filterPostDate' ] );
@@ -145,7 +170,7 @@ class DynamicConditionsPublic {
         $type = $section->get_type();
         $settings = $this->getElementSettings( $section );
 
-        if ( !empty( $section->get_settings( 'dynamicconditions_hideContentOnly' ) ) ) {
+        if ( !empty( $settings['dynamicconditions_hideContentOnly'] ) ) {
             // render wrapper
             $section->before_render();
             $section->after_render();
@@ -373,7 +398,6 @@ class DynamicConditionsPublic {
                 $checkValue = DynamicConditionsDate::unTranslateDate( $checkValue );
                 $checkValue2 = DynamicConditionsDate::unTranslateDate( $checkValue2 );
                 break;
-
             case 'months':
                 $checkValue = self::checkEmpty( $settings, 'dynamicconditions_month_value' );
                 $checkValue2 = self::checkEmpty( $settings, 'dynamicconditions_month_value2' );
