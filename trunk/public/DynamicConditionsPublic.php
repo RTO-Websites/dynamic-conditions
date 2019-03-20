@@ -109,9 +109,9 @@ class DynamicConditionsPublic {
         }
         unset( $clonedElement );
 
-        remove_filter( 'date_i18n', [ $this->dateInstance, 'filterDateI18n' ] );
-        remove_filter( 'get_the_date', [ $this->dateInstance, 'filterPostDate' ] );
-        remove_filter( 'get_the_modified_date', [ $this->dateInstance, 'filterPostDate' ] );
+        remove_filter( 'date_i18n', [ $this->dateInstance, 'filterDateI18n' ], 10 );
+        remove_filter( 'get_the_date', [ $this->dateInstance, 'filterPostDate' ], 10 );
+        remove_filter( 'get_the_modified_date', [ $this->dateInstance, 'filterPostDate' ], 10 );
 
         // reset locale
         setlocale( LC_ALL, $currentLocale );
