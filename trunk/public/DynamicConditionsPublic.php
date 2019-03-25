@@ -78,6 +78,8 @@ class DynamicConditionsPublic {
 
         $clonedElement = clone $element;
 
+        $element->get_settings_for_display(); // call to cache settings
+
         // set locale to english, for better parsing
         $currentLocale = setlocale( LC_ALL, 0 );
         setlocale( LC_ALL, 'en_GB' );
