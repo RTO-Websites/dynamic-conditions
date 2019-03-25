@@ -118,25 +118,74 @@ class DynamicConditionsPublic {
         // reset locale
         setlocale( LC_ALL, $currentLocale );
 
-        $selectedTag = null;
 
-        if ( !empty( $this->elementSettings[$id]['__dynamic__'] ) && !empty( $this->elementSettings[$id]['__dynamic__']['dynamicconditions_dynamic'] ) ) {
-            $tag = $this->elementSettings[$id]['__dynamic__']['dynamicconditions_dynamic'];
-            $splitTag = explode( ' name="', $tag );
-            if ( !empty( $splitTag[1] ) ) {
-                $splitTag2 = explode( '"', $splitTag[1] );
-                $selectedTag = $splitTag2[0];
-            }
-        }
+        $tagData = $this->getDynamicTagData( $id );
 
         $this->elementSettings[$id]['dynamicConditionsData'] = [
             'id' => $id,
             'type' => $element->get_type(),
             'name' => $element->get_name(),
-            'selectedTag' => $selectedTag,
+            'selectedTag' => $tagData['selectedTag'],
+            'tagData' => $tagData['tagData'],
+            'tagKey' => $tagData['tagKey'],
         ];
 
         return $this->elementSettings[$id];
+    }
+
+    /**
+     * Returns
+     *
+     * @param $id
+     * @return array
+     */
+    private function getDynamicTagData( $id ): array {
+
+        if ( empty( $this->elementSettings[$id]['__dynamic__'] )
+            || empty( $this->elementSettings[$id]['__dynamic__']['dynamicconditions_dynamic'] )
+        ) {
+            // no dynamic tag set
+            return [
+                'selectedTag' => null,
+                'tagData' => null,
+                'tagKey' => null,
+            ];
+        }
+
+        $selectedTag = null;
+        $tagSettings = null;
+        $tagKey = null;
+
+        $tag = $this->elementSettings[$id]['__dynamic__']['dynamicconditions_dynamic'];
+        $splitTag = explode( ' name="', $tag );
+        #var_dump($splitTag);
+
+        // get selected tag
+        if ( !empty( $splitTag[1] ) ) {
+            $splitTag2 = explode( '"', $splitTag[1] );
+            $selectedTag = $splitTag2[0];
+        }
+
+        // get tag settings
+        if ( strpos( $selectedTag, 'acf-' ) === 0 ) {
+            $splitTag = explode( ' settings="', $tag );
+            if ( !empty( $splitTag[1] ) ) {
+                $splitTag2 = explode( '"', $splitTag[1] );
+                $tagSettings = json_decode( urldecode( $splitTag2[0] ), true );
+                if ( !empty( $tagSettings['key'] ) ) {
+                    $tagKey = $tagSettings['key'];
+                    $fieldData = get_field_object( explode( ':', $tagSettings['key'] )[0], false, false );
+                    var_dump( $fieldData );
+                }
+            }
+        }
+
+        return [
+            'selectedTag' => $selectedTag,
+            'tagData' => $tagSettings,
+            'tagKey' => $tagKey,
+        ];
+
     }
 
     /**

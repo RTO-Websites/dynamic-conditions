@@ -13,6 +13,11 @@
     </div>
 
     <div class="dc-debug-row">
+        <div class="dc-debug-label">DynamicTag-Key:</div>
+        <div class="dc-debug-value"><?php echo $settings['dynamicConditionsData']['tagKey']; ?></div>
+    </div>
+
+    <div class="dc-debug-row">
         <div class="dc-debug-label">DynamicTag-Value:</div>
         <div class="dc-debug-value"><?php echo $dynamicTagValue; ?></div>
     </div>
