@@ -118,8 +118,8 @@ class DynamicConditionsPublic {
         // reset locale
         setlocale( LC_ALL, $currentLocale );
 
-
         $tagData = $this->getDynamicTagData( $id );
+        $this->convertAcfDate( $id, $tagData );
 
         $this->elementSettings[$id]['dynamicConditionsData'] = [
             'id' => $id,
@@ -134,7 +134,7 @@ class DynamicConditionsPublic {
     }
 
     /**
-     * Returns
+     * Returns data of dynamic tag
      *
      * @param $id
      * @return array
@@ -154,11 +154,11 @@ class DynamicConditionsPublic {
 
         $selectedTag = null;
         $tagSettings = null;
+        $tagData = [];
         $tagKey = null;
 
         $tag = $this->elementSettings[$id]['__dynamic__']['dynamicconditions_dynamic'];
         $splitTag = explode( ' name="', $tag );
-        #var_dump($splitTag);
 
         // get selected tag
         if ( !empty( $splitTag[1] ) ) {
@@ -174,18 +174,63 @@ class DynamicConditionsPublic {
                 $tagSettings = json_decode( urldecode( $splitTag2[0] ), true );
                 if ( !empty( $tagSettings['key'] ) ) {
                     $tagKey = $tagSettings['key'];
-                    $fieldData = get_field_object( explode( ':', $tagSettings['key'] )[0], false, false );
-                    var_dump( $fieldData );
+                    $tagData = get_field_object( explode( ':', $tagSettings['key'] )[0] ); //, false, false );
                 }
             }
         }
 
         return [
             'selectedTag' => $selectedTag,
-            'tagData' => $tagSettings,
+            'tagData' => $tagData,
             'tagKey' => $tagKey,
         ];
 
+    }
+
+    /**
+     * Convert acf date to timestamp
+     *
+     * @param $id
+     * @param array $data
+     */
+    private function convertAcfDate( $id, array $data ) {
+        if ( empty( $data ) ) {
+            return;
+        }
+
+        $allowedTypes = [
+            'date_time_picker',
+            'date_picker',
+        ];
+
+        $tagData = $data['tagData'];
+
+        if ( empty( $data['tagKey'] ) || strpos( $data['selectedTag'], 'acf-' ) !== 0 ) {
+            return;
+        }
+
+        if ( empty( $tagData['type'] ) || !in_array( trim( $tagData['type'] ), $allowedTypes, true ) ) {
+            return;
+        }
+
+        if ( empty( $tagData['value'] ) || empty( $tagData['return_format'] ) ) {
+            return;
+        }
+
+        $time = \DateTime::createFromFormat( $tagData['return_format'], DynamicConditionsDate::unTranslateDate( $tagData['value'] ) );
+
+        if ( empty( $time ) ) {
+            return;
+        }
+
+        if ( $tagData['type'] === 'date_picker' ) {
+            $time->setTime( 0, 0, 0 );
+        }
+
+        $timestamp = $time->getTimestamp();
+
+        // override value with timestamp
+        $this->elementSettings[$id]['dynamicconditions_dynamic'] = $timestamp;
     }
 
     /**
