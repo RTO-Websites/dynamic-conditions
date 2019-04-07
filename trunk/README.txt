@@ -1,10 +1,10 @@
-=== Plugin Name ===
+=== Dynamic Conditions ===
 Contributors: rtowebsites
 Donate link: https://www.rto.de
 Tags: elementor, conditions, dynamic, fields, rto
-Requires at least: 4.3.0
+Requires at least: 4.7
 Tested up to: 5.1
-Stable tag: 4.9
+Stable tag: 1.2.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -12,44 +12,42 @@ Activates conditions for dynamic tags to show/hides a widget or section.
 
 == Description ==
 
-Activates conditions for dynamic tags to show/hide a widget or section.
-You can check every field which supports dynamic-tags (also advanced custom fields) and check for empty, contains, equal, greater/smaller than and between.
-You can also compare dates, days and months.
-If you check for an empty user-id, you can display a widget/section only for logged in or logged out users.
+Dynamic Conditions is an Elementor addon that adds conditional logic to show and hide different elements. The plugin adds conditions to dynamic tags to show/hide a widget or section.
 
-Requires elementor and elementor pro.
+The plugin requires Elementor Pro since it uses Dynamic Tags to set the compate conditions.
 
+Setting display conditions is easy! Just enter the condition value and compare it to any dynamic tag. If the condition is met, set whether you want to show or hide the element. Can it be more simple?
 
-Special thanks to [WPTuts](http://wptuts.co.uk) for making a nice tutorial video!
+Advanced users can set complex conditions - you can check if a field is empty, if it contains some value, if it equals to a value, greater/smaller or between a certain value.
+
+Special thanks to [WPTuts](https://wptuts.co.uk) for making a nice video tutorial:
 
 https://www.youtube.com/watch?v=bRqW4Oaxtls
 
+You can support development by contributing to the plugins GitHub repository:
 
-You can support development under
 https://github.com/RTO-Websites/dynamic-conditions
 
-== Installation ==
+= Usage =
 
-Just download, install and activate
+1. Select a widget or a section.
+2. Go to the Advanced tab.
+3. Click the Dynamic Conditions area.
+4. Set the "Dynamic Tag" field you want to compare to.
+5. Set whether you want to "Show/Hide" the element if the condition is met.
+6. Under the "Condition" field, select what you wish to compare. You can compare whether the field is empty/not-empty, check if it has a specific value or if ist value is between two other values.
+7. The "Compare Type" field defines what type of fields do you want to compare. Default compares two strings (text). But if you want to show a widget/section only on Monday or only in December, you can select Days or Month as Compare-Type.
+8. At last you have to enter the value to compare the dynamic-field with. Or two values, if you have selected the "between" condition.
 
-== Documentation ==
+== Frequently Asked Questions ==
+= Can I use custom-fields, ACF fields, Pods ? =
+Yes, all the above are supported and many others supported out-of-the-box by Elementor Pro.
 
-First you have to select a dynamic field which you want to compare.
-Any field which supports dynamic-tags (also pods or acf) may be selected.
-You can also select the current date or post-date.
+= Can I set date based conditions ? =
+Yes, the plugin supports date based conditions, for example current-date or post-date. You can compare dates, days and months.
 
-Choose in "Show/Hide"-Field what happens if the condition is true - either show or hide.
-
-Under the "Condition"-Field, select what you wish to compare.
-You can compare whether the field is empty/not-empty, check if it has a specific value or if ist value is between two other values.
-
-The "Compare-Type"-Field defines what type of fields do you want to compare.
-Default compares two strings (text).
-But if you want to show a widget/section only on Monday or only in December, you can select Days or Month as Compare-Type.
-
-At last you have to enter the value to compare the dynamic-field with.
-Or two values, if you have selected the "between" condition.
-
+= Can I show/hide elements for logged-in or logged-out users? =
+Yes, you can set conditional display for logged in or logged out users. Selecting the user information dynamic-tag, and set it to user ID. Now check if it is empty or not.
 
 == Screenshots ==
 
