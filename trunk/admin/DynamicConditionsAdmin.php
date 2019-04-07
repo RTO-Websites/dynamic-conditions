@@ -114,6 +114,21 @@ class DynamicConditionsAdmin {
         );
 
         $element->add_control(
+            'dynamicconditions_visibility',
+            [
+                'label' => __( 'Show/Hide', 'dynamicconditions' ),
+                'type' => Controls_Manager::SELECT,
+                'default' => 'hide',
+                'options' => [
+                    'show' => __( 'Show if condition met', 'dynamicconditions' ),
+                    'hide' => __( 'Hide if condition met', 'dynamicconditions' ),
+                ],
+                'render_type' => 'ui',
+                'separator' => 'after',
+            ]
+        );
+
+        $element->add_control(
             'dynamicconditions_dynamic',
             [
                 'label' => __( 'Dynamic Tag', 'dynamiccondtions' ),
@@ -134,22 +149,6 @@ class DynamicConditionsAdmin {
                 'returnType' => 'array',
                 'render_type' => 'ui',
                 'placeholder' => __( 'Select condition field', 'dynamiccondtions' ),
-            ]
-        );
-
-        $element->add_control(
-            'dynamicconditions_visibility',
-            [
-                'label' => __( 'Show/Hide', 'dynamicconditions' ),
-                'type' => Controls_Manager::SELECT,
-                'default' => 'hide',
-                'options' => [
-                    'show' => __( 'Show when condition met', 'dynamicconditions' ),
-                    'hide' => __( 'Hide when condition met', 'dynamicconditions' ),
-                ],
-                'render_type' => 'ui',
-
-                'separator' => 'before',
             ]
         );
 
