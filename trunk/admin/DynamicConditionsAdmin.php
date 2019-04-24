@@ -100,6 +100,7 @@ class DynamicConditionsAdmin {
      */
     public function addConditionFields( $element, $section_id = null, $args = null ) {
         $valueCondition = [ 'equal', 'not_equal', 'contains', 'not_contains', 'less', 'greater', 'between' ];
+        $allCondition = [ 'equal', 'not_equal', 'contains', 'not_contains', 'less', 'greater', 'between', 'empty', 'not_empty' ];
         $type = 'element';
         if ( !empty( $element ) && is_object( $element ) && method_exists( $element, 'get_type' ) ) {
             $type = $element->get_type();
@@ -360,7 +361,7 @@ class DynamicConditionsAdmin {
                 'return_value' => 'on',
                 'render_type' => 'none',
                 'condition' => [
-                    'dynamicconditions_condition' => $valueCondition,
+                    'dynamicconditions_condition' => $allCondition,
                 ],
             ]
         );
@@ -373,7 +374,7 @@ class DynamicConditionsAdmin {
                     'label' => __( 'Resize other columns', 'dynamicconditions' ),
                     'render_type' => 'none',
                     'condition' => [
-                        'dynamicconditions_condition' => $valueCondition,
+                        'dynamicconditions_condition' => $allCondition,
                         'dynamicconditions_hideContentOnly!' => 'on',
                     ],
                     'return_value' => 'on',
