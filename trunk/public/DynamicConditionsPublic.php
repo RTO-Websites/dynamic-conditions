@@ -70,6 +70,9 @@ class DynamicConditionsPublic {
      * @return mixed
      */
     private function getElementSettings( $element ) {
+        if ( \Elementor\Plugin::$instance->editor->is_edit_mode() ) {
+            return;
+        }
         $id = $element->get_id();
         if ( !empty( $this->elementSettings[$id] ) ) {
             // dont work in a loop?
@@ -140,7 +143,6 @@ class DynamicConditionsPublic {
      * @return array
      */
     private function getDynamicTagData( $id ): array {
-
         if ( empty( $this->elementSettings[$id]['__dynamic__'] )
             || empty( $this->elementSettings[$id]['__dynamic__']['dynamicconditions_dynamic'] )
         ) {
@@ -239,6 +241,9 @@ class DynamicConditionsPublic {
      * @param $section
      */
     public function filterSectionContentBefore( $section ) {
+        if ( \Elementor\Plugin::$instance->editor->is_edit_mode() ) {
+            return;
+        }
         $settings = $this->getElementSettings( $section );
         $hide = $this->checkCondition( $settings );
 
@@ -257,7 +262,7 @@ class DynamicConditionsPublic {
      * @param $section
      */
     public function filterSectionContentAfter( $section ) {
-        if ( empty( $section->dynamicConditionIsHidden ) ) {
+        if ( empty( $section ) || empty( $section->dynamicConditionIsHidden ) ) {
             return;
         }
 
@@ -589,6 +594,9 @@ class DynamicConditionsPublic {
      * @since    1.0.0
      */
     public function enqueueScripts() {
+        if ( \Elementor\Plugin::$instance->editor->is_edit_mode() ) {
+            return;
+        }
         wp_enqueue_script( $this->pluginName, plugin_dir_url( __FILE__ ) . 'js/dynamic-conditions-public.js', [ 'jquery' ], $this->version, true );
     }
 

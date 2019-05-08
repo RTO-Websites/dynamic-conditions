@@ -1,6 +1,7 @@
 <?php namespace Lib;
 
 use Admin\DynamicConditionsAdmin;
+use Elementor\Plugin;
 use Lib\DynamicTags\NumberPostsTag;
 use Pub\DynamicConditionsPublic;
 
@@ -71,12 +72,12 @@ class DynamicConditions {
      * @since    1.0.0
      */
     public function __construct() {
-
         $this->pluginName = 'dynamic-conditions';
         $this->version = '1.0.0';
 
         $this->loadDependencies();
         $this->setLocale();
+
         $this->defineAdminHooks();
         $this->definePublicHooks();
         $this->defineElementorHooks();
