@@ -60,7 +60,6 @@ class DynamicConditionsPublic {
         $this->pluginName = $pluginName;
         $this->version = $version;
         $this->dateInstance = new DynamicConditionsDate();
-
     }
 
     /**
@@ -70,9 +69,9 @@ class DynamicConditionsPublic {
      * @return mixed
      */
     private function getElementSettings( $element ) {
-        if ( \Elementor\Plugin::$instance->editor->is_edit_mode() ) {
+        /* if ( \Elementor\Plugin::$instance->editor->is_edit_mode() ) {
             return;
-        }
+        } */
         $id = $element->get_id();
         if ( !empty( $this->elementSettings[$id] ) ) {
             // dont work in a loop?
@@ -244,6 +243,7 @@ class DynamicConditionsPublic {
         if ( \Elementor\Plugin::$instance->editor->is_edit_mode() ) {
             return;
         }
+
         $settings = $this->getElementSettings( $section );
         $hide = $this->checkCondition( $settings );
 
@@ -289,9 +289,7 @@ class DynamicConditionsPublic {
      * @return bool
      */
     public function checkCondition( $settings ) {
-        if ( empty( $settings['dynamicconditions_condition'] ) || empty( $settings['dynamicConditionsData']['selectedTag'] )
-        ) {
-            // no condition or no tag selected - disable conditions
+        if ( !$this->hasCondition( $settings ) ) {
             return false;
         }
 
@@ -548,6 +546,22 @@ class DynamicConditionsPublic {
         }
 
         return !empty( $array[$key] ) ? $array[$key] : $fallback;
+    }
+
+    /**
+     * Checks if element has a condition
+     *
+     * @param $settings
+     * @return bool
+     */
+    public function hasCondition( $settings ) {
+        if ( empty( $settings['dynamicconditions_condition'] ) || empty( $settings['dynamicConditionsData']['selectedTag'] )
+        ) {
+            // no condition or no tag selected - disable conditions
+            return false;
+        }
+
+        return true;
     }
 
     /**

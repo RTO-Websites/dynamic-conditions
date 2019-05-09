@@ -134,6 +134,8 @@ class DynamicConditionsAdmin {
                 ],
                 'render_type' => $renderType,
                 'placeholder' => __( 'Select condition field', 'dynamiccondtions' ),
+                #'prefix_class' => 'dc-has-dtag dc-dtag-',
+                #'render_type' => 'template',
             ]
         );
 
@@ -171,10 +173,12 @@ class DynamicConditionsAdmin {
                     'less' => __( 'Less than', 'dynamicconditions' ),
                     'greater' => __( 'Greater than', 'dynamicconditions' ),
                 ],
-                'render_type' => $renderType,
+                #'render_type' => $renderType,
                 'description' => __( 'Select your condition for this widget visibility.', 'dynamicconditions' ),
                 'condition' => [
                 ],
+                'prefix_class' => 'dc-has-condition dc-condition-',
+                'render_type' => 'template',
             ]
         );
 

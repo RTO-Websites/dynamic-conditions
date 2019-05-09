@@ -170,6 +170,7 @@ class DynamicConditions {
 
     private function defineElementorHooks() {
         $this->loader->addAction( 'elementor/dynamic_tags/register_tags', $this, 'registerDynamicTags', 10, 1 );
+        $this->loader->addAction( 'wp_footer', $this, 'setFooterStyleForPreview', 10, 0 );
     }
 
     /**
@@ -179,6 +180,29 @@ class DynamicConditions {
      */
     public function registerDynamicTags( $dynamicTags ) {
         $dynamicTags->register_tag( NumberPostsTag::class );
+    }
+
+    /**
+     * Sets style for preview
+     */
+    public function setFooterStyleForPreview() {
+        if ( !\Elementor\Plugin::$instance->preview->is_preview_mode() ) {
+            return;
+        }
+        ?>
+        <style>
+            body.elementor-editor-active .elementor-element.dc-has-condition::after {
+                content: '\f06e';
+                display: inline-block;
+                position: absolute;
+                top: 0;
+                right: 5px;
+                font-size: 15px;
+                font-family: FontAwesome;
+                color: #71d7f7;
+            }
+        </style>
+        <?php
     }
 
     /**
