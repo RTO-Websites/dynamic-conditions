@@ -51,9 +51,9 @@ class DynamicConditionsPublic {
     /**
      * Initialize the class and set its properties.
      *
+     * @param string $pluginName The name of the plugin.
+     * @param string $version The version of this plugin.
      * @since    1.0.0
-     * @param      string $pluginName The name of the plugin.
-     * @param      string $version The version of this plugin.
      */
     public function __construct( $pluginName, $version ) {
 
@@ -349,6 +349,7 @@ class DynamicConditionsPublic {
                 }
             }
 
+            $dynamicTagValue = do_shortcode( $dynamicTagValue );
             // parse value based on compare-type
             $this->parseDynamicTagValue( $dynamicTagValue, $compareType );
 

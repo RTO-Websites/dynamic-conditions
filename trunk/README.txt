@@ -54,7 +54,7 @@ Yes, you can set conditional display for logged in or logged out users. Selectin
 1. Widget options for conditions
 
 == Changelog ==
-= 1.2.2 =
+= 1.3.0 =
 * Improve parsing of acf dates
 * Add icon to elements with condition in preview
 * Fix some issues
