@@ -19,17 +19,17 @@
 
     <div class="dc-debug-row">
         <div class="dc-debug-label">DynamicTag-Value:</div>
-        <div class="dc-debug-value"><?php echo $dynamicTagValue; ?></div>
+        <div class="dc-debug-value"><?php echo htmlentities( $dynamicTagValue ); ?></div>
     </div>
 
     <div class="dc-debug-row">
         <div class="dc-debug-label">Check-Value:</div>
-        <div class="dc-debug-value"><?php echo $checkValue; ?></div>
+        <div class="dc-debug-value"><?php echo htmlentities( $checkValue ); ?></div>
     </div>
 
     <div class="dc-debug-row">
         <div class="dc-debug-label">Check-Value2:</div>
-        <div class="dc-debug-value"><?php echo $checkValue2; ?></div>
+        <div class="dc-debug-value"><?php echo htmlentities( $checkValue2 ); ?></div>
     </div>
 
     <div class="dc-debug-row">
