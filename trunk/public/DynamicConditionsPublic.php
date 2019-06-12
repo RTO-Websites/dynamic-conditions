@@ -529,8 +529,8 @@ class DynamicConditionsPublic {
         }
 
         return [
-            $checkValue,
-            $checkValue2,
+            do_shortcode( $checkValue ),
+            do_shortcode( $checkValue2 ),
         ];
     }
 
