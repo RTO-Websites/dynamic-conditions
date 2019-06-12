@@ -26,7 +26,6 @@ use Lib\DynamicConditionsDate;
  * @author     RTO GmbH <kundenhomepage@rto.de>
  */
 class DynamicConditionsAdmin {
-
     /**
      * The ID of this plugin.
      *
@@ -383,6 +382,15 @@ class DynamicConditionsAdmin {
         }
 
         $element->add_control(
+            'dynamicconditions_parse_shortcodes',
+            [
+                'type' => Controls_Manager::SWITCHER,
+                'label' => __( 'Parse shortcodes', 'dynamicconditions' ),
+                'render_type' => $renderType,
+            ]
+        );
+
+        $element->add_control(
             'dynamicconditions_hr2',
             [
                 'type' => Controls_Manager::DIVIDER,
@@ -400,5 +408,4 @@ class DynamicConditionsAdmin {
         );
         $element->end_controls_section();
     }
-
 }

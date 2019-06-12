@@ -104,6 +104,7 @@ class DynamicConditionsPublic {
             dynamicconditions_date_value2
             dynamicconditions_value
             dynamicconditions_value2
+            dynamicconditions_parse_shortcodes
             dynamicconditions_debug
             _inline_size';
 
@@ -349,11 +350,14 @@ class DynamicConditionsPublic {
                 }
             }
 
-            $dynamicTagValue = do_shortcode( $dynamicTagValue );
+            if ( !empty( $settings['dynamicconditions_parse_shortcodes'] ) ) {
+                $dynamicTagValue = do_shortcode( $dynamicTagValue );
+            }
+
             // parse value based on compare-type
             $this->parseDynamicTagValue( $dynamicTagValue, $compareType );
 
-            $debugValue .= $dynamicTagValue . '<br />';
+            $debugValue .= $dynamicTagValue . '~~*#~~';
 
             // compare widget-value with check-values
             list( $condition, $break, $breakFalse )
@@ -528,9 +532,14 @@ class DynamicConditionsPublic {
                 break;
         }
 
+        if ( !empty( $settings['dynamicconditions_parse_shortcodes'] ) ) {
+            $checkValue = do_shortcode( $checkValue );
+            $checkValue2 = do_shortcode( $checkValue2 );
+        }
+
         return [
-            do_shortcode( $checkValue ),
-            do_shortcode( $checkValue2 ),
+            $checkValue,
+            $checkValue2,
         ];
     }
 
@@ -583,6 +592,11 @@ class DynamicConditionsPublic {
         }
 
         $visibility = self::checkEmpty( $settings, 'dynamicconditions_visibility', 'hide' );
+
+        $dynamicTagValue = str_replace( '[', '&#91;', htmlentities( $dynamicTagValue ) );
+        $dynamicTagValue = str_replace( '~~*#~~', '<br />', $dynamicTagValue );
+        $checkValue = str_replace( '[', '&#91;', htmlentities( $checkValue ) );
+        $checkValue2 = str_replace( '[', '&#91;', htmlentities( $checkValue2 ) );
 
         include( 'partials/debug.php' );
 
