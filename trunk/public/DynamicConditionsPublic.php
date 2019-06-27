@@ -51,16 +51,15 @@ class DynamicConditionsPublic {
     /**
      * Initialize the class and set its properties.
      *
+     * @param string $pluginName The name of the plugin.
+     * @param string $version The version of this plugin.
      * @since    1.0.0
-     * @param      string $pluginName The name of the plugin.
-     * @param      string $version The version of this plugin.
      */
     public function __construct( $pluginName, $version ) {
 
         $this->pluginName = $pluginName;
         $this->version = $version;
         $this->dateInstance = new DynamicConditionsDate();
-
     }
 
     /**
@@ -70,6 +69,9 @@ class DynamicConditionsPublic {
      * @return mixed
      */
     private function getElementSettings( $element ) {
+        /* if ( \Elementor\Plugin::$instance->editor->is_edit_mode() ) {
+            return;
+        } */
         $id = $element->get_id();
         if ( !empty( $this->elementSettings[$id] ) ) {
             // dont work in a loop?
@@ -102,6 +104,7 @@ class DynamicConditionsPublic {
             dynamicconditions_date_value2
             dynamicconditions_value
             dynamicconditions_value2
+            dynamicconditions_parse_shortcodes
             dynamicconditions_debug
             _inline_size';
 
@@ -118,25 +121,118 @@ class DynamicConditionsPublic {
         // reset locale
         setlocale( LC_ALL, $currentLocale );
 
-        $selectedTag = null;
-
-        if ( !empty( $this->elementSettings[$id]['__dynamic__'] ) && !empty( $this->elementSettings[$id]['__dynamic__']['dynamicconditions_dynamic'] ) ) {
-            $tag = $this->elementSettings[$id]['__dynamic__']['dynamicconditions_dynamic'];
-            $splitTag = explode( ' name="', $tag );
-            if ( !empty( $splitTag[1] ) ) {
-                $splitTag2 = explode( '"', $splitTag[1] );
-                $selectedTag = $splitTag2[0];
-            }
-        }
+        $tagData = $this->getDynamicTagData( $id );
+        $this->convertAcfDate( $id, $tagData );
 
         $this->elementSettings[$id]['dynamicConditionsData'] = [
             'id' => $id,
             'type' => $element->get_type(),
             'name' => $element->get_name(),
-            'selectedTag' => $selectedTag,
+            'selectedTag' => $tagData['selectedTag'],
+            'tagData' => $tagData['tagData'],
+            'tagKey' => $tagData['tagKey'],
         ];
 
         return $this->elementSettings[$id];
+    }
+
+    /**
+     * Returns data of dynamic tag
+     *
+     * @param $id
+     * @return array
+     */
+    private function getDynamicTagData( $id ): array {
+        if ( empty( $this->elementSettings[$id]['__dynamic__'] )
+            || empty( $this->elementSettings[$id]['__dynamic__']['dynamicconditions_dynamic'] )
+        ) {
+            // no dynamic tag set
+            return [
+                'selectedTag' => null,
+                'tagData' => null,
+                'tagKey' => null,
+            ];
+        }
+
+        $selectedTag = null;
+        $tagSettings = null;
+        $tagData = [];
+        $tagKey = null;
+
+        $tag = $this->elementSettings[$id]['__dynamic__']['dynamicconditions_dynamic'];
+        $splitTag = explode( ' name="', $tag );
+
+        // get selected tag
+        if ( !empty( $splitTag[1] ) ) {
+            $splitTag2 = explode( '"', $splitTag[1] );
+            $selectedTag = $splitTag2[0];
+        }
+
+        // get tag settings
+        if ( strpos( $selectedTag, 'acf-' ) === 0 ) {
+            $splitTag = explode( ' settings="', $tag );
+            if ( !empty( $splitTag[1] ) ) {
+                $splitTag2 = explode( '"', $splitTag[1] );
+                $tagSettings = json_decode( urldecode( $splitTag2[0] ), true );
+                if ( !empty( $tagSettings['key'] ) ) {
+                    $tagKey = $tagSettings['key'];
+                    $tagData = get_field_object( explode( ':', $tagSettings['key'] )[0] ); //, false, false );
+                }
+            }
+        }
+
+        return [
+            'selectedTag' => $selectedTag,
+            'tagData' => $tagData,
+            'tagKey' => $tagKey,
+        ];
+
+    }
+
+    /**
+     * Convert acf date to timestamp
+     *
+     * @param $id
+     * @param array $data
+     */
+    private function convertAcfDate( $id, array $data ) {
+        if ( empty( $data ) ) {
+            return;
+        }
+
+        $allowedTypes = [
+            'date_time_picker',
+            'date_picker',
+        ];
+
+        $tagData = $data['tagData'];
+
+        if ( empty( $data['tagKey'] ) || strpos( $data['selectedTag'], 'acf-' ) !== 0 ) {
+            return;
+        }
+
+        if ( empty( $tagData['type'] ) || !in_array( trim( $tagData['type'] ), $allowedTypes, true ) ) {
+            return;
+        }
+
+        if ( empty( $tagData['value'] ) || empty( $tagData['return_format'] ) ) {
+            return;
+        }
+
+        $time = \DateTime::createFromFormat( $tagData['return_format'], DynamicConditionsDate::unTranslateDate( $tagData['value'] ) );
+
+        if ( empty( $time ) ) {
+            return;
+        }
+
+        if ( $tagData['type'] === 'date_picker' ) {
+            $time->setTime( 0, 0, 0 );
+        }
+
+        $timestamp = $time->getTimestamp();
+
+        // override value with timestamp
+        $this->elementSettings[$id]['dynamicconditions_dynamic'] = $timestamp;
     }
 
     /**
@@ -145,6 +241,10 @@ class DynamicConditionsPublic {
      * @param $section
      */
     public function filterSectionContentBefore( $section ) {
+        if ( \Elementor\Plugin::$instance->editor->is_edit_mode() ) {
+            return;
+        }
+
         $settings = $this->getElementSettings( $section );
         $hide = $this->checkCondition( $settings );
 
@@ -163,7 +263,7 @@ class DynamicConditionsPublic {
      * @param $section
      */
     public function filterSectionContentAfter( $section ) {
-        if ( empty( $section->dynamicConditionIsHidden ) ) {
+        if ( empty( $section ) || empty( $section->dynamicConditionIsHidden ) ) {
             return;
         }
 
@@ -190,9 +290,7 @@ class DynamicConditionsPublic {
      * @return bool
      */
     public function checkCondition( $settings ) {
-        if ( empty( $settings['dynamicconditions_condition'] ) || empty( $settings['dynamicConditionsData']['selectedTag'] )
-        ) {
-            // no condition or no tag selected - disable conditions
+        if ( !$this->hasCondition( $settings ) ) {
             return false;
         }
 
@@ -252,10 +350,14 @@ class DynamicConditionsPublic {
                 }
             }
 
+            if ( !empty( $settings['dynamicconditions_parse_shortcodes'] ) ) {
+                $dynamicTagValue = do_shortcode( $dynamicTagValue );
+            }
+
             // parse value based on compare-type
             $this->parseDynamicTagValue( $dynamicTagValue, $compareType );
 
-            $debugValue .= $dynamicTagValue . '<br />';
+            $debugValue .= $dynamicTagValue . '~~*#~~';
 
             // compare widget-value with check-values
             list( $condition, $break, $breakFalse )
@@ -430,6 +532,11 @@ class DynamicConditionsPublic {
                 break;
         }
 
+        if ( !empty( $settings['dynamicconditions_parse_shortcodes'] ) ) {
+            $checkValue = do_shortcode( $checkValue );
+            $checkValue2 = do_shortcode( $checkValue2 );
+        }
+
         return [
             $checkValue,
             $checkValue2,
@@ -452,6 +559,22 @@ class DynamicConditionsPublic {
     }
 
     /**
+     * Checks if element has a condition
+     *
+     * @param $settings
+     * @return bool
+     */
+    public function hasCondition( $settings ) {
+        if ( empty( $settings['dynamicconditions_condition'] ) || empty( $settings['dynamicConditionsData']['selectedTag'] )
+        ) {
+            // no condition or no tag selected - disable conditions
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
      * Renders debug info
      *
      * @param $settings
@@ -469,6 +592,11 @@ class DynamicConditionsPublic {
         }
 
         $visibility = self::checkEmpty( $settings, 'dynamicconditions_visibility', 'hide' );
+
+        $dynamicTagValue = str_replace( '[', '&#91;', htmlentities( $dynamicTagValue ) );
+        $dynamicTagValue = str_replace( '~~*#~~', '<br />', $dynamicTagValue );
+        $checkValue = str_replace( '[', '&#91;', htmlentities( $checkValue ) );
+        $checkValue2 = str_replace( '[', '&#91;', htmlentities( $checkValue2 ) );
 
         include( 'partials/debug.php' );
 
@@ -495,6 +623,9 @@ class DynamicConditionsPublic {
      * @since    1.0.0
      */
     public function enqueueScripts() {
+        if ( \Elementor\Plugin::$instance->editor->is_edit_mode() ) {
+            return;
+        }
         wp_enqueue_script( $this->pluginName, plugin_dir_url( __FILE__ ) . 'js/dynamic-conditions-public.js', [ 'jquery' ], $this->version, true );
     }
 
