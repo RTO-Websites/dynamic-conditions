@@ -20,7 +20,7 @@ use Lib\DynamicConditionsDeactivator;
  * Plugin Name:       DynamicConditions
  * Plugin URI:        https://github.com/RTO-Websites/dynamic-conditions
  * Description:       Activates conditions for dynamic tags to show/hides a widget.
- * Version:           1.2.1
+ * Version:           1.3.0
  * Author:            RTO GmbH
  * Author URI:        https://www.rto.de
  * License:           GPL-2.0+
