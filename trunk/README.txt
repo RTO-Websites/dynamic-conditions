@@ -3,8 +3,8 @@ Contributors: rtowebsites
 Donate link: https://www.rto.de
 Tags: elementor, conditions, dynamic, fields, rto
 Requires at least: 4.7
-Tested up to: 5.2
-Stable tag: 1.2.1
+Tested up to: 5.3
+Stable tag: 1.3.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -57,6 +57,7 @@ Yes, you can set conditional display for logged in or logged out users. Selectin
 = 1.3.0 =
 * Improve parsing of acf dates
 * Add icon to elements with condition in preview
+* Add option to parse shortcodes
 * Fix some issues
 
 = 1.2.1 =
