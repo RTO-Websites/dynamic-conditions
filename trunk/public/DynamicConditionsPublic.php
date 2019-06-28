@@ -142,7 +142,7 @@ class DynamicConditionsPublic {
      * @param $id
      * @return array
      */
-    private function getDynamicTagData( $id ): array {
+    private function getDynamicTagData( $id ) {
         if ( empty( $this->elementSettings[$id]['__dynamic__'] )
             || empty( $this->elementSettings[$id]['__dynamic__']['dynamicconditions_dynamic'] )
         ) {
