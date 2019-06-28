@@ -192,13 +192,13 @@ class DynamicConditions {
         ?>
         <style>
             body.elementor-editor-active .elementor-element.dc-has-condition::after {
-                content: '\f06e';
+                content: '\e1019';
                 display: inline-block;
                 position: absolute;
                 top: 0;
                 right: 5px;
                 font-size: 15px;
-                font-family: FontAwesome;
+                font-family: eicons;
                 color: #71d7f7;
             }
         </style>
