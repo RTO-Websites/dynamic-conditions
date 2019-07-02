@@ -8,11 +8,11 @@ Stable tag: 1.3.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Activates conditions for dynamic tags to show/hides a widget or section.
+Activates conditions for dynamic tags to show/hide a widget or section.
 
 == Description ==
 
-Dynamic Conditions is an Elementor addon that adds conditional logic to show and hide different elements. The plugin adds conditions to dynamic tags to show/hide a widget or section.
+Dynamic Conditions is an Elementor addon that adds conditional logic to show or hide different elements. The plugin adds conditions to dynamic tags to show/hide a widget or section.
 
 The plugin requires Elementor Pro since it uses Dynamic Tags to set the comparison conditions.
 
@@ -47,7 +47,7 @@ Yes, all the above are supported and many others supported out-of-the-box by Ele
 Yes, the plugin supports date based conditions, for example current-date or post-date. You can compare dates, days and months.
 
 = Can I show/hide elements for logged-in or logged-out users? =
-Yes, you can set conditional display for logged in or logged out users. Selecting the user information dynamic-tag, and set it to user ID. Now check if it is empty or not.
+Yes, you can set display conditions for logged in or logged out users. Selecting the "user information" dynamic-tag, and set it to "user ID". Now check if it is empty or not.
 
 == Screenshots ==
 
