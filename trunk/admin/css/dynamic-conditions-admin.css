@@ -7,6 +7,6 @@
   border: 0 none !important;
 }
 
-.elementor-control-dynamicconditions_dynamic .elementor-control-media {
+.elementor-control-dynamicconditions_dynamic .elementor-control-media .elementor-control-input-wrapper .elementor-control-media__content {
   display: none;
 }
