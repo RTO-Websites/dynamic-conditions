@@ -73,7 +73,7 @@ class DynamicConditions {
      */
     public function __construct() {
         $this->pluginName = 'dynamic-conditions';
-        $this->version = '1.0.0';
+        $this->version = '1.3.2';
 
         $this->loadDependencies();
         $this->setLocale();
