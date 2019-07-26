@@ -138,6 +138,8 @@ class DynamicConditions {
         $this->loader->addAction( 'elementor/element/section/section_advanced/after_section_end', $pluginAdmin, 'addConditionFields', 10, 3 );
         $this->loader->addAction( 'elementor/element/common/_section_style/after_section_end', $pluginAdmin, 'addConditionFields', 10, 3 );
 
+        $this->loader->addAction( 'elementor/element/popup/section_advanced/after_section_end', $pluginAdmin, 'addConditionFields', 10, 3 );
+
         $this->loader->addAction( 'admin_notices', $pluginAdmin, 'addAdminNotices', 10, 3 );
         $this->loader->addAction( 'admin_enqueue_scripts', $pluginAdmin, 'enqueueStyles' );
         $this->loader->addAction( 'elementor/editor/before_enqueue_styles', $pluginAdmin, 'enqueueStyles' );
@@ -166,6 +168,10 @@ class DynamicConditions {
         // filter columns
         $this->loader->addAction( "elementor/frontend/column/before_render", $pluginPublic, 'filterSectionContentBefore', 10, 1 );
         $this->loader->addAction( "elementor/frontend/column/after_render", $pluginPublic, 'filterSectionContentAfter', 10, 1 );
+
+        // filter popup
+        $this->loader->addAction( "elementor/theme/before_do_popup", $pluginPublic, 'beforePopup', 10, 1 );
+        #$this->loader->addAction( "elementor/theme/after_do_popup", $pluginPublic, 'filterSectionContentAfter', 10, 1 );
     }
 
     private function defineElementorHooks() {
@@ -209,8 +215,8 @@ class DynamicConditions {
      * The name of the plugin used to uniquely identify it within the context of
      * WordPress and to define internationalization functionality.
      *
-     * @since     1.0.0
      * @return    string    The name of the plugin.
+     * @since     1.0.0
      */
     public function getDynamicConditions() {
         return $this->pluginName;
@@ -219,8 +225,8 @@ class DynamicConditions {
     /**
      * The reference to the class that orchestrates the hooks with the plugin.
      *
-     * @since     1.0.0
      * @return    DynamicConditionsLoader    Orchestrates the hooks of the plugin.
+     * @since     1.0.0
      */
     public function getLoader() {
         return $this->loader;
@@ -229,8 +235,8 @@ class DynamicConditions {
     /**
      * Retrieve the version number of the plugin.
      *
-     * @since     1.0.0
      * @return    string    The version number of the plugin.
+     * @since     1.0.0
      */
     public function getVersion() {
         return $this->version;

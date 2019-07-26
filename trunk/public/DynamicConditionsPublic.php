@@ -1,5 +1,7 @@
 <?php namespace Pub;
 
+use ElementorPro\Modules\ThemeBuilder\Classes\Locations_Manager;
+use ElementorPro\Modules\ThemeBuilder\Module;
 use Lib\DynamicConditionsDate;
 
 /**
@@ -233,6 +235,24 @@ class DynamicConditionsPublic {
 
         // override value with timestamp
         $this->elementSettings[$id]['dynamicconditions_dynamic'] = $timestamp;
+    }
+
+
+    /**
+     * @param Locations_Manager $locationManager
+     */
+    public function beforePopup( $locationManager ) {
+        $conditionManager = Module::instance()->get_conditions_manager();
+        $module = $conditionManager->get_documents_for_location( 'popup' );
+
+        foreach ( $module as $documentId => $document ) {
+            $settings = $this->getElementSettings( $document );
+            $hide = $this->checkCondition( $settings );
+
+            if ( $hide ) {
+                $locationManager->remove_doc_from_location( 'popup', $documentId );
+            }
+        }
     }
 
     /**
