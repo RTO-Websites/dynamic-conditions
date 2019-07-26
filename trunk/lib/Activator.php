@@ -20,7 +20,7 @@
  * @subpackage DynamicConditions/includes
  * @author     RTO GmbH <kundenhomepage@rto.de>
  */
-class DynamicConditionsActivator {
+class Activator {
 
 	/**
 	 * Short Description. (use period)

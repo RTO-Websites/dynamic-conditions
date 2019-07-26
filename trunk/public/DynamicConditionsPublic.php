@@ -2,7 +2,7 @@
 
 use ElementorPro\Modules\ThemeBuilder\Classes\Locations_Manager;
 use ElementorPro\Modules\ThemeBuilder\Module;
-use Lib\DynamicConditionsDate;
+use Lib\Date;
 
 /**
  * The public-facing functionality of the plugin.
@@ -61,7 +61,7 @@ class DynamicConditionsPublic {
 
         $this->pluginName = $pluginName;
         $this->version = $version;
-        $this->dateInstance = new DynamicConditionsDate();
+        $this->dateInstance = new Date();
     }
 
     /**
@@ -221,7 +221,7 @@ class DynamicConditionsPublic {
             return;
         }
 
-        $time = \DateTime::createFromFormat( $tagData['return_format'], DynamicConditionsDate::unTranslateDate( $tagData['value'] ) );
+        $time = \DateTime::createFromFormat( $tagData['return_format'], Date::unTranslateDate( $tagData['value'] ) );
 
         if ( empty( $time ) ) {
             return;
@@ -492,17 +492,17 @@ class DynamicConditionsPublic {
     private function parseDynamicTagValue( &$dynamicTagValue, $compareType ) {
         switch ( $compareType ) {
             case 'days':
-                $dynamicTagValue = date( 'N', DynamicConditionsDate::stringToTime( $dynamicTagValue ) );
+                $dynamicTagValue = date( 'N', Date::stringToTime( $dynamicTagValue ) );
                 break;
 
             case 'months':
-                $dynamicTagValue = date( 'n', DynamicConditionsDate::stringToTime( $dynamicTagValue ) );
+                $dynamicTagValue = date( 'n', Date::stringToTime( $dynamicTagValue ) );
                 break;
 
             case 'strtotime':
                 // nobreak
             case 'date':
-                $dynamicTagValue = DynamicConditionsDate::stringToTime( $dynamicTagValue );
+                $dynamicTagValue = Date::stringToTime( $dynamicTagValue );
                 break;
         }
     }
@@ -519,30 +519,30 @@ class DynamicConditionsPublic {
             case 'days':
                 $checkValue = self::checkEmpty( $settings, 'dynamicconditions_day_value' );
                 $checkValue2 = self::checkEmpty( $settings, 'dynamicconditions_day_value2' );
-                $checkValue = DynamicConditionsDate::unTranslateDate( $checkValue );
-                $checkValue2 = DynamicConditionsDate::unTranslateDate( $checkValue2 );
+                $checkValue = Date::unTranslateDate( $checkValue );
+                $checkValue2 = Date::unTranslateDate( $checkValue2 );
                 break;
             case 'months':
                 $checkValue = self::checkEmpty( $settings, 'dynamicconditions_month_value' );
                 $checkValue2 = self::checkEmpty( $settings, 'dynamicconditions_month_value2' );
-                $checkValue = DynamicConditionsDate::unTranslateDate( $checkValue );
-                $checkValue2 = DynamicConditionsDate::unTranslateDate( $checkValue2 );
+                $checkValue = Date::unTranslateDate( $checkValue );
+                $checkValue2 = Date::unTranslateDate( $checkValue2 );
                 break;
 
             case 'date':
                 $checkValue = self::checkEmpty( $settings, 'dynamicconditions_date_value' );
                 $checkValue2 = self::checkEmpty( $settings, 'dynamicconditions_date_value2' );
-                $checkValue = DynamicConditionsDate::stringToTime( $checkValue );
-                $checkValue2 = DynamicConditionsDate::stringToTime( $checkValue2 );
+                $checkValue = Date::stringToTime( $checkValue );
+                $checkValue2 = Date::stringToTime( $checkValue2 );
                 break;
 
             case 'strtotime':
                 $checkValue = self::checkEmpty( $settings, 'dynamicconditions_value' );
                 $checkValue2 = self::checkEmpty( $settings, 'dynamicconditions_value2' );
-                $checkValue = DynamicConditionsDate::unTranslateDate( $checkValue );
-                $checkValue2 = DynamicConditionsDate::unTranslateDate( $checkValue2 );
-                $checkValue = DynamicConditionsDate::stringToTime( $checkValue );
-                $checkValue2 = DynamicConditionsDate::stringToTime( $checkValue2 );
+                $checkValue = Date::unTranslateDate( $checkValue );
+                $checkValue2 = Date::unTranslateDate( $checkValue2 );
+                $checkValue = Date::stringToTime( $checkValue );
+                $checkValue2 = Date::stringToTime( $checkValue2 );
                 break;
 
             case 'default':

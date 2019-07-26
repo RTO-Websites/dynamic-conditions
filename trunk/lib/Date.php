@@ -1,6 +1,6 @@
 <?php namespace Lib;
 
-class DynamicConditionsDate {
+class Date {
 
     /**
      * Filter date-output from date_i18n() to return always a timestamp

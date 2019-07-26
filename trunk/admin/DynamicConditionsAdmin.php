@@ -2,7 +2,7 @@
 
 use Elementor\Controls_Manager;
 use Elementor\Modules\DynamicTags\Module;
-use Lib\DynamicConditionsDate;
+use Lib\Date;
 
 
 /**
@@ -272,7 +272,7 @@ class DynamicConditionsAdmin {
                     'dynamicconditions_type' => 'days',
                 ],
                 'description' => __( 'Add your conditional value to compare here.', 'dynamicconditions' ),
-                'options' => DynamicConditionsDate::getDaysTranslated(),
+                'options' => Date::getDaysTranslated(),
             ]
         );
 
@@ -287,7 +287,7 @@ class DynamicConditionsAdmin {
                     'dynamicconditions_type' => 'days',
                 ],
                 'description' => __( 'Add a second condition value, if between is selected', 'dynamicconditions' ),
-                'options' => DynamicConditionsDate::getDaysTranslated(),
+                'options' => Date::getDaysTranslated(),
             ]
         );
 
@@ -302,7 +302,7 @@ class DynamicConditionsAdmin {
                     'dynamicconditions_type' => 'months',
                 ],
                 'description' => __( 'Add your conditional value to compare here.', 'dynamicconditions' ),
-                'options' => DynamicConditionsDate::getMonthsTranslated(),
+                'options' => Date::getMonthsTranslated(),
             ]
         );
 
@@ -317,7 +317,7 @@ class DynamicConditionsAdmin {
                     'dynamicconditions_type' => 'months',
                 ],
                 'description' => __( 'Add a second condition value, if between is selected', 'dynamicconditions' ),
-                'options' => DynamicConditionsDate::getMonthsTranslated(),
+                'options' => Date::getMonthsTranslated(),
             ]
         );
 

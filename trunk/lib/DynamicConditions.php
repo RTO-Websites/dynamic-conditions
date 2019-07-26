@@ -40,7 +40,7 @@ class DynamicConditions {
      *
      * @since    1.0.0
      * @access   protected
-     * @var      DynamicConditionsLoader $loader Maintains and registers all hooks for the plugin.
+     * @var      Loader $loader Maintains and registers all hooks for the plugin.
      */
     protected $loader;
 
@@ -102,7 +102,7 @@ class DynamicConditions {
      */
     private function loadDependencies() {
 
-        $this->loader = new DynamicConditionsLoader();
+        $this->loader = new Loader();
 
     }
 
@@ -117,7 +117,7 @@ class DynamicConditions {
      */
     private function setLocale() {
 
-        $pluginI18n = new DynamicConditionsI18n();
+        $pluginI18n = new I18n();
         $pluginI18n->setDomain( 'dynamicconditions' );
 
         $this->loader->addAction( 'plugins_loaded', $pluginI18n, 'loadPluginTextdomain' );
@@ -225,7 +225,7 @@ class DynamicConditions {
     /**
      * The reference to the class that orchestrates the hooks with the plugin.
      *
-     * @return    DynamicConditionsLoader    Orchestrates the hooks of the plugin.
+     * @return    Loader    Orchestrates the hooks of the plugin.
      * @since     1.0.0
      */
     public function getLoader() {
