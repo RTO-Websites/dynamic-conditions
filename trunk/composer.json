@@ -2,9 +2,10 @@
   "require": {},
   "autoload": {
     "psr-4": {
-      "Admin\\": "admin/",
-      "Pub\\": "public/",
-      "Lib\\": "lib/"
+      "DynamicConditions\\": "./",
+      "DynamicConditions\\Admin\\": "admin/",
+      "DynamicConditions\\Pub\\": "public/",
+      "DynamicConditions\\Lib\\": "lib/"
     }
   }
 }

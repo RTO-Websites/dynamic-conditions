@@ -7,32 +7,31 @@ namespace Composer\Autoload;
 class ComposerStaticInit808d05525ff962fd8697790ec816888f
 {
     public static $prefixLengthsPsr4 = array (
-        'P' => 
+        'D' => 
         array (
-            'Pub\\' => 4,
-        ),
-        'L' => 
-        array (
-            'Lib\\' => 4,
-        ),
-        'A' => 
-        array (
-            'Admin\\' => 6,
+            'DynamicConditions\\Pub\\' => 22,
+            'DynamicConditions\\Lib\\' => 22,
+            'DynamicConditions\\Admin\\' => 24,
+            'DynamicConditions\\' => 18,
         ),
     );
 
     public static $prefixDirsPsr4 = array (
-        'Pub\\' => 
+        'DynamicConditions\\Pub\\' => 
         array (
             0 => __DIR__ . '/../..' . '/public',
         ),
-        'Lib\\' => 
+        'DynamicConditions\\Lib\\' => 
         array (
             0 => __DIR__ . '/../..' . '/lib',
         ),
-        'Admin\\' => 
+        'DynamicConditions\\Admin\\' => 
         array (
             0 => __DIR__ . '/../..' . '/admin',
+        ),
+        'DynamicConditions\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/',
         ),
     );
 

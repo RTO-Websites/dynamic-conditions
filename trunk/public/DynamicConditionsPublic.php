@@ -1,8 +1,8 @@
-<?php namespace Pub;
+<?php namespace DynamicConditions\Pub;
 
 use ElementorPro\Modules\ThemeBuilder\Classes\Locations_Manager;
 use ElementorPro\Modules\ThemeBuilder\Module;
-use Lib\Date;
+use DynamicConditions\Lib\Date;
 
 /**
  * The public-facing functionality of the plugin.
@@ -646,7 +646,7 @@ class DynamicConditionsPublic {
         if ( \Elementor\Plugin::$instance->editor->is_edit_mode() ) {
             return;
         }
-        wp_enqueue_script( $this->pluginName, plugin_dir_url( __FILE__ ) . 'js/dynamic-conditions-public.js', [ 'jquery' ], $this->version, true );
+        wp_enqueue_script( $this->pluginName, DynamicConditions_URL . '/public/js/dynamic-conditions-public.js', [ 'jquery' ], $this->version, true );
     }
 
 }

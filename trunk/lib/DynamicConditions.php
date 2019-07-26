@@ -1,9 +1,9 @@
-<?php namespace Lib;
+<?php namespace DynamicConditions\Lib;
 
-use Admin\DynamicConditionsAdmin;
+use DynamicConditions\Admin\DynamicConditionsAdmin;
 use Elementor\Plugin;
-use Lib\DynamicTags\NumberPostsTag;
-use Pub\DynamicConditionsPublic;
+use DynamicConditions\Lib\DynamicTags\NumberPostsTag;
+use DynamicConditions\Pub\DynamicConditionsPublic;
 
 /**
  * The file that defines the core plugin class
@@ -73,7 +73,7 @@ class DynamicConditions {
      */
     public function __construct() {
         $this->pluginName = 'dynamic-conditions';
-        $this->version = '1.3.2';
+        $this->version = DynamicConditions_VERSION;
 
         $this->loadDependencies();
         $this->setLocale();

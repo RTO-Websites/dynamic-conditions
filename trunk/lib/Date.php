@@ -1,4 +1,4 @@
-<?php namespace Lib;
+<?php namespace DynamicConditions\Lib;
 
 class Date {
 

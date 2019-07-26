@@ -1,6 +1,6 @@
 <?php
 
-namespace Lib\DynamicTags;
+namespace DynamicConditions\Lib\DynamicTags;
 
 use Elementor\Controls_Manager;
 use ElementorPro\Modules\DynamicTags\Module;

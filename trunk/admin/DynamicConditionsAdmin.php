@@ -1,8 +1,8 @@
-<?php namespace Admin;
+<?php namespace DynamicConditions\Admin;
 
 use Elementor\Controls_Manager;
 use Elementor\Modules\DynamicTags\Module;
-use Lib\Date;
+use DynamicConditions\Lib\Date;
 
 
 /**
@@ -66,7 +66,7 @@ class DynamicConditionsAdmin {
      */
     public function enqueueStyles() {
 
-        wp_enqueue_style( $this->pluginName, plugin_dir_url( __FILE__ ) . 'css/dynamic-conditions-admin.css', [], $this->version, 'all' );
+        wp_enqueue_style( $this->pluginName, DynamicConditions_URL . '/admin/css/dynamic-conditions-admin.css', [], $this->version, 'all' );
 
     }
 
