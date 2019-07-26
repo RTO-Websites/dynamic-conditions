@@ -197,7 +197,7 @@ class DynamicConditions {
         ?>
         <style>
             body.elementor-editor-active .elementor-element.dc-has-condition::after {
-                content: '\e1019';
+                content: '\e8ed';
                 display: inline-block;
                 position: absolute;
                 top: 0;
