@@ -47,9 +47,9 @@ class DynamicConditionsAdmin {
     /**
      * Initialize the class and set its properties.
      *
+     * @param string $pluginName The name of this plugin.
+     * @param string $version The version of this plugin.
      * @since    1.0.0
-     * @param      string $pluginName The name of this plugin.
-     * @param      string $version The version of this plugin.
      */
     public function __construct( $pluginName, $version ) {
 
@@ -98,7 +98,7 @@ class DynamicConditionsAdmin {
      * @param $args
      */
     public function addConditionFields( $element, $section_id = null, $args = null ) {
-        $valueCondition = [ 'equal', 'not_equal', 'contains', 'not_contains', 'less', 'greater', 'between' ];
+        $valueCondition = [ 'equal', 'not_equal', 'contains', 'not_contains', 'less', 'greater', 'between', 'in_array' ];
         $allCondition = [ 'equal', 'not_equal', 'contains', 'not_contains', 'less', 'greater', 'between', 'empty', 'not_empty' ];
         $type = 'element';
         $renderType = 'ui';
@@ -169,6 +169,7 @@ class DynamicConditionsAdmin {
                     'between' => __( 'Between', 'dynamicconditions' ),
                     'less' => __( 'Less than', 'dynamicconditions' ),
                     'greater' => __( 'Greater than', 'dynamicconditions' ),
+                    'in_array' => __( 'In array', 'dynamicconditions' ),
                 ],
                 'description' => __( 'Select your condition for this widget visibility.', 'dynamicconditions' ),
                 'condition' => [
@@ -262,13 +263,28 @@ class DynamicConditionsAdmin {
         );
 
         $element->add_control(
+            'dynamicconditions_day_array_value',
+            [
+                'type' => Controls_Manager::SELECT2,
+                'label' => __( 'Conditional value', 'dynamicconditions' ),
+                'render_type' => $renderType,
+                'condition' => [
+                    'dynamicconditions_condition' => [ 'in_array' ],
+                    'dynamicconditions_type' => 'days',
+                ],
+                'description' => __( 'Add your conditional value to compare here.', 'dynamicconditions' ),
+                'options' => Date::getDaysTranslated(),
+                'multiple' => true,
+            ]
+        );
+        $element->add_control(
             'dynamicconditions_day_value',
             [
                 'type' => Controls_Manager::SELECT,
                 'label' => __( 'Conditional value', 'dynamicconditions' ),
                 'render_type' => $renderType,
                 'condition' => [
-                    'dynamicconditions_condition' => $valueCondition,
+                    'dynamicconditions_condition' => array_diff( $valueCondition, [ 'in_array' ] ),
                     'dynamicconditions_type' => 'days',
                 ],
                 'description' => __( 'Add your conditional value to compare here.', 'dynamicconditions' ),
@@ -292,13 +308,29 @@ class DynamicConditionsAdmin {
         );
 
         $element->add_control(
+            'dynamicconditions_month_array_value',
+            [
+                'type' => Controls_Manager::SELECT2,
+                'label' => __( 'Conditional value', 'dynamicconditions' ),
+                'render_type' => $renderType,
+                'condition' => [
+                    'dynamicconditions_condition' => [ 'in_array' ],
+                    'dynamicconditions_type' => 'months',
+                ],
+                'description' => __( 'Add your conditional value to compare here.', 'dynamicconditions' ),
+                'options' => Date::getMonthsTranslated(),
+                'multiple' => true,
+            ]
+        );
+
+        $element->add_control(
             'dynamicconditions_month_value',
             [
                 'type' => Controls_Manager::SELECT,
                 'label' => __( 'Conditional value', 'dynamicconditions' ),
                 'render_type' => $renderType,
                 'condition' => [
-                    'dynamicconditions_condition' => $valueCondition,
+                    'dynamicconditions_condition' => array_diff( $valueCondition, [ 'in_array' ] ),
                     'dynamicconditions_type' => 'months',
                 ],
                 'description' => __( 'Add your conditional value to compare here.', 'dynamicconditions' ),
@@ -318,6 +350,21 @@ class DynamicConditionsAdmin {
                 ],
                 'description' => __( 'Add a second condition value, if between is selected', 'dynamicconditions' ),
                 'options' => Date::getMonthsTranslated(),
+            ]
+        );
+
+
+        $element->add_control(
+            'dynamicconditions_in_array_description',
+            [
+                'type' => Controls_Manager::RAW_HTML,
+                'label' => __( 'Conditional value', 'dynamicconditions' ) . ' 2',
+                'render_type' => $renderType,
+                'condition' => [
+                    'dynamicconditions_condition' => [ 'in_array' ],
+                ],
+                'show_label' => false,
+                'raw' => __( 'Use comma-separated values, to check if dynamic-value is equal with one of each item.', 'dynamicconditions' ),
             ]
         );
 

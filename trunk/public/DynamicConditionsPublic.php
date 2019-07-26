@@ -100,8 +100,10 @@ class DynamicConditionsPublic {
             dynamicconditions_visibility
             dynamicconditions_day_value
             dynamicconditions_day_value2
+            dynamicconditions_day_array_value
             dynamicconditions_month_value
             dynamicconditions_month_value2
+            dynamicconditions_month_array_value
             dynamicconditions_date_value
             dynamicconditions_date_value2
             dynamicconditions_value
@@ -476,6 +478,11 @@ class DynamicConditionsPublic {
                 $condition = $dynamicTagValue >= $checkValue && $dynamicTagValue <= $checkValue2;
                 $break = true;
                 break;
+
+            case 'in_array':
+                $condition = in_array( $dynamicTagValue, explode( ',', $checkValue ) ) !== false;
+                $break = true;
+                break;
         }
 
         return [
@@ -519,13 +526,23 @@ class DynamicConditionsPublic {
     private function getCheckValue( $compareType, $settings ) {
         switch ( $compareType ) {
             case 'days':
-                $checkValue = self::checkEmpty( $settings, 'dynamicconditions_day_value' );
+                if ( $settings['dynamicconditions_condition'] === 'in_array' ) {
+                    $checkValue = self::checkEmpty( $settings, 'dynamicconditions_day_array_value' );
+                    $checkValue = implode( ',', $checkValue );
+                } else {
+                    $checkValue = self::checkEmpty( $settings, 'dynamicconditions_day_value' );
+                }
                 $checkValue2 = self::checkEmpty( $settings, 'dynamicconditions_day_value2' );
                 $checkValue = Date::unTranslateDate( $checkValue );
                 $checkValue2 = Date::unTranslateDate( $checkValue2 );
                 break;
             case 'months':
-                $checkValue = self::checkEmpty( $settings, 'dynamicconditions_month_value' );
+                if ( $settings['dynamicconditions_condition'] === 'in_array' ) {
+                    $checkValue = self::checkEmpty( $settings, 'dynamicconditions_month_array_value' );
+                    $checkValue = implode( ',', $checkValue );
+                } else {
+                    $checkValue = self::checkEmpty( $settings, 'dynamicconditions_month_value' );
+                }
                 $checkValue2 = self::checkEmpty( $settings, 'dynamicconditions_month_value2' );
                 $checkValue = Date::unTranslateDate( $checkValue );
                 $checkValue2 = Date::unTranslateDate( $checkValue2 );

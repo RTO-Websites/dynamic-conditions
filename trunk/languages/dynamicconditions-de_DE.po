@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dynamic-conditions\n"
 "POT-Creation-Date: 2018-11-07 09:29+0100\n"
-"PO-Revision-Date: 2019-06-27 14:33+0200\n"
+"PO-Revision-Date: 2019-07-26 13:53+0200\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -134,3 +134,9 @@ msgstr "Wenn aktiviert, wird nur der innere Inhalt versteckt und eine leere Sect
 
 msgid "Parse shortcodes"
 msgstr "Führe Shortcodes aus"
+
+msgid "In array"
+msgstr "Im Array"
+
+msgid "Use comma-separated values, to check if dynamic-value is equal with one of each item."
+msgstr "Verwende Komma-getrennte Werte, um zu prüfen ob der Dynamic-Wert identisch mit dem einzelnem Wert ist."
