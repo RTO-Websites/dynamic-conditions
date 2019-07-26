@@ -171,7 +171,6 @@ class DynamicConditions {
 
         // filter popup
         $this->loader->addAction( "elementor/theme/before_do_popup", $pluginPublic, 'beforePopup', 10, 1 );
-        #$this->loader->addAction( "elementor/theme/after_do_popup", $pluginPublic, 'filterSectionContentAfter', 10, 1 );
     }
 
     private function defineElementorHooks() {

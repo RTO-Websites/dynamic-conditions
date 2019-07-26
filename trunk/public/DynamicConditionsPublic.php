@@ -239,6 +239,8 @@ class DynamicConditionsPublic {
 
 
     /**
+     * Hooks into elementor/theme/before_do_popup, loops all popups and check for condition
+     *
      * @param Locations_Manager $locationManager
      */
     public function beforePopup( $locationManager ) {
