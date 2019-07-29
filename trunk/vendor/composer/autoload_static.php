@@ -10,8 +10,6 @@ class ComposerStaticInit808d05525ff962fd8697790ec816888f
         'D' => 
         array (
             'DynamicConditions\\Pub\\' => 22,
-            'DynamicConditions\\Lib\\' => 22,
-            'DynamicConditions\\Admin\\' => 24,
             'DynamicConditions\\' => 18,
         ),
     );
@@ -19,15 +17,7 @@ class ComposerStaticInit808d05525ff962fd8697790ec816888f
     public static $prefixDirsPsr4 = array (
         'DynamicConditions\\Pub\\' => 
         array (
-            0 => __DIR__ . '/../..' . '/public',
-        ),
-        'DynamicConditions\\Lib\\' => 
-        array (
-            0 => __DIR__ . '/../..' . '/lib',
-        ),
-        'DynamicConditions\\Admin\\' => 
-        array (
-            0 => __DIR__ . '/../..' . '/admin',
+            0 => __DIR__ . '/../..' . '/Public',
         ),
         'DynamicConditions\\' => 
         array (

@@ -6,8 +6,6 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
-    'DynamicConditions\\Pub\\' => array($baseDir . '/public'),
-    'DynamicConditions\\Lib\\' => array($baseDir . '/lib'),
-    'DynamicConditions\\Admin\\' => array($baseDir . '/admin'),
+    'DynamicConditions\\Pub\\' => array($baseDir . '/Public'),
     'DynamicConditions\\' => array($baseDir . '/'),
 );

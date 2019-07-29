@@ -665,7 +665,7 @@ class DynamicConditionsPublic {
         if ( \Elementor\Plugin::$instance->editor->is_edit_mode() ) {
             return;
         }
-        wp_enqueue_script( $this->pluginName, DynamicConditions_URL . '/public/js/dynamic-conditions-public.js', [ 'jquery' ], $this->version, true );
+        wp_enqueue_script( $this->pluginName, DynamicConditions_URL . '/Public/js/dynamic-conditions-public.js', [ 'jquery' ], $this->version, true );
     }
 
 }

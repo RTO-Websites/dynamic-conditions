@@ -66,7 +66,7 @@ class DynamicConditionsAdmin {
      */
     public function enqueueStyles() {
 
-        wp_enqueue_style( $this->pluginName, DynamicConditions_URL . '/admin/css/dynamic-conditions-admin.css', [], $this->version, 'all' );
+        wp_enqueue_style( $this->pluginName, DynamicConditions_URL . '/Admin/css/dynamic-conditions-admin.css', [], $this->version, 'all' );
 
     }
 
