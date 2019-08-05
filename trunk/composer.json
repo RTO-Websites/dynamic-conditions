@@ -3,7 +3,8 @@
   "autoload": {
     "psr-4": {
       "DynamicConditions\\": "./",
-      "DynamicConditions\\Pub\\": "Public/"
+      "DynamicConditions\\Pub\\": "Public/",
+      "Lib\\" :"Legacy/Lib/"
     }
   }
 }
