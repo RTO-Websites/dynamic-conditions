@@ -46,7 +46,7 @@ class Date {
     public static function stringToTime( $string = '' ) {
         $timestamp = $string;
         $strToTime = strtotime( $string );
-        if ( !empty( $strToTime ) && !self::isTimestamp($timestamp) ) {
+        if ( !empty( $strToTime ) && !self::isTimestamp( $timestamp ) ) {
             $timestamp = $strToTime;
         }
 
@@ -74,21 +74,13 @@ class Date {
      * @return mixed|string
      */
     public static function unTranslateDate( $needle = '', $setLocale = null ) {
-        if ( empty( $setLocale ) ) {
-            $setLocale = get_locale();
-        }
-        $currentLocale = setlocale( LC_ALL, 0 );
-
         // get in translated lang
-        setlocale( LC_ALL, $setLocale );
-        $translatedMonths = self::getMonths();
-        $translatedDays = self::getDays();
+        $translatedMonths = self::getMonthsTranslated();
+        $translatedDays = self::getDaysTranslated();
 
         // get in english
-        setlocale( LC_ALL, 'en_GB' );
         $englishMonths = self::getMonths();
         $englishDays = self::getDays();
-        setlocale( LC_ALL, $currentLocale );
 
         // replace translated days/months with english ones
         $needle = str_ireplace( $translatedDays, $englishDays, $needle );
@@ -103,10 +95,12 @@ class Date {
      * @return array
      */
     public static function getMonthsTranslated() {
-        $currentLocale = setlocale( LC_ALL, 0 );
-        setlocale( LC_ALL, get_locale() );
         $monthList = self::getMonths();
-        setlocale( LC_ALL, $currentLocale );
+
+        // translate monthlist by wordpress-lang
+        foreach ( $monthList as &$month ) {
+            $month = __( $month );
+        }
 
         return $monthList;
     }
@@ -131,10 +125,12 @@ class Date {
      * @return array
      */
     public static function getDaysTranslated() {
-        $currentLocale = setlocale( LC_ALL, 0 );
-        setlocale( LC_ALL, get_locale() );
         $dayList = self::getDays();
-        setlocale( LC_ALL, $currentLocale );
+
+        // translate by wordpress-lang
+        foreach ( $dayList as &$day ) {
+            $day = __( $day );
+        }
 
         return $dayList;
     }
