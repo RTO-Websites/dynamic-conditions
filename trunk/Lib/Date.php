@@ -1,5 +1,9 @@
 <?php namespace DynamicConditions\Lib;
 
+/**
+ * Class Date
+ * @package DynamicConditions\Lib
+ */
 class Date {
 
     /**

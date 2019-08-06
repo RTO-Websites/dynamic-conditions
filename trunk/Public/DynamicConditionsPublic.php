@@ -1,5 +1,7 @@
 <?php namespace DynamicConditions\Pub;
 
+use Elementor\Element_Base;
+use Elementor\Plugin;
 use ElementorPro\Modules\ThemeBuilder\Classes\Locations_Manager;
 use ElementorPro\Modules\ThemeBuilder\Module;
 use DynamicConditions\Lib\Date;
@@ -67,19 +69,11 @@ class DynamicConditionsPublic {
     /**
      * Gets settings with english locale (needed for date)
      *
-     * @param $element
+     * @param Element_Base $element
      * @return mixed
      */
     private function getElementSettings( $element ) {
-        /* if ( \Elementor\Plugin::$instance->editor->is_edit_mode() ) {
-            return;
-        } */
         $id = $element->get_id();
-        if ( !empty( $this->elementSettings[$id] ) ) {
-            // dont work in a loop?
-            //return $this->elementSettings[$id];
-        }
-
         $clonedElement = clone $element;
 
         $element->get_settings_for_display(); // call to cache settings
@@ -263,10 +257,10 @@ class DynamicConditionsPublic {
     /**
      * Check if section is hidden, before rendering
      *
-     * @param $section
+     * @param Element_Base $section
      */
     public function filterSectionContentBefore( $section ) {
-        if ( \Elementor\Plugin::$instance->editor->is_edit_mode() ) {
+        if ( Plugin::$instance->editor->is_edit_mode() ) {
             return;
         }
 
@@ -278,6 +272,7 @@ class DynamicConditionsPublic {
         }
 
         $section->dynamicConditionIsHidden = true;
+        $section->dynamicConditionSettings = true;
 
         ob_start();
     }
@@ -285,7 +280,7 @@ class DynamicConditionsPublic {
     /**
      * Clean output of section if it is hidden
      *
-     * @param $section
+     * @param Element_Base $section
      */
     public function filterSectionContentAfter( $section ) {
         if ( empty( $section ) || empty( $section->dynamicConditionIsHidden ) ) {
@@ -295,7 +290,7 @@ class DynamicConditionsPublic {
         ob_end_clean();
 
         $type = $section->get_type();
-        $settings = $this->getElementSettings( $section );
+        $settings = $section->dynamicConditionSettings;
 
         if ( !empty( $settings['dynamicconditions_hideContentOnly'] ) ) {
             // render wrapper
@@ -305,7 +300,7 @@ class DynamicConditionsPublic {
             echo '<div class="dc-elementor-hidden-column" data-size="' . $settings['_inline_size'] . '"></div>';
         }
 
-        echo '<!-- hidden ' . $type . ' -->';
+        echo "<!-- hidden $type -->";
     }
 
     /**
@@ -663,7 +658,7 @@ class DynamicConditionsPublic {
      * @since    1.0.0
      */
     public function enqueueScripts() {
-        if ( \Elementor\Plugin::$instance->editor->is_edit_mode() ) {
+        if ( Plugin::$instance->editor->is_edit_mode() ) {
             return;
         }
         wp_enqueue_script( $this->pluginName, DynamicConditions_URL . '/Public/js/dynamic-conditions-public.js', [ 'jquery' ], $this->version, true );
