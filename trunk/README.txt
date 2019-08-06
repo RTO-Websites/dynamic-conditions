@@ -54,6 +54,11 @@ Yes, you can set display conditions for logged in or logged out users. Selecting
 1. Widget options for conditions
 
 == Changelog ==
+= 1.4.0 =
+* Add array conditions
+* Add conditions for popups
+* Change code-structure
+
 = 1.3.0 =
 * Improve parsing of acf dates
 * Add icon to elements with condition in preview
