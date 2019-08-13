@@ -155,4 +155,25 @@ class Date {
 
         return $dayList;
     }
+
+    /**
+     * Converts to long locale to a locale which can be used by setlocale()
+     *
+     * @param $locale
+     * @return mixed
+     */
+    public static function fixLocale( $locale ) {
+        $localeSettings = explode( ";", $locale );
+
+        foreach ( $localeSettings as $localeSetting ) {
+            if ( strpos( $localeSetting, "=" ) !== false ) {
+                list ( $category, $locale ) = explode( "=", $localeSetting );
+            } else {
+                $category = LC_ALL;
+                $locale = $localeSetting;
+            }
+        }
+
+        return $locale;
+    }
 }
