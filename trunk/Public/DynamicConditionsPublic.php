@@ -117,7 +117,7 @@ class DynamicConditionsPublic {
         remove_filter( 'get_the_modified_date', [ $this->dateInstance, 'filterPostDate' ], 10 );
 
         // reset locale
-        setlocale( LC_ALL, Date::fixLocale( $currentLocale ) );
+        Date::setLocale( $currentLocale );
 
         $tagData = $this->getDynamicTagData( $id );
         $this->convertAcfDate( $id, $tagData );

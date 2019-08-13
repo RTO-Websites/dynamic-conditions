@@ -157,12 +157,12 @@ class Date {
     }
 
     /**
-     * Converts to long locale to a locale which can be used by setlocale()
+     * Sets a local
+     * Fix issue with too long locales returned by setLocale(LC_ALL, 0)
      *
      * @param $locale
-     * @return mixed
      */
-    public static function fixLocale( $locale ) {
+    public static function setLocale( $locale ) {
         $localeSettings = explode( ";", $locale );
 
         foreach ( $localeSettings as $localeSetting ) {
@@ -172,8 +172,8 @@ class Date {
                 $category = LC_ALL;
                 $locale = $localeSetting;
             }
-        }
 
-        return $locale;
+            setlocale($category, $locale);
+        }
     }
 }
