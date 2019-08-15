@@ -235,8 +235,7 @@ class DynamicConditionsPublic {
 
 
     /**
-     * Hooks into elementor/theme/before_do_popup, loops all popups and check for condition
-     * Removes popup from location, if it is hidden
+     * Removes popup from location, if it is hidden by condition
      *
      * @param Locations_Manager $locationManager
      */

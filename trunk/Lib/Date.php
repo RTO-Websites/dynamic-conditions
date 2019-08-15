@@ -173,7 +173,7 @@ class Date {
                 $locale = $localeSetting;
             }
 
-            setlocale($category, $locale);
+            setlocale( $category, $locale );
         }
     }
 }
