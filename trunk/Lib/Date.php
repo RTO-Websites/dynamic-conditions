@@ -118,7 +118,7 @@ class Date {
     }
 
     /**
-     * Loops all months an return in a list
+     * Get a list of months (january, february,...)
      *
      * @return array
      */
@@ -161,7 +161,7 @@ class Date {
     }
 
     /**
-     * Loops all days an return in a list
+     * Get a list of days (monday, tuesday,...)
      *
      * @return array
      */
