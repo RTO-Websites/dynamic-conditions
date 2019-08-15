@@ -1,4 +1,4 @@
-<?php namespace Lib;
+<?php namespace DynamicConditions\Lib;
 
 /**
  * Register all actions and filters for the plugin
@@ -21,7 +21,7 @@
  * @subpackage DynamicConditions/includes
  * @author     RTO GmbH <kundenhomepage@rto.de>
  */
-class DynamicConditionsLoader {
+class Loader {
 
 	/**
 	 * The array of actions registered with WordPress.

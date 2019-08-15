@@ -1,8 +1,9 @@
 <?php
+namespace DynamicConditions;
 
-use Lib\DynamicConditions;
-use Lib\DynamicConditionsActivator;
-use Lib\DynamicConditionsDeactivator;
+use DynamicConditions\Lib\DynamicConditions;
+use DynamicConditions\Lib\Activator;
+use DynamicConditions\Lib\Deactivator;
 
 /**
  * The plugin bootstrap file
@@ -34,22 +35,27 @@ if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
+define( 'DynamicConditions_VERSION', '1.3.2' );
+
+define( 'DynamicConditions_DIR', str_replace( '\\', '/', __DIR__ ) );
+define( 'DynamicConditions_URL', plugin_dir_url( __FILE__ ) );
+
 /**
  * The class responsible for auto loading classes.
  */
-require_once plugin_dir_path( __FILE__ ) . 'vendor/autoload.php';
+require_once DynamicConditions_DIR . '/vendor/autoload.php';
 
 /**
  * The code that runs during plugin activation.
  * This action is documented in includes/DynamicConditionsActivator.php
  */
-register_activation_hook( __FILE__, [ DynamicConditionsActivator::class, 'activate' ] );
+register_activation_hook( __FILE__, [ Activator::class, 'activate' ] );
 
 /**
  * The code that runs during plugin deactivation.
  * This action is documented in includes/DynamicConditionsDeactivator.php
  */
-register_deactivation_hook( __FILE__, [ DynamicConditionsDeactivator::class, 'deactivate' ] );
+register_deactivation_hook( __FILE__, [ Deactivator::class, 'deactivate' ] );
 
 /**
  * Begins execution of the plugin.

@@ -1,4 +1,4 @@
-<?php namespace Lib;
+<?php namespace DynamicConditions\Lib;
 
 /**
  * Define the internationalization functionality
@@ -24,7 +24,7 @@
  * @subpackage DynamicConditions/includes
  * @author     RTO GmbH <kundenhomepage@rto.de>
  */
-class DynamicConditionsI18n {
+class I18n {
 
 	/**
 	 * The domain specified for this plugin.

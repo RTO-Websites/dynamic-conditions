@@ -1,6 +1,10 @@
-<?php namespace Pub;
+<?php namespace DynamicConditions\Pub;
 
-use Lib\DynamicConditionsDate;
+use Elementor\Element_Base;
+use Elementor\Plugin;
+use ElementorPro\Modules\ThemeBuilder\Classes\Locations_Manager;
+use ElementorPro\Modules\ThemeBuilder\Module;
+use DynamicConditions\Lib\Date;
 
 /**
  * The public-facing functionality of the plugin.
@@ -59,25 +63,17 @@ class DynamicConditionsPublic {
 
         $this->pluginName = $pluginName;
         $this->version = $version;
-        $this->dateInstance = new DynamicConditionsDate();
+        $this->dateInstance = new Date();
     }
 
     /**
      * Gets settings with english locale (needed for date)
      *
-     * @param $element
+     * @param Element_Base $element
      * @return mixed
      */
     private function getElementSettings( $element ) {
-        /* if ( \Elementor\Plugin::$instance->editor->is_edit_mode() ) {
-            return;
-        } */
         $id = $element->get_id();
-        if ( !empty( $this->elementSettings[$id] ) ) {
-            // dont work in a loop?
-            //return $this->elementSettings[$id];
-        }
-
         $clonedElement = clone $element;
 
         $element->get_settings_for_display(); // call to cache settings
@@ -98,8 +94,10 @@ class DynamicConditionsPublic {
             dynamicconditions_visibility
             dynamicconditions_day_value
             dynamicconditions_day_value2
+            dynamicconditions_day_array_value
             dynamicconditions_month_value
             dynamicconditions_month_value2
+            dynamicconditions_month_array_value
             dynamicconditions_date_value
             dynamicconditions_date_value2
             dynamicconditions_value
@@ -119,7 +117,7 @@ class DynamicConditionsPublic {
         remove_filter( 'get_the_modified_date', [ $this->dateInstance, 'filterPostDate' ], 10 );
 
         // reset locale
-        setlocale( LC_ALL, $currentLocale );
+        Date::setLocale( $currentLocale );
 
         $tagData = $this->getDynamicTagData( $id );
         $this->convertAcfDate( $id, $tagData );
@@ -219,7 +217,7 @@ class DynamicConditionsPublic {
             return;
         }
 
-        $time = \DateTime::createFromFormat( $tagData['return_format'], DynamicConditionsDate::unTranslateDate( $tagData['value'] ) );
+        $time = \DateTime::createFromFormat( $tagData['return_format'], Date::unTranslateDate( $tagData['value'] ) );
 
         if ( empty( $time ) ) {
             return;
@@ -235,13 +233,33 @@ class DynamicConditionsPublic {
         $this->elementSettings[$id]['dynamicconditions_dynamic'] = $timestamp;
     }
 
+
+    /**
+     * Removes popup from location, if it is hidden by condition
+     *
+     * @param Locations_Manager $locationManager
+     */
+    public function checkPopupsCondition( $locationManager ) {
+        $conditionManager = Module::instance()->get_conditions_manager();
+        $module = $conditionManager->get_documents_for_location( 'popup' );
+
+        foreach ( $module as $documentId => $document ) {
+            $settings = $this->getElementSettings( $document );
+            $hide = $this->checkCondition( $settings );
+
+            if ( $hide ) {
+                $locationManager->remove_doc_from_location( 'popup', $documentId );
+            }
+        }
+    }
+
     /**
      * Check if section is hidden, before rendering
      *
-     * @param $section
+     * @param Element_Base $section
      */
     public function filterSectionContentBefore( $section ) {
-        if ( \Elementor\Plugin::$instance->editor->is_edit_mode() ) {
+        if ( Plugin::$instance->editor->is_edit_mode() ) {
             return;
         }
 
@@ -253,6 +271,7 @@ class DynamicConditionsPublic {
         }
 
         $section->dynamicConditionIsHidden = true;
+        $section->dynamicConditionSettings = true;
 
         ob_start();
     }
@@ -260,7 +279,7 @@ class DynamicConditionsPublic {
     /**
      * Clean output of section if it is hidden
      *
-     * @param $section
+     * @param Element_Base $section
      */
     public function filterSectionContentAfter( $section ) {
         if ( empty( $section ) || empty( $section->dynamicConditionIsHidden ) ) {
@@ -270,7 +289,7 @@ class DynamicConditionsPublic {
         ob_end_clean();
 
         $type = $section->get_type();
-        $settings = $this->getElementSettings( $section );
+        $settings = $section->dynamicConditionSettings;
 
         if ( !empty( $settings['dynamicconditions_hideContentOnly'] ) ) {
             // render wrapper
@@ -280,7 +299,7 @@ class DynamicConditionsPublic {
             echo '<div class="dc-elementor-hidden-column" data-size="' . $settings['_inline_size'] . '"></div>';
         }
 
-        echo '<!-- hidden ' . $type . ' -->';
+        echo "<!-- hidden $type -->";
     }
 
     /**
@@ -454,6 +473,11 @@ class DynamicConditionsPublic {
                 $condition = $dynamicTagValue >= $checkValue && $dynamicTagValue <= $checkValue2;
                 $break = true;
                 break;
+
+            case 'in_array':
+                $condition = in_array( $dynamicTagValue, explode( ',', $checkValue ) ) !== false;
+                $break = true;
+                break;
         }
 
         return [
@@ -472,17 +496,17 @@ class DynamicConditionsPublic {
     private function parseDynamicTagValue( &$dynamicTagValue, $compareType ) {
         switch ( $compareType ) {
             case 'days':
-                $dynamicTagValue = date( 'N', DynamicConditionsDate::stringToTime( $dynamicTagValue ) );
+                $dynamicTagValue = date( 'N', Date::stringToTime( $dynamicTagValue ) );
                 break;
 
             case 'months':
-                $dynamicTagValue = date( 'n', DynamicConditionsDate::stringToTime( $dynamicTagValue ) );
+                $dynamicTagValue = date( 'n', Date::stringToTime( $dynamicTagValue ) );
                 break;
 
             case 'strtotime':
                 // nobreak
             case 'date':
-                $dynamicTagValue = DynamicConditionsDate::stringToTime( $dynamicTagValue );
+                $dynamicTagValue = Date::stringToTime( $dynamicTagValue );
                 break;
         }
     }
@@ -497,32 +521,42 @@ class DynamicConditionsPublic {
     private function getCheckValue( $compareType, $settings ) {
         switch ( $compareType ) {
             case 'days':
-                $checkValue = self::checkEmpty( $settings, 'dynamicconditions_day_value' );
+                if ( $settings['dynamicconditions_condition'] === 'in_array' ) {
+                    $checkValue = self::checkEmpty( $settings, 'dynamicconditions_day_array_value' );
+                    $checkValue = implode( ',', $checkValue );
+                } else {
+                    $checkValue = self::checkEmpty( $settings, 'dynamicconditions_day_value' );
+                }
                 $checkValue2 = self::checkEmpty( $settings, 'dynamicconditions_day_value2' );
-                $checkValue = DynamicConditionsDate::unTranslateDate( $checkValue );
-                $checkValue2 = DynamicConditionsDate::unTranslateDate( $checkValue2 );
+                $checkValue = Date::unTranslateDate( $checkValue );
+                $checkValue2 = Date::unTranslateDate( $checkValue2 );
                 break;
             case 'months':
-                $checkValue = self::checkEmpty( $settings, 'dynamicconditions_month_value' );
+                if ( $settings['dynamicconditions_condition'] === 'in_array' ) {
+                    $checkValue = self::checkEmpty( $settings, 'dynamicconditions_month_array_value' );
+                    $checkValue = implode( ',', $checkValue );
+                } else {
+                    $checkValue = self::checkEmpty( $settings, 'dynamicconditions_month_value' );
+                }
                 $checkValue2 = self::checkEmpty( $settings, 'dynamicconditions_month_value2' );
-                $checkValue = DynamicConditionsDate::unTranslateDate( $checkValue );
-                $checkValue2 = DynamicConditionsDate::unTranslateDate( $checkValue2 );
+                $checkValue = Date::unTranslateDate( $checkValue );
+                $checkValue2 = Date::unTranslateDate( $checkValue2 );
                 break;
 
             case 'date':
                 $checkValue = self::checkEmpty( $settings, 'dynamicconditions_date_value' );
                 $checkValue2 = self::checkEmpty( $settings, 'dynamicconditions_date_value2' );
-                $checkValue = DynamicConditionsDate::stringToTime( $checkValue );
-                $checkValue2 = DynamicConditionsDate::stringToTime( $checkValue2 );
+                $checkValue = Date::stringToTime( $checkValue );
+                $checkValue2 = Date::stringToTime( $checkValue2 );
                 break;
 
             case 'strtotime':
                 $checkValue = self::checkEmpty( $settings, 'dynamicconditions_value' );
                 $checkValue2 = self::checkEmpty( $settings, 'dynamicconditions_value2' );
-                $checkValue = DynamicConditionsDate::unTranslateDate( $checkValue );
-                $checkValue2 = DynamicConditionsDate::unTranslateDate( $checkValue2 );
-                $checkValue = DynamicConditionsDate::stringToTime( $checkValue );
-                $checkValue2 = DynamicConditionsDate::stringToTime( $checkValue2 );
+                $checkValue = Date::unTranslateDate( $checkValue );
+                $checkValue2 = Date::unTranslateDate( $checkValue2 );
+                $checkValue = Date::stringToTime( $checkValue );
+                $checkValue2 = Date::stringToTime( $checkValue2 );
                 break;
 
             case 'default':
@@ -623,10 +657,10 @@ class DynamicConditionsPublic {
      * @since    1.0.0
      */
     public function enqueueScripts() {
-        if ( \Elementor\Plugin::$instance->editor->is_edit_mode() ) {
+        if ( Plugin::$instance->editor->is_edit_mode() ) {
             return;
         }
-        wp_enqueue_script( $this->pluginName, plugin_dir_url( __FILE__ ) . 'js/dynamic-conditions-public.js', [ 'jquery' ], $this->version, true );
+        wp_enqueue_script( $this->pluginName, DynamicConditions_URL . '/Public/js/dynamic-conditions-public.js', [ 'jquery' ], $this->version, true );
     }
 
 }

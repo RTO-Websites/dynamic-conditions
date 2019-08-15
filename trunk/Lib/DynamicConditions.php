@@ -1,9 +1,9 @@
-<?php namespace Lib;
+<?php namespace DynamicConditions\Lib;
 
-use Admin\DynamicConditionsAdmin;
+use DynamicConditions\Admin\DynamicConditionsAdmin;
 use Elementor\Plugin;
-use Lib\DynamicTags\NumberPostsTag;
-use Pub\DynamicConditionsPublic;
+use DynamicConditions\Lib\DynamicTags\NumberPostsTag;
+use DynamicConditions\Pub\DynamicConditionsPublic;
 
 /**
  * The file that defines the core plugin class
@@ -40,7 +40,7 @@ class DynamicConditions {
      *
      * @since    1.0.0
      * @access   protected
-     * @var      DynamicConditionsLoader $loader Maintains and registers all hooks for the plugin.
+     * @var      Loader $loader Maintains and registers all hooks for the plugin.
      */
     protected $loader;
 
@@ -73,7 +73,7 @@ class DynamicConditions {
      */
     public function __construct() {
         $this->pluginName = 'dynamic-conditions';
-        $this->version = '1.3.2';
+        $this->version = DynamicConditions_VERSION;
 
         $this->loadDependencies();
         $this->setLocale();
@@ -102,7 +102,7 @@ class DynamicConditions {
      */
     private function loadDependencies() {
 
-        $this->loader = new DynamicConditionsLoader();
+        $this->loader = new Loader();
 
     }
 
@@ -117,7 +117,7 @@ class DynamicConditions {
      */
     private function setLocale() {
 
-        $pluginI18n = new DynamicConditionsI18n();
+        $pluginI18n = new I18n();
         $pluginI18n->setDomain( 'dynamicconditions' );
 
         $this->loader->addAction( 'plugins_loaded', $pluginI18n, 'loadPluginTextdomain' );
@@ -137,6 +137,8 @@ class DynamicConditions {
         $this->loader->addAction( 'elementor/element/column/section_advanced/after_section_end', $pluginAdmin, 'addConditionFields', 10, 3 );
         $this->loader->addAction( 'elementor/element/section/section_advanced/after_section_end', $pluginAdmin, 'addConditionFields', 10, 3 );
         $this->loader->addAction( 'elementor/element/common/_section_style/after_section_end', $pluginAdmin, 'addConditionFields', 10, 3 );
+
+        $this->loader->addAction( 'elementor/element/popup/section_advanced/after_section_end', $pluginAdmin, 'addConditionFields', 10, 3 );
 
         $this->loader->addAction( 'admin_notices', $pluginAdmin, 'addAdminNotices', 10, 3 );
         $this->loader->addAction( 'admin_enqueue_scripts', $pluginAdmin, 'enqueueStyles' );
@@ -166,6 +168,9 @@ class DynamicConditions {
         // filter columns
         $this->loader->addAction( "elementor/frontend/column/before_render", $pluginPublic, 'filterSectionContentBefore', 10, 1 );
         $this->loader->addAction( "elementor/frontend/column/after_render", $pluginPublic, 'filterSectionContentAfter', 10, 1 );
+
+        // filter popup
+        $this->loader->addAction( "elementor/theme/before_do_popup", $pluginPublic, 'checkPopupsCondition', 10, 1 );
     }
 
     private function defineElementorHooks() {
@@ -186,13 +191,13 @@ class DynamicConditions {
      * Sets style for preview
      */
     public function setFooterStyleForPreview() {
-        if ( !\Elementor\Plugin::$instance->preview->is_preview_mode() ) {
+        if ( !Plugin::$instance->preview->is_preview_mode() ) {
             return;
         }
         ?>
         <style>
             body.elementor-editor-active .elementor-element.dc-has-condition::after {
-                content: '\e1019';
+                content: '\e8ed';
                 display: inline-block;
                 position: absolute;
                 top: 0;
@@ -209,8 +214,8 @@ class DynamicConditions {
      * The name of the plugin used to uniquely identify it within the context of
      * WordPress and to define internationalization functionality.
      *
-     * @since     1.0.0
      * @return    string    The name of the plugin.
+     * @since     1.0.0
      */
     public function getDynamicConditions() {
         return $this->pluginName;
@@ -219,8 +224,8 @@ class DynamicConditions {
     /**
      * The reference to the class that orchestrates the hooks with the plugin.
      *
+     * @return    Loader    Orchestrates the hooks of the plugin.
      * @since     1.0.0
-     * @return    DynamicConditionsLoader    Orchestrates the hooks of the plugin.
      */
     public function getLoader() {
         return $this->loader;
@@ -229,8 +234,8 @@ class DynamicConditions {
     /**
      * Retrieve the version number of the plugin.
      *
-     * @since     1.0.0
      * @return    string    The version number of the plugin.
+     * @since     1.0.0
      */
     public function getVersion() {
         return $this->version;
