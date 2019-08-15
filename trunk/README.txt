@@ -58,6 +58,7 @@ Yes, you can set display conditions for logged in or logged out users. Selecting
 * Add array conditions
 * Add conditions for popups
 * Change code-structure
+* Fix issues with day-/month-translation
 
 = 1.3.0 =
 * Improve parsing of acf dates
