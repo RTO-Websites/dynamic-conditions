@@ -118,7 +118,7 @@ class Date {
     }
 
     /**
-     * Get a list of months (january, february,...)
+     * Loops all months an return in a list
      *
      * @return array
      */
@@ -161,7 +161,7 @@ class Date {
     }
 
     /**
-     * Get a list of days (monday, tuesday,...)
+     * Loops all days an return in a list
      *
      * @return array
      */
@@ -193,6 +193,14 @@ class Date {
             } else {
                 $category = LC_ALL;
                 $locale = $localeSetting;
+            }
+
+            if ( is_string( $category ) && defined( $category ) ) {
+                $category = constant( $category );
+            }
+
+            if ( !is_integer( $category ) ) {
+                continue;
             }
 
             setlocale( $category, $locale );
