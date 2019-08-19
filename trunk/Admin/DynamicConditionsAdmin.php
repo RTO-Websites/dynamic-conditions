@@ -269,8 +269,6 @@ class DynamicConditionsAdmin {
                 'condition' => [
                     'dynamicconditions_condition' => [ 'in_array' ],
                     'dynamicconditions_type' => 'days',
-                    'dynamicconditions_dynamic!' => '',
-                    'dynamicconditions_dynamic[url]!' => '',
                 ],
                 'description' => __( 'Add your conditional value to compare here.', 'dynamicconditions' ),
                 'options' => Date::getDaysTranslated(),
