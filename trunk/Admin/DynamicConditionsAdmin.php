@@ -193,7 +193,7 @@ class DynamicConditionsAdmin {
                 ],
                 'default' => 'default',
                 'render_type' => $renderType,
-                'description' => __( 'Select what to you want to compare', 'dynamicconditions' ),
+                'description' => __( 'Select what do you want to compare', 'dynamicconditions' ),
                 'condition' => [
                     'dynamicconditions_condition' => $valueCondition,
                 ],

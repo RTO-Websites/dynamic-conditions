@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dynamic-conditions\n"
 "POT-Creation-Date: 2018-11-07 09:29+0100\n"
-"PO-Revision-Date: 2019-07-26 13:53+0200\n"
+"PO-Revision-Date: 2019-08-19 11:13+0200\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -113,7 +113,7 @@ msgstr "Zweite Bedingung falls zwischen gewählt wurde"
 msgid "Conditional value"
 msgstr "Bedingter Wert"
 
-msgid "Select what to you want to compare"
+msgid "Select what do you want to compare"
 msgstr "Wähle aus was du vergleichen möchtest"
 
 #: admin/DynamicConditionsAdmin.php:169
