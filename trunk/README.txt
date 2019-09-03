@@ -4,15 +4,15 @@ Donate link: https://www.rto.de
 Tags: elementor, conditions, dynamic, fields, rto
 Requires at least: 4.7
 Tested up to: 5.3
-Stable tag: 1.3.2
+Stable tag: 1.4.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Activates conditions for dynamic tags to show/hides a widget or section.
+Activates conditions for dynamic tags to show/hide a widget or section.
 
 == Description ==
 
-Dynamic Conditions is an Elementor addon that adds conditional logic to show and hide different elements. The plugin adds conditions to dynamic tags to show/hide a widget or section.
+Dynamic Conditions is an Elementor addon that adds conditional logic to show or hide different elements. The plugin adds conditions to dynamic tags to show/hide a widget or section.
 
 The plugin requires Elementor Pro since it uses Dynamic Tags to set the comparison conditions.
 
@@ -47,13 +47,19 @@ Yes, all the above are supported and many others supported out-of-the-box by Ele
 Yes, the plugin supports date based conditions, for example current-date or post-date. You can compare dates, days and months.
 
 = Can I show/hide elements for logged-in or logged-out users? =
-Yes, you can set conditional display for logged in or logged out users. Selecting the user information dynamic-tag, and set it to user ID. Now check if it is empty or not.
+Yes, you can set display conditions for logged in or logged out users. Selecting the "user information" dynamic-tag, and set it to "user ID". Now check if it is empty or not.
 
 == Screenshots ==
 
 1. Widget options for conditions
 
 == Changelog ==
+= 1.4.0 =
+* Add array conditions
+* Add conditions for popups
+* Change code-structure
+* Fix issues with day-/month-translation
+
 = 1.3.0 =
 * Improve parsing of acf dates
 * Add icon to elements with condition in preview

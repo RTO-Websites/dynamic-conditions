@@ -1,7 +1,7 @@
-<?php namespace Lib;
+<?php namespace DynamicConditions\Lib;
 
 /**
- * Fired during plugin deactivation
+ * Fired during plugin activation
  *
  * @link       https://www.rto.de
  * @since      1.0.0
@@ -11,16 +11,16 @@
  */
 
 /**
- * Fired during plugin deactivation.
+ * Fired during plugin activation.
  *
- * This class defines all code necessary to run during the plugin's deactivation.
+ * This class defines all code necessary to run during the plugin's activation.
  *
  * @since      1.0.0
  * @package    DynamicConditions
  * @subpackage DynamicConditions/includes
  * @author     RTO GmbH <kundenhomepage@rto.de>
  */
-class DynamicConditionsDeactivator {
+class Activator {
 
 	/**
 	 * Short Description. (use period)
@@ -29,7 +29,7 @@ class DynamicConditionsDeactivator {
 	 *
 	 * @since    1.0.0
 	 */
-	public static function deactivate() {
+	public static function activate() {
 
 	}
 
