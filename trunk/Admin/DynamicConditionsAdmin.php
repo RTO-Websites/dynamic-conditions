@@ -147,10 +147,6 @@ class DynamicConditionsAdmin {
                     'hide' => __( 'Hide when condition met', 'dynamicconditions' ),
                 ],
                 'render_type' => $renderType,
-                'condition' => [
-                    'dynamicconditions_dynamic!' => '',
-                    'dynamicconditions_dynamic[url]!' => '',
-                ],
                 'separator' => 'before',
             ]
         );
@@ -176,10 +172,6 @@ class DynamicConditionsAdmin {
                 ],
                 'description' => __( 'Select your condition for this widget visibility.', 'dynamicconditions' ),
 
-                'condition' => [
-                    'dynamicconditions_dynamic!' => '',
-                    'dynamicconditions_dynamic[url]!' => '',
-                ],
                 'prefix_class' => 'dc-has-condition dc-condition-',
                 'render_type' => 'template',
             ]
@@ -201,11 +193,9 @@ class DynamicConditionsAdmin {
                 ],
                 'default' => 'default',
                 'render_type' => $renderType,
-                'description' => __( 'Select what to you want to compare', 'dynamicconditions' ),
+                'description' => __( 'Select what do you want to compare', 'dynamicconditions' ),
                 'condition' => [
                     'dynamicconditions_condition' => $valueCondition,
-                    'dynamicconditions_dynamic!' => '',
-                    'dynamicconditions_dynamic[url]!' => '',
                 ],
             ]
         );
@@ -221,8 +211,6 @@ class DynamicConditionsAdmin {
                 'condition' => [
                     'dynamicconditions_condition' => $valueCondition,
                     'dynamicconditions_type' => [ 'default', 'strtotime' ],
-                    'dynamicconditions_dynamic!' => '',
-                    'dynamicconditions_dynamic[url]!' => '',
                 ],
             ]
         );
@@ -238,8 +226,6 @@ class DynamicConditionsAdmin {
                 'condition' => [
                     'dynamicconditions_condition' => [ 'between' ],
                     'dynamicconditions_type' => [ 'default', 'strtotime' ],
-                    'dynamicconditions_dynamic!' => '',
-                    'dynamicconditions_dynamic[url]!' => '',
                 ],
             ]
         );
@@ -256,8 +242,6 @@ class DynamicConditionsAdmin {
                 'condition' => [
                     'dynamicconditions_condition' => $valueCondition,
                     'dynamicconditions_type' => 'date',
-                    'dynamicconditions_dynamic!' => '',
-                    'dynamicconditions_dynamic[url]!' => '',
                 ],
             ]
         );
@@ -272,8 +256,6 @@ class DynamicConditionsAdmin {
                 'condition' => [
                     'dynamicconditions_condition' => [ 'between' ],
                     'dynamicconditions_type' => 'date',
-                    'dynamicconditions_dynamic!' => '',
-                    'dynamicconditions_dynamic[url]!' => '',
                 ],
             ]
         );
@@ -287,8 +269,6 @@ class DynamicConditionsAdmin {
                 'condition' => [
                     'dynamicconditions_condition' => [ 'in_array' ],
                     'dynamicconditions_type' => 'days',
-                    'dynamicconditions_dynamic!' => '',
-                    'dynamicconditions_dynamic[url]!' => '',
                 ],
                 'description' => __( 'Add your conditional value to compare here.', 'dynamicconditions' ),
                 'options' => Date::getDaysTranslated(),
@@ -304,8 +284,6 @@ class DynamicConditionsAdmin {
                 'condition' => [
                     'dynamicconditions_condition' => array_diff( $valueCondition, [ 'in_array' ] ),
                     'dynamicconditions_type' => 'days',
-                    'dynamicconditions_dynamic!' => '',
-                    'dynamicconditions_dynamic[url]!' => '',
                 ],
                 'description' => __( 'Add your conditional value to compare here.', 'dynamicconditions' ),
                 'options' => Date::getDaysTranslated(),
@@ -321,8 +299,6 @@ class DynamicConditionsAdmin {
                 'condition' => [
                     'dynamicconditions_condition' => [ 'between' ],
                     'dynamicconditions_type' => 'days',
-                    'dynamicconditions_dynamic!' => '',
-                    'dynamicconditions_dynamic[url]!' => '',
                 ],
                 'description' => __( 'Add a second condition value, if between is selected', 'dynamicconditions' ),
                 'options' => Date::getDaysTranslated(),
@@ -338,8 +314,6 @@ class DynamicConditionsAdmin {
                 'condition' => [
                     'dynamicconditions_condition' => [ 'in_array' ],
                     'dynamicconditions_type' => 'months',
-                    'dynamicconditions_dynamic!' => '',
-                    'dynamicconditions_dynamic[url]!' => '',
                 ],
                 'description' => __( 'Add your conditional value to compare here.', 'dynamicconditions' ),
                 'options' => Date::getMonthsTranslated(),
@@ -356,8 +330,6 @@ class DynamicConditionsAdmin {
                 'condition' => [
                     'dynamicconditions_condition' => array_diff( $valueCondition, [ 'in_array' ] ),
                     'dynamicconditions_type' => 'months',
-                    'dynamicconditions_dynamic!' => '',
-                    'dynamicconditions_dynamic[url]!' => '',
                 ],
                 'description' => __( 'Add your conditional value to compare here.', 'dynamicconditions' ),
                 'options' => Date::getMonthsTranslated(),
@@ -373,8 +345,6 @@ class DynamicConditionsAdmin {
                 'condition' => [
                     'dynamicconditions_condition' => [ 'between' ],
                     'dynamicconditions_type' => 'months',
-                    'dynamicconditions_dynamic!' => '',
-                    'dynamicconditions_dynamic[url]!' => '',
                 ],
                 'description' => __( 'Add a second condition value, if between is selected', 'dynamicconditions' ),
                 'options' => Date::getMonthsTranslated(),
@@ -390,8 +360,6 @@ class DynamicConditionsAdmin {
                 'render_type' => $renderType,
                 'condition' => [
                     'dynamicconditions_condition' => [ 'in_array' ],
-                    'dynamicconditions_dynamic!' => '',
-                    'dynamicconditions_dynamic[url]!' => '',
                 ],
                 'show_label' => false,
                 'raw' => __( 'Use comma-separated values, to check if dynamic-value is equal with one of each item.', 'dynamicconditions' ),
@@ -409,8 +377,6 @@ class DynamicConditionsAdmin {
                 'condition' => [
                     'dynamicconditions_condition' => $valueCondition,
                     'dynamicconditions_type' => 'strtotime',
-                    'dynamicconditions_dynamic!' => '',
-                    'dynamicconditions_dynamic[url]!' => '',
                 ],
                 'show_label' => false,
                 'raw' => '<div class="elementor-control-field-description">'
@@ -426,8 +392,6 @@ class DynamicConditionsAdmin {
                 'style' => 'thick',
                 'condition' => [
                     'dynamicconditions_condition' => $valueCondition,
-                    'dynamicconditions_dynamic!' => '',
-                    'dynamicconditions_dynamic[url]!' => '',
                 ],
             ]
         );
@@ -442,8 +406,6 @@ class DynamicConditionsAdmin {
                 'render_type' => $renderType,
                 'condition' => [
                     'dynamicconditions_condition' => $allCondition,
-                    'dynamicconditions_dynamic!' => '',
-                    'dynamicconditions_dynamic[url]!' => '',
                 ],
             ]
         );
@@ -458,8 +420,6 @@ class DynamicConditionsAdmin {
                     'condition' => [
                         'dynamicconditions_condition' => $allCondition,
                         'dynamicconditions_hideContentOnly!' => 'on',
-                        'dynamicconditions_dynamic!' => '',
-                        'dynamicconditions_dynamic[url]!' => '',
                     ],
                     'return_value' => 'on',
                 ]
@@ -472,10 +432,6 @@ class DynamicConditionsAdmin {
                 'type' => Controls_Manager::SWITCHER,
                 'label' => __( 'Parse shortcodes', 'dynamicconditions' ),
                 'render_type' => $renderType,
-                'condition' => [
-                    'dynamicconditions_dynamic!' => '',
-                    'dynamicconditions_dynamic[url]!' => '',
-                ],
             ]
         );
 

@@ -195,6 +195,14 @@ class Date {
                 $locale = $localeSetting;
             }
 
+            if ( is_string( $category ) && defined( $category ) ) {
+                $category = constant( $category );
+            }
+
+            if ( !is_integer( $category ) ) {
+                continue;
+            }
+
             setlocale( $category, $locale );
         }
     }
