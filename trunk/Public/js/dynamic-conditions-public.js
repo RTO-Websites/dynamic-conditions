@@ -30,10 +30,10 @@
    */
 
   function resizeColumns() {
-    var columns = $('.dc-elementor-hidden-column');
+    let columns = $('.dc-elementor-hidden-column');
     columns.each(function (index, column) {
       column = $(column);
-      var hiddenSize = parseFloat(column.data('size')),
+      let hiddenSize = parseFloat(column.data('size')),
         row = column.closest('.elementor-row'),
         children = row.find('> .elementor-column'),
         rowSize = 0;
@@ -51,10 +51,10 @@
       children.each(function (cIndex, child) {
         // resize columns
         child = $(child);
-        var childSize = parseFloat(child.width() / row.width() * 100),
+        let childSize = parseFloat(child.width() / row.width() * 100),
           newSize = childSize + (hiddenSize * (childSize / rowSize));
 
-        if (childSize < 100 && newSize < 100) {
+        if (childSize < 100) {
           child.css({width: newSize + '%'});
         }
       });
@@ -63,10 +63,10 @@
   }
 
   function resetColumns() {
-    var columns = $('.dc-elementor-hidden-column');
+    let columns = $('.dc-elementor-hidden-column');
     columns.each(function (index, column) {
       column = $(column);
-      var row = column.closest('.elementor-row'),
+      let row = column.closest('.elementor-row'),
         children = row.find('> .elementor-column');
 
       // reset width for recalc
