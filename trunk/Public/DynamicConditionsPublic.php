@@ -104,6 +104,7 @@ class DynamicConditionsPublic {
             dynamicconditions_value2
             dynamicconditions_parse_shortcodes
             dynamicconditions_debug
+            _column_size
             _inline_size';
 
         foreach ( explode( "\n", $fields ) as $field ) {
@@ -271,7 +272,7 @@ class DynamicConditionsPublic {
         }
 
         $section->dynamicConditionIsHidden = true;
-        $section->dynamicConditionSettings = true;
+        $section->dynamicConditionSettings = $settings;
 
         ob_start();
     }
@@ -296,7 +297,7 @@ class DynamicConditionsPublic {
             $section->before_render();
             $section->after_render();
         } else if ( $type == 'column' && $settings['dynamicconditions_resizeOtherColumns'] ) {
-            echo '<div class="dc-elementor-hidden-column" data-size="' . $settings['_inline_size'] . '"></div>';
+            echo '<div class="dc-elementor-hidden-column" data-size="' . $settings['_column_size'] . '"></div>';
         }
 
         echo "<!-- hidden $type -->";
