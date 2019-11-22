@@ -15,6 +15,11 @@ use DynamicConditions\Lib\Date;
  * @subpackage DynamicConditions/admin
  */
 
+// If this file is called directly, abort.
+if ( ! defined( 'ABSPATH' ) ) {
+    die;
+}
+
 /**
  * The admin-specific functionality of the plugin.
  *

@@ -5,6 +5,11 @@ namespace DynamicConditions\Lib\DynamicTags;
 use Elementor\Controls_Manager;
 use ElementorPro\Modules\DynamicTags\Module;
 
+// If this file is called directly, abort.
+if ( ! defined( 'ABSPATH' ) ) {
+    die;
+}
+
 Class NumberPostsTag extends \Elementor\Core\DynamicTags\Tag {
     const WRAPPED_TAG = false;
     public static $dtCount = 0;

@@ -18,6 +18,11 @@ use DynamicConditions\Pub\DynamicConditionsPublic;
  * @subpackage DynamicConditions/includes
  */
 
+// If this file is called directly, abort.
+if ( ! defined( 'ABSPATH' ) ) {
+    die;
+}
+
 /**
  * The core plugin class.
  *

@@ -11,6 +11,11 @@
  * @package    DynamicConditions
  * @subpackage DynamicConditions/public/partials
  */
+
+// If this file is called directly, abort.
+if ( ! defined( 'ABSPATH' ) ) {
+    die;
+}
 ?>
 
 <!-- This file should primarily consist of HTML with a little bit of PHP. -->

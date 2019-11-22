@@ -1,3 +1,10 @@
+<?php
+// If this file is called directly, abort.
+if ( ! defined( 'ABSPATH' ) ) {
+    die;
+}
+?>
+
 <div class="dynamicconditions-debug">
     <div class="dc-debug-row">
         <div class="dc-debug-label">Element:</div>

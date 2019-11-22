@@ -16,6 +16,11 @@ use DynamicConditions\Lib\Date;
  * @subpackage DynamicConditions/public
  */
 
+// If this file is called directly, abort.
+if ( ! defined( 'ABSPATH' ) ) {
+    die;
+}
+
 /**
  * The public-facing functionality of the plugin.
  *

@@ -1,5 +1,10 @@
 <?php namespace DynamicConditions\Lib;
 
+// If this file is called directly, abort.
+if ( ! defined( 'ABSPATH' ) ) {
+    die;
+}
+
 /**
  * Class Date
  * @package DynamicConditions\Lib
@@ -9,10 +14,10 @@ class Date {
     /**
      * Filter date-output from date_i18n() to return always a timestamp
      *
-     * @param string $j Formatted date string.
-     * @param string $req_format Format to display the date.
-     * @param int $i Unix timestamp.
-     * @param bool $gmt Whether to convert to GMT for time. Default false.
+     * @param string    $j             Formatted date string.
+     * @param string    $req_format    Format to display the date.
+     * @param int       $i             Unix timestamp.
+     * @param bool      $gmt           Whether to convert to GMT for time. Default false.
      * @return int Unix timestamp
      */
     public function filterDateI18n( $j, $req_format, $i, $gmt ) {

@@ -13,6 +13,11 @@
  * @subpackage DynamicConditions/includes
  */
 
+// If this file is called directly, abort.
+if ( ! defined( 'ABSPATH' ) ) {
+    die;
+}
+
 /**
  * Define the internationalization functionality.
  *
