@@ -1,4 +1,6 @@
-<?php namespace DynamicConditions\Lib;
+<?php
+
+namespace DynamicConditions\Lib;
 
 // If this file is called directly, abort.
 if ( ! defined( 'ABSPATH' ) ) {

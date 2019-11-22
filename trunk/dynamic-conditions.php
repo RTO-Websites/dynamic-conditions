@@ -1,4 +1,5 @@
 <?php
+
 namespace DynamicConditions;
 
 use DynamicConditions\Lib\DynamicConditions;

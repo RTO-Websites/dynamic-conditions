@@ -1,9 +1,10 @@
-<?php namespace DynamicConditions\Admin;
+<?php
+
+namespace DynamicConditions\Admin;
 
 use Elementor\Controls_Manager;
 use Elementor\Modules\DynamicTags\Module;
 use DynamicConditions\Lib\Date;
-
 
 /**
  * The admin-specific functionality of the plugin.

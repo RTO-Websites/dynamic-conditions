@@ -1,4 +1,6 @@
-<?php namespace DynamicConditions\Pub;
+<?php
+
+namespace DynamicConditions\Pub;
 
 use Elementor\Element_Base;
 use Elementor\Plugin;

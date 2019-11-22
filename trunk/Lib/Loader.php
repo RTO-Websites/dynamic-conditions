@@ -1,4 +1,6 @@
-<?php namespace DynamicConditions\Lib;
+<?php
+
+namespace DynamicConditions\Lib;
 
 /**
  * Register all actions and filters for the plugin

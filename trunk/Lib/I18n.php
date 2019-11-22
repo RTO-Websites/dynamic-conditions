@@ -1,4 +1,6 @@
-<?php namespace DynamicConditions\Lib;
+<?php
+
+namespace DynamicConditions\Lib;
 
 /**
  * Define the internationalization functionality

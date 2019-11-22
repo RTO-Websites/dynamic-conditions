@@ -1,4 +1,6 @@
-<?php namespace DynamicConditions\Lib;
+<?php
+
+namespace DynamicConditions\Lib;
 
 use DynamicConditions\Admin\DynamicConditionsAdmin;
 use Elementor\Plugin;
