@@ -100,7 +100,7 @@ class Loader {
 	 * @param      string               $callback         The name of the function definition on the $component.
 	 * @param      int      Optional    $priority         The priority at which the function should be fired.
 	 * @param      int      Optional    $acceptedArgs    The number of arguments that should be passed to the $callback.
-	 * @return   type                                   The collection of actions and filters registered with WordPress.
+     * @return   array                                   The collection of actions and filters registered with WordPress.
 	 */
 	private function add( $hooks, $hook, $component, $callback, $priority, $acceptedArgs ) {
 

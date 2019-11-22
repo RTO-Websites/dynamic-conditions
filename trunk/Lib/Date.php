@@ -3,6 +3,8 @@
 namespace DynamicConditions\Lib;
 
 // If this file is called directly, abort.
+use WP_Post;
+
 if ( ! defined( 'ABSPATH' ) ) {
     die;
 }
