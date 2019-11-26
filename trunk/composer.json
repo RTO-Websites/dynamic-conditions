@@ -1,5 +1,7 @@
 {
-  "require": {},
+  "require": {
+      "ext-json": "*"
+  },
   "autoload": {
     "psr-4": {
       "DynamicConditions\\": "./",

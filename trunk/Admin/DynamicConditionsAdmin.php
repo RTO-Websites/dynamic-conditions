@@ -1,9 +1,10 @@
-<?php namespace DynamicConditions\Admin;
+<?php
+
+namespace DynamicConditions\Admin;
 
 use Elementor\Controls_Manager;
 use Elementor\Modules\DynamicTags\Module;
 use DynamicConditions\Lib\Date;
-
 
 /**
  * The admin-specific functionality of the plugin.
@@ -14,6 +15,11 @@ use DynamicConditions\Lib\Date;
  * @package    DynamicConditions
  * @subpackage DynamicConditions/admin
  */
+
+// If this file is called directly, abort.
+if ( ! defined( 'ABSPATH' ) ) {
+    die;
+}
 
 /**
  * The admin-specific functionality of the plugin.

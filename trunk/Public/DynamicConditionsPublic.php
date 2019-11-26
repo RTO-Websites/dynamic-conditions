@@ -1,4 +1,6 @@
-<?php namespace DynamicConditions\Pub;
+<?php
+
+namespace DynamicConditions\Pub;
 
 use Elementor\Element_Base;
 use Elementor\Plugin;
@@ -15,6 +17,11 @@ use DynamicConditions\Lib\Date;
  * @package    DynamicConditions
  * @subpackage DynamicConditions/public
  */
+
+// If this file is called directly, abort.
+if ( ! defined( 'ABSPATH' ) ) {
+    die;
+}
 
 /**
  * The public-facing functionality of the plugin.

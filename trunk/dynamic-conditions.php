@@ -1,4 +1,5 @@
 <?php
+
 namespace DynamicConditions;
 
 use DynamicConditions\Lib\DynamicConditions;
@@ -31,7 +32,7 @@ use DynamicConditions\Lib\Deactivator;
  */
 
 // If this file is called directly, abort.
-if ( ! defined( 'WPINC' ) ) {
+if ( ! defined( 'ABSPATH' ) ) {
 	die;
 }
 
