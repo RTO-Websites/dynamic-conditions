@@ -1,4 +1,6 @@
-<?php namespace DynamicConditions\Pub;
+<?php
+
+namespace DynamicConditions\Pub;
 
 use Elementor\Element_Base;
 use Elementor\Plugin;
@@ -15,6 +17,11 @@ use DynamicConditions\Lib\Date;
  * @package    DynamicConditions
  * @subpackage DynamicConditions/public
  */
+
+// If this file is called directly, abort.
+if ( ! defined( 'ABSPATH' ) ) {
+    die;
+}
 
 /**
  * The public-facing functionality of the plugin.
@@ -241,6 +248,11 @@ class DynamicConditionsPublic {
      * @param Locations_Manager $locationManager
      */
     public function checkPopupsCondition( $locationManager ) {
+        if ( ! empty( Plugin::$instance->preview ) && Plugin::$instance->preview->is_preview_mode() ) {
+            return;
+        }
+
+
         $conditionManager = Module::instance()->get_conditions_manager();
         $module = $conditionManager->get_documents_for_location( 'popup' );
 

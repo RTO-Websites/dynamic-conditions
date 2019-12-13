@@ -1,4 +1,6 @@
-<?php namespace DynamicConditions\Lib;
+<?php
+
+namespace DynamicConditions\Lib;
 
 use DynamicConditions\Admin\DynamicConditionsAdmin;
 use Elementor\Plugin;
@@ -17,6 +19,11 @@ use DynamicConditions\Pub\DynamicConditionsPublic;
  * @package    DynamicConditions
  * @subpackage DynamicConditions/includes
  */
+
+// If this file is called directly, abort.
+if ( ! defined( 'ABSPATH' ) ) {
+    die;
+}
 
 /**
  * The core plugin class.
@@ -173,6 +180,13 @@ class DynamicConditions {
         $this->loader->addAction( "elementor/theme/before_do_popup", $pluginPublic, 'checkPopupsCondition', 10, 1 );
     }
 
+    /**
+     * Register all of the hooks related to the elementor-facing functionality
+     * of the plugin.
+     *
+     * @since    1.2.0
+     * @access   private
+     */
     private function defineElementorHooks() {
         $this->loader->addAction( 'elementor/dynamic_tags/register_tags', $this, 'registerDynamicTags', 10, 1 );
         $this->loader->addAction( 'wp_footer', $this, 'setFooterStyleForPreview', 10, 0 );
@@ -181,6 +195,7 @@ class DynamicConditions {
     /**
      * Register some useful dynamic tags
      *
+     * @since 1.2.0
      * @param $dynamicTags
      */
     public function registerDynamicTags( $dynamicTags ) {
@@ -189,6 +204,8 @@ class DynamicConditions {
 
     /**
      * Sets style for preview
+     *
+     * @since 1.3.0
      */
     public function setFooterStyleForPreview() {
         if ( !Plugin::$instance->preview->is_preview_mode() ) {

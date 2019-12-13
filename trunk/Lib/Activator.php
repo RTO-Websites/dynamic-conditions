@@ -1,4 +1,6 @@
-<?php namespace DynamicConditions\Lib;
+<?php
+
+namespace DynamicConditions\Lib;
 
 /**
  * Fired during plugin activation
@@ -9,6 +11,11 @@
  * @package    DynamicConditions
  * @subpackage DynamicConditions/includes
  */
+
+// If this file is called directly, abort.
+if ( ! defined( 'ABSPATH' ) ) {
+    die;
+}
 
 /**
  * Fired during plugin activation.
