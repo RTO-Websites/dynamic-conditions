@@ -2,9 +2,9 @@
 Contributors: rtowebsites
 Donate link: https://www.rto.de
 Tags: elementor, conditions, dynamic, fields, rto
-Requires at least: 4.7
+Requires at least: 5.0
 Tested up to: 5.3
-Stable tag: 1.4.1
+Stable tag: 1.4.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -54,6 +54,16 @@ Yes, you can set display conditions for logged in or logged out users. Selecting
 1. Widget options for conditions
 
 == Changelog ==
+= 1.4.3 =
+* Fix issue with popups in editor
+* Fix double slash on javascript-enqueue
+
+= 1.4.2 =
+* Fix issue with popups in preview
+
+= 1.4.1 =
+* Fix issue with calculation of hidden columns
+
 = 1.4.0 =
 * Add array conditions
 * Add conditions for popups
