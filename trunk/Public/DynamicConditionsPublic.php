@@ -19,7 +19,7 @@ use DynamicConditions\Lib\Date;
  */
 
 // If this file is called directly, abort.
-if ( ! defined( 'ABSPATH' ) ) {
+if ( !defined( 'ABSPATH' ) ) {
     die;
 }
 
@@ -248,10 +248,9 @@ class DynamicConditionsPublic {
      * @param Locations_Manager $locationManager
      */
     public function checkPopupsCondition( $locationManager ) {
-        if ( ! empty( Plugin::$instance->preview ) && Plugin::$instance->preview->is_preview_mode() ) {
+        if ( $this->getMode() !== 'website' ) {
             return;
         }
-
 
         $conditionManager = Module::instance()->get_conditions_manager();
         $module = $conditionManager->get_documents_for_location( 'popup' );
@@ -272,7 +271,7 @@ class DynamicConditionsPublic {
      * @param Element_Base $section
      */
     public function filterSectionContentBefore( $section ) {
-        if ( Plugin::$instance->editor->is_edit_mode() ) {
+        if ( $this->getMode() === 'edit' ) {
             return;
         }
 
@@ -326,7 +325,7 @@ class DynamicConditionsPublic {
             return false;
         }
 
-        if ( \Elementor\Plugin::$instance->editor->is_edit_mode() ) {
+        if ( $this->getMode() === 'edit' ) {
             return false;
         }
 
@@ -665,12 +664,29 @@ class DynamicConditionsPublic {
     }
 
     /**
+     * Returns elementor-mode (edit, preview or website)
+     *
+     * @return string
+     */
+    private function getMode() {
+        if ( !empty( Plugin::$instance->editor ) && Plugin::$instance->editor->is_edit_mode() ) {
+            return 'edit';
+        }
+
+        if ( !empty( Plugin::$instance->preview ) && Plugin::$instance->preview->is_preview_mode() ) {
+            return 'preview';
+        }
+
+        return 'website';
+    }
+
+    /**
      * Register the stylesheets for the public-facing side of the site.
      *
      * @since    1.0.0
      */
     public function enqueueScripts() {
-        if ( Plugin::$instance->editor->is_edit_mode() ) {
+        if ( $this->getMode() === 'edit' ) {
             return;
         }
         wp_enqueue_script( $this->pluginName, DynamicConditions_URL . '/Public/js/dynamic-conditions-public.js', [ 'jquery' ], $this->version, true );
