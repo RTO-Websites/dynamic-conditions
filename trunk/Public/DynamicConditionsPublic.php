@@ -19,7 +19,7 @@ use DynamicConditions\Lib\Date;
  */
 
 // If this file is called directly, abort.
-if ( ! defined( 'ABSPATH' ) ) {
+if ( !defined( 'ABSPATH' ) ) {
     die;
 }
 
@@ -248,10 +248,12 @@ class DynamicConditionsPublic {
      * @param Locations_Manager $locationManager
      */
     public function checkPopupsCondition( $locationManager ) {
-        if ( ! empty( Plugin::$instance->preview ) && Plugin::$instance->preview->is_preview_mode() ) {
+        if ( !empty( Plugin::$instance->preview ) && Plugin::$instance->preview->is_preview_mode() ) {
             return;
         }
-
+        if ( !empty( Plugin::$instance->editor ) && Plugin::$instance->editor->is_edit_mode() ) {
+            return;
+        }
 
         $conditionManager = Module::instance()->get_conditions_manager();
         $module = $conditionManager->get_documents_for_location( 'popup' );
