@@ -39,7 +39,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 define( 'DynamicConditions_VERSION', '1.4.2' );
 
 define( 'DynamicConditions_DIR', str_replace( '\\', '/', __DIR__ ) );
-define( 'DynamicConditions_URL', plugin_dir_url( __FILE__ ) );
+define( 'DynamicConditions_URL', untrailingslashit( plugin_dir_url( __FILE__ ) ) );
 
 /**
  * The class responsible for auto loading classes.
