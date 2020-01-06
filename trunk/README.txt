@@ -54,6 +54,10 @@ Yes, you can set display conditions for logged in or logged out users. Selecting
 1. Widget options for conditions
 
 == Changelog ==
+= 1.4.3 =
+* Fix issue with popups in editor
+* Fix double slash on javascript-enqueue
+
 = 1.4.2 =
 * Fix issue with popups in preview
 
