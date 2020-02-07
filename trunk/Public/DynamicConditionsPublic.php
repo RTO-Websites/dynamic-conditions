@@ -531,26 +531,34 @@ class DynamicConditionsPublic {
      * @return array
      */
     private function getCheckValue( $compareType, $settings ) {
+
         switch ( $compareType ) {
             case 'days':
                 if ( $settings['dynamicconditions_condition'] === 'in_array' ) {
                     $checkValue = self::checkEmpty( $settings, 'dynamicconditions_day_array_value' );
+                    $checkValue = $this->parseShortcode( $checkValue );
                     $checkValue = implode( ',', $checkValue );
                 } else {
                     $checkValue = self::checkEmpty( $settings, 'dynamicconditions_day_value' );
+                    $checkValue = $this->parseShortcode( $checkValue );
                 }
                 $checkValue2 = self::checkEmpty( $settings, 'dynamicconditions_day_value2' );
+                $checkValue2 = $this->parseShortcode( $checkValue2 );
                 $checkValue = Date::unTranslateDate( $checkValue );
                 $checkValue2 = Date::unTranslateDate( $checkValue2 );
                 break;
+
             case 'months':
                 if ( $settings['dynamicconditions_condition'] === 'in_array' ) {
                     $checkValue = self::checkEmpty( $settings, 'dynamicconditions_month_array_value' );
+                    $checkValue = $this->parseShortcode( $checkValue );
                     $checkValue = implode( ',', $checkValue );
                 } else {
                     $checkValue = self::checkEmpty( $settings, 'dynamicconditions_month_value' );
+                    $checkValue = $this->parseShortcode( $checkValue );
                 }
                 $checkValue2 = self::checkEmpty( $settings, 'dynamicconditions_month_value2' );
+                $checkValue2 = $this->parseShortcode( $checkValue2 );
                 $checkValue = Date::unTranslateDate( $checkValue );
                 $checkValue2 = Date::unTranslateDate( $checkValue2 );
                 break;
@@ -558,6 +566,8 @@ class DynamicConditionsPublic {
             case 'date':
                 $checkValue = self::checkEmpty( $settings, 'dynamicconditions_date_value' );
                 $checkValue2 = self::checkEmpty( $settings, 'dynamicconditions_date_value2' );
+                $checkValue = $this->parseShortcode( $checkValue );
+                $checkValue2 = $this->parseShortcode( $checkValue2 );
                 $checkValue = Date::stringToTime( $checkValue );
                 $checkValue2 = Date::stringToTime( $checkValue2 );
                 break;
@@ -565,6 +575,8 @@ class DynamicConditionsPublic {
             case 'strtotime':
                 $checkValue = self::checkEmpty( $settings, 'dynamicconditions_value' );
                 $checkValue2 = self::checkEmpty( $settings, 'dynamicconditions_value2' );
+                $checkValue = $this->parseShortcode( $checkValue );
+                $checkValue2 = $this->parseShortcode( $checkValue2 );
                 $checkValue = Date::unTranslateDate( $checkValue );
                 $checkValue2 = Date::unTranslateDate( $checkValue2 );
                 $checkValue = Date::stringToTime( $checkValue );
@@ -575,18 +587,29 @@ class DynamicConditionsPublic {
             default:
                 $checkValue = self::checkEmpty( $settings, 'dynamicconditions_value' );
                 $checkValue2 = self::checkEmpty( $settings, 'dynamicconditions_value2' );
+                $checkValue = $this->parseShortcode( $checkValue );
+                $checkValue2 = $this->parseShortcode( $checkValue2 );
                 break;
-        }
-
-        if ( !empty( $settings['dynamicconditions_parse_shortcodes'] ) ) {
-            $checkValue = do_shortcode( $checkValue );
-            $checkValue2 = do_shortcode( $checkValue2 );
         }
 
         return [
             $checkValue,
             $checkValue2,
         ];
+    }
+
+    /**
+     * Parse shortcode if active
+     *
+     * @param $value
+     * @return string
+     */
+    private function parseShortcode( $value ) {
+        // TODO: bring that if to work
+        if ( empty( $this->elementSettings['dynamicconditions_parse_shortcodes'] ) ) {
+            return $value;
+        }
+        return do_shortcode( $value );
     }
 
     /**
