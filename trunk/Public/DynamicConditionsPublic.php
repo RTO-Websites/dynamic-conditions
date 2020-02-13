@@ -619,9 +619,9 @@ class DynamicConditionsPublic {
      */
     private function parseShortcode( $value, $settings = [] ) {
         if ( empty( $settings['dynamicconditions_parse_shortcodes'] ) ) {
-            return 'not_parsed_sc' . $value;
+            return $value;
         }
-        return 'parsed_sc' . do_shortcode( $value );
+        return do_shortcode( $value );
     }
 
     /**
