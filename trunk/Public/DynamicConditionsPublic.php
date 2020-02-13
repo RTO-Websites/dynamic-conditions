@@ -149,10 +149,13 @@ class DynamicConditionsPublic {
      * @return array
      */
     private function getDynamicTagData( $id ) {
-        if ( empty( $this->elementSettings[$id]['__dynamic__'] )
-            || empty( $this->elementSettings[$id]['__dynamic__']['dynamicconditions_dynamic'] )
-        ) {
-            // no dynamic tag set
+        $dynamicEmpty = empty( $this->elementSettings[$id]['__dynamic__'] )
+            || empty( $this->elementSettings[$id]['__dynamic__']['dynamicconditions_dynamic'] );
+        $staticEmpty = empty( $this->elementSettings[$id]['dynamicconditions_dynamic'] )
+            || empty( $this->elementSettings[$id]['dynamicconditions_dynamic']['url'] );
+
+        if ( $dynamicEmpty && $staticEmpty ) {
+            // no dynamic tag or static value set
             return [
                 'selectedTag' => null,
                 'tagData' => null,
@@ -164,6 +167,15 @@ class DynamicConditionsPublic {
         $tagSettings = null;
         $tagData = [];
         $tagKey = null;
+
+        if ( $dynamicEmpty ) {
+            // no dynamic tag set, but static value
+            $this->elementSettings[$id]['__dynamic__'] = [
+                'dynamicconditions_dynamic' => $this->elementSettings[$id]['dynamicconditions_dynamic'],
+            ];
+            $selectedTag = 'static';
+        }
+
 
         $tag = $this->elementSettings[$id]['__dynamic__']['dynamicconditions_dynamic'];
         $splitTag = explode( ' name="', $tag );
@@ -531,26 +543,34 @@ class DynamicConditionsPublic {
      * @return array
      */
     private function getCheckValue( $compareType, $settings ) {
+
         switch ( $compareType ) {
             case 'days':
                 if ( $settings['dynamicconditions_condition'] === 'in_array' ) {
                     $checkValue = self::checkEmpty( $settings, 'dynamicconditions_day_array_value' );
+                    $checkValue = $this->parseShortcode( $checkValue, $settings );
                     $checkValue = implode( ',', $checkValue );
                 } else {
                     $checkValue = self::checkEmpty( $settings, 'dynamicconditions_day_value' );
+                    $checkValue = $this->parseShortcode( $checkValue );
                 }
                 $checkValue2 = self::checkEmpty( $settings, 'dynamicconditions_day_value2' );
+                $checkValue2 = $this->parseShortcode( $checkValue2, $settings );
                 $checkValue = Date::unTranslateDate( $checkValue );
                 $checkValue2 = Date::unTranslateDate( $checkValue2 );
                 break;
+
             case 'months':
                 if ( $settings['dynamicconditions_condition'] === 'in_array' ) {
                     $checkValue = self::checkEmpty( $settings, 'dynamicconditions_month_array_value' );
+                    $checkValue = $this->parseShortcode( $checkValue, $settings );
                     $checkValue = implode( ',', $checkValue );
                 } else {
                     $checkValue = self::checkEmpty( $settings, 'dynamicconditions_month_value' );
+                    $checkValue = $this->parseShortcode( $checkValue, $settings );
                 }
                 $checkValue2 = self::checkEmpty( $settings, 'dynamicconditions_month_value2' );
+                $checkValue2 = $this->parseShortcode( $checkValue2, $settings );
                 $checkValue = Date::unTranslateDate( $checkValue );
                 $checkValue2 = Date::unTranslateDate( $checkValue2 );
                 break;
@@ -558,6 +578,8 @@ class DynamicConditionsPublic {
             case 'date':
                 $checkValue = self::checkEmpty( $settings, 'dynamicconditions_date_value' );
                 $checkValue2 = self::checkEmpty( $settings, 'dynamicconditions_date_value2' );
+                $checkValue = $this->parseShortcode( $checkValue, $settings );
+                $checkValue2 = $this->parseShortcode( $checkValue2, $settings );
                 $checkValue = Date::stringToTime( $checkValue );
                 $checkValue2 = Date::stringToTime( $checkValue2 );
                 break;
@@ -565,6 +587,8 @@ class DynamicConditionsPublic {
             case 'strtotime':
                 $checkValue = self::checkEmpty( $settings, 'dynamicconditions_value' );
                 $checkValue2 = self::checkEmpty( $settings, 'dynamicconditions_value2' );
+                $checkValue = $this->parseShortcode( $checkValue, $settings );
+                $checkValue2 = $this->parseShortcode( $checkValue2, $settings );
                 $checkValue = Date::unTranslateDate( $checkValue );
                 $checkValue2 = Date::unTranslateDate( $checkValue2 );
                 $checkValue = Date::stringToTime( $checkValue );
@@ -575,18 +599,29 @@ class DynamicConditionsPublic {
             default:
                 $checkValue = self::checkEmpty( $settings, 'dynamicconditions_value' );
                 $checkValue2 = self::checkEmpty( $settings, 'dynamicconditions_value2' );
+                $checkValue = $this->parseShortcode( $checkValue, $settings );
+                $checkValue2 = $this->parseShortcode( $checkValue2, $settings );
                 break;
-        }
-
-        if ( !empty( $settings['dynamicconditions_parse_shortcodes'] ) ) {
-            $checkValue = do_shortcode( $checkValue );
-            $checkValue2 = do_shortcode( $checkValue2 );
         }
 
         return [
             $checkValue,
             $checkValue2,
         ];
+    }
+
+    /**
+     * Parse shortcode if active
+     *
+     * @param $value
+     * @param array $settings
+     * @return string
+     */
+    private function parseShortcode( $value, $settings = [] ) {
+        if ( empty( $settings['dynamicconditions_parse_shortcodes'] ) ) {
+            return $value;
+        }
+        return do_shortcode( $value );
     }
 
     /**

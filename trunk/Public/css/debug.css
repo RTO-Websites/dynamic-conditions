@@ -11,6 +11,7 @@
   letter-spacing: 0;
   margin: 2px 2px;
   border: 1px solid #333;
+  box-sizing: border-box;
 }
 
 .dynamicconditions-debug::before {
