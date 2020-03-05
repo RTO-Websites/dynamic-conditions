@@ -86,6 +86,7 @@ class DynamicConditionsPublic {
         $element->get_settings_for_display(); // call to cache settings
 
         $preventDateParsing = $element->get_settings_for_display( 'dynamicconditions_prevent_date_parsing' );
+        $this->elementSettings[$id]['preventDateParsing'] = $preventDateParsing;
 
         if ( empty( $preventDateParsing ) ) {
             // set locale to english, for better parsing
@@ -221,6 +222,10 @@ class DynamicConditionsPublic {
      */
     private function convertAcfDate( $id, array $data ) {
         if ( empty( $data ) ) {
+            return;
+        }
+
+        if ( !empty( $this->elementSettings[$id]['preventDateParsing'] ) ) {
             return;
         }
 
