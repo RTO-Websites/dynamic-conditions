@@ -85,13 +85,17 @@ class DynamicConditionsPublic {
 
         $element->get_settings_for_display(); // call to cache settings
 
-        // set locale to english, for better parsing
-        $currentLocale = setlocale( LC_ALL, 0 );
-        setlocale( LC_ALL, 'en_GB' );
+        $preventDateParsing = $element->get_settings_for_display( 'dynamicconditions_prevent_date_parsing' );
 
-        add_filter( 'date_i18n', [ $this->dateInstance, 'filterDateI18n' ], 10, 4 );
-        add_filter( 'get_the_date', [ $this->dateInstance, 'filterPostDate' ], 10, 3 );
-        add_filter( 'get_the_modified_date', [ $this->dateInstance, 'filterPostDate' ], 10, 3 );
+        if ( empty( $preventDateParsing ) ) {
+            // set locale to english, for better parsing
+            $currentLocale = setlocale( LC_ALL, 0 );
+            setlocale( LC_ALL, 'en_GB' );
+            add_filter( 'date_i18n', [ $this->dateInstance, 'filterDateI18n' ], 10, 4 );
+            add_filter( 'get_the_date', [ $this->dateInstance, 'filterPostDate' ], 10, 3 );
+            add_filter( 'get_the_modified_date', [ $this->dateInstance, 'filterPostDate' ], 10, 3 );
+        }
+
         $fields = '__dynamic__
             dynamicconditions_dynamic
             dynamicconditions_condition
@@ -120,12 +124,14 @@ class DynamicConditionsPublic {
         }
         unset( $clonedElement );
 
-        remove_filter( 'date_i18n', [ $this->dateInstance, 'filterDateI18n' ], 10 );
-        remove_filter( 'get_the_date', [ $this->dateInstance, 'filterPostDate' ], 10 );
-        remove_filter( 'get_the_modified_date', [ $this->dateInstance, 'filterPostDate' ], 10 );
+        if ( empty( $preventDateParsing ) ) {
+            remove_filter( 'date_i18n', [ $this->dateInstance, 'filterDateI18n' ], 10 );
+            remove_filter( 'get_the_date', [ $this->dateInstance, 'filterPostDate' ], 10 );
+            remove_filter( 'get_the_modified_date', [ $this->dateInstance, 'filterPostDate' ], 10 );
 
-        // reset locale
-        Date::setLocale( $currentLocale );
+            // reset locale
+            Date::setLocale( $currentLocale );
+        }
 
         $tagData = $this->getDynamicTagData( $id );
         $this->convertAcfDate( $id, $tagData );
@@ -387,7 +393,7 @@ class DynamicConditionsPublic {
         foreach ( $dynamicTagValueArray as $dynamicTagValue ) {
             if ( is_array( $dynamicTagValue ) ) {
                 if ( !empty( $dynamicTagValue['id'] ) ) {
-                    $dynamicTagValue = get_attachment_link( $dynamicTagValue['id'] );
+                    $dynamicTagValue = wp_get_attachment_url( $dynamicTagValue['id'] );
                 } else {
                     continue;
                 }
@@ -678,6 +684,7 @@ class DynamicConditionsPublic {
         $dynamicTagValue = str_replace( '~~*#~~', '<br />', $dynamicTagValue );
         $checkValue = str_replace( '[', '&#91;', htmlentities( $checkValue ) );
         $checkValue2 = str_replace( '[', '&#91;', htmlentities( $checkValue2 ) );
+        $dynamicTagValueRaw = self::checkEmpty( $settings, 'dynamicconditions_dynamic', '' );
 
         include( 'partials/debug.php' );
 

@@ -30,6 +30,10 @@ if ( ! defined( 'ABSPATH' ) ) {
         <div class="dc-debug-label">DynamicTag-Value:</div>
         <div class="dc-debug-value"><?php echo $dynamicTagValue; ?></div>
     </div>
+    <div class="dc-debug-row">
+        <div class="dc-debug-label">DynamicTag-Value-Raw:</div>
+        <div class="dc-debug-value"><?php echo $dynamicTagValueRaw; ?></div>
+    </div>
 
     <div class="dc-debug-row">
         <div class="dc-debug-label">Check-Value:</div>

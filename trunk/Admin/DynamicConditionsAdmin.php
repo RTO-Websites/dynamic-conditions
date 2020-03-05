@@ -432,6 +432,16 @@ class DynamicConditionsAdmin {
             );
         }
 
+
+        $element->add_control(
+            'dynamicconditions_headline_expert',
+            [
+                'label' => __( 'Expert', 'dynamicconditions' ),
+                'type' => Controls_Manager::HEADING,
+                'separator' => 'before',
+            ]
+        );
+
         $element->add_control(
             'dynamicconditions_parse_shortcodes',
             [
@@ -442,7 +452,16 @@ class DynamicConditionsAdmin {
         );
 
         $element->add_control(
-            'dynamicconditions_hr2',
+            'dynamicconditions_prevent_date_parsing',
+            [
+                'type' => Controls_Manager::SWITCHER,
+                'label' => __( 'Prevent date parsing', 'dynamicconditions' ),
+                'render_type' => $renderType,
+            ]
+        );
+
+        $element->add_control(
+            'dynamicconditions_hr3',
             [
                 'type' => Controls_Manager::DIVIDER,
                 'style' => 'thick',
