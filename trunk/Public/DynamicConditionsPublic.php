@@ -85,20 +85,7 @@ class DynamicConditionsPublic {
     private function getElementSettings( $element ) {
         $id = $element->get_id();
         $clonedElement = clone $element;
-
-        $element->get_settings_for_display(); // call to cache settings
-
-        $preventDateParsing = $element->get_settings_for_display( 'dynamicconditions_prevent_date_parsing' );
-        $this->elementSettings[$id]['preventDateParsing'] = $preventDateParsing;
-
-        if ( empty( $preventDateParsing ) ) {
-            // set locale to english, for better parsing
-            $currentLocale = setlocale( LC_ALL, 0 );
-            setlocale( LC_ALL, 'en_GB' );
-            add_filter( 'date_i18n', [ $this->dateInstance, 'filterDateI18n' ], 10, 4 );
-            add_filter( 'get_the_date', [ $this->dateInstance, 'filterPostDate' ], 10, 3 );
-            add_filter( 'get_the_modified_date', [ $this->dateInstance, 'filterPostDate' ], 10, 3 );
-        }
+        $rawSettings = [];
 
         $fields = '__dynamic__
             dynamicconditions_dynamic
@@ -122,7 +109,29 @@ class DynamicConditionsPublic {
             _column_size
             _inline_size';
 
-        foreach ( explode( "\n", $fields ) as $field ) {
+        $fieldArray = explode( "\n", $fields );
+
+        foreach ( $fieldArray as $field ) {
+            $field = trim( $field );
+            $rawSettings[$field] = $element->get_settings_for_display( $field ); // call to cache settings
+        }
+
+        $this->elementSettings[$id]['dynamicconditions_dynamic_raw'] = $rawSettings['dynamicconditions_dynamic'];
+
+
+        $preventDateParsing = $element->get_settings_for_display( 'dynamicconditions_prevent_date_parsing' );
+        $this->elementSettings[$id]['preventDateParsing'] = $preventDateParsing;
+
+        if ( empty( $preventDateParsing ) ) {
+            // set locale to english, for better parsing
+            $currentLocale = setlocale( LC_ALL, 0 );
+            setlocale( LC_ALL, 'en_GB' );
+            add_filter( 'date_i18n', [ $this->dateInstance, 'filterDateI18n' ], 10, 4 );
+            add_filter( 'get_the_date', [ $this->dateInstance, 'filterPostDate' ], 10, 3 );
+            add_filter( 'get_the_modified_date', [ $this->dateInstance, 'filterPostDate' ], 10, 3 );
+        }
+
+        foreach ( $fieldArray as $field ) {
             $field = trim( $field );
             $this->elementSettings[$id][$field] = $clonedElement->get_settings_for_display( $field );
         }
@@ -690,7 +699,7 @@ class DynamicConditionsPublic {
         $dynamicTagValue = str_replace( '~~*#~~', '<br />', $dynamicTagValue );
         $checkValue = str_replace( '[', '&#91;', htmlentities( $checkValue ) );
         $checkValue2 = str_replace( '[', '&#91;', htmlentities( $checkValue2 ) );
-        $dynamicTagValueRaw = self::checkEmpty( $settings, 'dynamicconditions_dynamic', '' );
+        $dynamicTagValueRaw = self::checkEmpty( $settings, 'dynamicconditions_dynamic_raw', '' );
 
         include( 'partials/debug.php' );
 
