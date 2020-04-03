@@ -55,6 +55,9 @@ class DynamicConditionsPublic {
 
     private $elementSettings = [];
 
+    /**
+     * @var Date $dateInstance
+     */
     private $dateInstance;
 
     private static $debugCssRendered = false;
@@ -391,7 +394,7 @@ class DynamicConditionsPublic {
 
         // get value form conditions
         $compareType = self::checkEmpty( $settings, 'dynamicconditions_type', 'default' );
-        list( $checkValue, $checkValue2 ) = $this->getCheckValue( $compareType, $settings );
+        [ $checkValue, $checkValue2 ] = $this->getCheckValue( $compareType, $settings );
 
         $debugValue = '';
 
@@ -414,7 +417,7 @@ class DynamicConditionsPublic {
             $debugValue .= $dynamicTagValue . '~~*#~~';
 
             // compare widget-value with check-values
-            list( $condition, $break, $breakFalse )
+            [ $condition, $break, $breakFalse ]
                 = $this->compareValues( $settings['dynamicconditions_condition'], $dynamicTagValue, $checkValue, $checkValue2 );
 
 
@@ -600,8 +603,6 @@ class DynamicConditionsPublic {
                 $checkValue2 = self::checkEmpty( $settings, 'dynamicconditions_value2' );
                 $checkValue = $this->parseShortcode( $checkValue, $settings );
                 $checkValue2 = $this->parseShortcode( $checkValue2, $settings );
-                $checkValue = Date::unTranslateDate( $checkValue );
-                $checkValue2 = Date::unTranslateDate( $checkValue2 );
                 $checkValue = Date::stringToTime( $checkValue );
                 $checkValue2 = Date::stringToTime( $checkValue2 );
                 break;
