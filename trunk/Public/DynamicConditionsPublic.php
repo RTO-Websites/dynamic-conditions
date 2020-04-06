@@ -403,7 +403,9 @@ class DynamicConditionsPublic {
 
         // get value form conditions
         $compareType = self::checkEmpty( $settings, 'dynamicconditions_type', 'default' );
-        [ $checkValue, $checkValue2 ] = $this->getCheckValue( $compareType, $settings );
+        $checkValues =$this->getCheckValue( $compareType, $settings );
+        $checkValue = $checkValues[0];
+        $checkValue2 = $checkValues[1];
 
         $debugValue = '';
 
@@ -426,9 +428,10 @@ class DynamicConditionsPublic {
             $debugValue .= $dynamicTagValue . '~~*#~~';
 
             // compare widget-value with check-values
-            [ $condition, $break, $breakFalse ]
-                = $this->compareValues( $settings['dynamicconditions_condition'], $dynamicTagValue, $checkValue, $checkValue2 );
-
+            $compareValues = $this->compareValues( $settings['dynamicconditions_condition'], $dynamicTagValue, $checkValue, $checkValue2 );
+            $condition = $compareValues[0];
+            $break = $compareValues[1];
+            $breakFalse = $compareValues[2];
 
             if ( $break && $condition ) {
                 // break if condition is true
