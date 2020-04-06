@@ -140,3 +140,11 @@ msgstr "Im Array"
 
 msgid "Use comma-separated values, to check if dynamic-value is equal with one of each item."
 msgstr "Verwende Komma-getrennte Werte, um zu prüfen ob der Dynamic-Wert identisch mit dem einzelnem Wert ist."
+
+msgid "Prevent date parsing"
+msgstr "Verhindere Datums-Parsing"
+
+msgid "Debug-Mode"
+msgstr "Debug-Modus"
+
+
