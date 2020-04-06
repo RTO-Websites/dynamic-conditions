@@ -18,35 +18,35 @@ class Date {
     /**
      * Filter date-output from date_i18n() to return always a timestamp
      *
-     * @param string $j Formatted date string.
+     * @param string $formatedDate Formatted date string.
      * @param string $reqFormat Format to display the date.
-     * @param int $i Unix timestamp.
+     * @param int $unixTimestamp Unix timestamp.
      * @param bool $gmt Whether to convert to GMT for time. Default false.
      * @return int Unix timestamp
      */
-    public function filterDateI18n( $j, $reqFormat, $i, $gmt ) {
-        return $i;
+    public function filterDateI18n( $formatedDate, $reqFormat, $unixTimestamp, $gmt ) {
+        return $unixTimestamp;
     }
 
     /**
      * Filters the date of a post to return a timestamp
      *
      * @param string|bool $theTime The formatted date or false if no post is found.
-     * @param string $d PHP date format. Defaults to value specified in
+     * @param string $dateFormat PHP date format. Defaults to value specified in
      *                               'date_format' option.
      * @param WP_Post|null $post WP_Post object or null if no post is found.
      *
      * @return mixed
      */
-    public function filterPostDate( $theTime, $d, $post ) {
-        if ( empty( $d ) ) {
-            $d = get_option( 'date_format' );
+    public function filterPostDate( $theTime, $dateFormat, $post ) {
+        if ( empty( $dateFormat ) ) {
+            $dateFormat = get_option( 'date_format' );
         }
 
-        $date = \DateTime::createFromFormat( $d, self::unTranslateDate( $theTime ) );
+        $date = \DateTime::createFromFormat( $dateFormat, self::unTranslateDate( $theTime ) );
 
         if ( empty( $date)) {
-            $date = \DateTime::createFromFormat( $d,  $theTime );
+            $date = \DateTime::createFromFormat( $dateFormat,  $theTime );
         }
 
         if ( empty( $date ) ) {
