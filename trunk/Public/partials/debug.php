@@ -1,5 +1,13 @@
 <?php
-
+/**
+ * @var array $settings
+ * @var string $dynamicTagValue
+ * @var string $dynamicTagValueRaw
+ * @var string $checkValue
+ * @var string $checkValue2
+ * @var string $visibility
+ * @var bool $conditionMets
+ */
 // If this file is called directly, abort.
 if ( ! defined( 'ABSPATH' ) ) {
     die;
