@@ -207,7 +207,9 @@ class Date {
 
         foreach ( $localeSettings as $localeSetting ) {
             if ( strpos( $localeSetting, "=" ) !== false ) {
-                [ $category, $locale ] = explode( "=", $localeSetting );
+                $categorylocale = explode( "=", $localeSetting );
+                $category = $categorylocale[0];
+                $locale = $categorylocale[1];
             } else {
                 $category = LC_ALL;
                 $locale = $localeSetting;
