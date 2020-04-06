@@ -84,6 +84,11 @@ class DynamicConditionsPublic {
      */
     private function getElementSettings( $element ) {
         $id = $element->get_id();
+
+        if ( !empty( $this->elementSettings[$id] ) ) {
+            return $this->elementSettings[$id];
+        }
+
         $clonedElement = clone $element;
 
         $fields = '__dynamic__
@@ -396,7 +401,7 @@ class DynamicConditionsPublic {
 
         // get value form conditions
         $compareType = self::checkEmpty( $settings, 'dynamicconditions_type', 'default' );
-        $checkValues =$this->getCheckValue( $compareType, $settings );
+        $checkValues = $this->getCheckValue( $compareType, $settings );
         $checkValue = $checkValues[0];
         $checkValue2 = $checkValues[1];
 
