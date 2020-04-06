@@ -85,7 +85,6 @@ class DynamicConditionsPublic {
     private function getElementSettings( $element ) {
         $id = $element->get_id();
         $clonedElement = clone $element;
-        $rawSettings = [];
 
         $fields = '__dynamic__
             dynamicconditions_dynamic
@@ -111,13 +110,7 @@ class DynamicConditionsPublic {
 
         $fieldArray = explode( "\n", $fields );
 
-        foreach ( $fieldArray as $field ) {
-            $field = trim( $field );
-            $rawSettings[$field] = $element->get_settings_for_display( $field ); // call to cache settings
-        }
-
-        $this->elementSettings[$id]['dynamicconditions_dynamic_raw'] = $rawSettings['dynamicconditions_dynamic'];
-
+        $this->elementSettings[$id]['dynamicconditions_dynamic_raw'] = $element->get_settings_for_display( 'dynamicconditions_dynamic' );
 
         $preventDateParsing = $element->get_settings_for_display( 'dynamicconditions_prevent_date_parsing' );
         $this->elementSettings[$id]['preventDateParsing'] = $preventDateParsing;
