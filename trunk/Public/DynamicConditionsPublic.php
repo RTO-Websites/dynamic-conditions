@@ -55,6 +55,9 @@ class DynamicConditionsPublic {
 
     private $elementSettings = [];
 
+    /**
+     * @var Date $dateInstance
+     */
     private $dateInstance;
 
     private static $debugCssRendered = false;
@@ -81,17 +84,13 @@ class DynamicConditionsPublic {
      */
     private function getElementSettings( $element ) {
         $id = $element->get_id();
+
+        if ( !empty( $this->elementSettings[$id] ) ) {
+            return $this->elementSettings[$id];
+        }
+
         $clonedElement = clone $element;
 
-        $element->get_settings_for_display(); // call to cache settings
-
-        // set locale to english, for better parsing
-        $currentLocale = setlocale( LC_ALL, 0 );
-        setlocale( LC_ALL, 'en_GB' );
-
-        add_filter( 'date_i18n', [ $this->dateInstance, 'filterDateI18n' ], 10, 4 );
-        add_filter( 'get_the_date', [ $this->dateInstance, 'filterPostDate' ], 10, 3 );
-        add_filter( 'get_the_modified_date', [ $this->dateInstance, 'filterPostDate' ], 10, 3 );
         $fields = '__dynamic__
             dynamicconditions_dynamic
             dynamicconditions_condition
@@ -114,18 +113,36 @@ class DynamicConditionsPublic {
             _column_size
             _inline_size';
 
-        foreach ( explode( "\n", $fields ) as $field ) {
+        $fieldArray = explode( "\n", $fields );
+
+        $this->elementSettings[$id]['dynamicconditions_dynamic_raw'] = $element->get_settings_for_display( 'dynamicconditions_dynamic' );
+
+        $preventDateParsing = $element->get_settings_for_display( 'dynamicconditions_prevent_date_parsing' );
+        $this->elementSettings[$id]['preventDateParsing'] = $preventDateParsing;
+
+        if ( empty( $preventDateParsing ) ) {
+            // set locale to english, for better parsing
+            $currentLocale = setlocale( LC_ALL, 0 );
+            setlocale( LC_ALL, 'en_GB' );
+            add_filter( 'date_i18n', [ $this->dateInstance, 'filterDateI18n' ], 10, 4 );
+            add_filter( 'get_the_date', [ $this->dateInstance, 'filterPostDate' ], 10, 3 );
+            add_filter( 'get_the_modified_date', [ $this->dateInstance, 'filterPostDate' ], 10, 3 );
+        }
+
+        foreach ( $fieldArray as $field ) {
             $field = trim( $field );
             $this->elementSettings[$id][$field] = $clonedElement->get_settings_for_display( $field );
         }
         unset( $clonedElement );
 
-        remove_filter( 'date_i18n', [ $this->dateInstance, 'filterDateI18n' ], 10 );
-        remove_filter( 'get_the_date', [ $this->dateInstance, 'filterPostDate' ], 10 );
-        remove_filter( 'get_the_modified_date', [ $this->dateInstance, 'filterPostDate' ], 10 );
+        if ( empty( $preventDateParsing ) ) {
+            remove_filter( 'date_i18n', [ $this->dateInstance, 'filterDateI18n' ], 10 );
+            remove_filter( 'get_the_date', [ $this->dateInstance, 'filterPostDate' ], 10 );
+            remove_filter( 'get_the_modified_date', [ $this->dateInstance, 'filterPostDate' ], 10 );
 
-        // reset locale
-        Date::setLocale( $currentLocale );
+            // reset locale
+            Date::setLocale( $currentLocale );
+        }
 
         $tagData = $this->getDynamicTagData( $id );
         $this->convertAcfDate( $id, $tagData );
@@ -215,6 +232,10 @@ class DynamicConditionsPublic {
      */
     private function convertAcfDate( $id, array $data ) {
         if ( empty( $data ) ) {
+            return;
+        }
+
+        if ( !empty( $this->elementSettings[$id]['preventDateParsing'] ) ) {
             return;
         }
 
@@ -380,14 +401,16 @@ class DynamicConditionsPublic {
 
         // get value form conditions
         $compareType = self::checkEmpty( $settings, 'dynamicconditions_type', 'default' );
-        list( $checkValue, $checkValue2 ) = $this->getCheckValue( $compareType, $settings );
+        $checkValues = $this->getCheckValue( $compareType, $settings );
+        $checkValue = $checkValues[0];
+        $checkValue2 = $checkValues[1];
 
         $debugValue = '';
 
         foreach ( $dynamicTagValueArray as $dynamicTagValue ) {
             if ( is_array( $dynamicTagValue ) ) {
                 if ( !empty( $dynamicTagValue['id'] ) ) {
-                    $dynamicTagValue = get_attachment_link( $dynamicTagValue['id'] );
+                    $dynamicTagValue = wp_get_attachment_url( $dynamicTagValue['id'] );
                 } else {
                     continue;
                 }
@@ -403,9 +426,10 @@ class DynamicConditionsPublic {
             $debugValue .= $dynamicTagValue . '~~*#~~';
 
             // compare widget-value with check-values
-            list( $condition, $break, $breakFalse )
-                = $this->compareValues( $settings['dynamicconditions_condition'], $dynamicTagValue, $checkValue, $checkValue2 );
-
+            $compareValues = $this->compareValues( $settings['dynamicconditions_condition'], $dynamicTagValue, $checkValue, $checkValue2 );
+            $condition = $compareValues[0];
+            $break = $compareValues[1];
+            $breakFalse = $compareValues[2];
 
             if ( $break && $condition ) {
                 // break if condition is true
@@ -589,8 +613,6 @@ class DynamicConditionsPublic {
                 $checkValue2 = self::checkEmpty( $settings, 'dynamicconditions_value2' );
                 $checkValue = $this->parseShortcode( $checkValue, $settings );
                 $checkValue2 = $this->parseShortcode( $checkValue2, $settings );
-                $checkValue = Date::unTranslateDate( $checkValue );
-                $checkValue2 = Date::unTranslateDate( $checkValue2 );
                 $checkValue = Date::stringToTime( $checkValue );
                 $checkValue2 = Date::stringToTime( $checkValue2 );
                 break;
@@ -678,6 +700,7 @@ class DynamicConditionsPublic {
         $dynamicTagValue = str_replace( '~~*#~~', '<br />', $dynamicTagValue );
         $checkValue = str_replace( '[', '&#91;', htmlentities( $checkValue ) );
         $checkValue2 = str_replace( '[', '&#91;', htmlentities( $checkValue2 ) );
+        $dynamicTagValueRaw = self::checkEmpty( $settings, 'dynamicconditions_dynamic_raw', '' );
 
         include( 'partials/debug.php' );
 

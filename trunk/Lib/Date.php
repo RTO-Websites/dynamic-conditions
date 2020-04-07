@@ -5,7 +5,7 @@ namespace DynamicConditions\Lib;
 // If this file is called directly, abort.
 use WP_Post;
 
-if ( ! defined( 'ABSPATH' ) ) {
+if ( !defined( 'ABSPATH' ) ) {
     die;
 }
 
@@ -18,33 +18,39 @@ class Date {
     /**
      * Filter date-output from date_i18n() to return always a timestamp
      *
-     * @param string    $j             Formatted date string.
-     * @param string    $req_format    Format to display the date.
-     * @param int       $i             Unix timestamp.
-     * @param bool      $gmt           Whether to convert to GMT for time. Default false.
+     * @param string $formatedDate Formatted date string.
+     * @param string $reqFormat Format to display the date.
+     * @param int $unixTimestamp Unix timestamp.
+     * @param bool $gmt Whether to convert to GMT for time. Default false.
      * @return int Unix timestamp
      */
-    public function filterDateI18n( $j, $req_format, $i, $gmt ) {
-        return $i;
+    public function filterDateI18n( $formatedDate, $reqFormat, $unixTimestamp, $gmt ) {
+        return $unixTimestamp;
     }
 
     /**
      * Filters the date of a post to return a timestamp
      *
-     * @param string|bool $the_time The formatted date or false if no post is found.
-     * @param string $d PHP date format. Defaults to value specified in
+     * @param string|bool $theTime The formatted date or false if no post is found.
+     * @param string $dateFormat PHP date format. Defaults to value specified in
      *                               'date_format' option.
      * @param WP_Post|null $post WP_Post object or null if no post is found.
      *
      * @return mixed
      */
-    public function filterPostDate( $the_time, $d, $post ) {
-        if ( empty( $d ) ) {
-            return $the_time;
+    public function filterPostDate( $theTime, $dateFormat, $post ) {
+        if ( empty( $dateFormat ) ) {
+            $dateFormat = get_option( 'date_format' );
         }
-        $date = \DateTime::createFromFormat( $d, $the_time );
+
+        $date = \DateTime::createFromFormat( $dateFormat, self::unTranslateDate( $theTime ) );
+
+        if ( empty( $date)) {
+            $date = \DateTime::createFromFormat( $dateFormat,  $theTime );
+        }
+
         if ( empty( $date ) ) {
-            return $the_time;
+            return $theTime;
         }
 
         return $date->getTimestamp();
@@ -58,7 +64,7 @@ class Date {
      */
     public static function stringToTime( $string = '' ) {
         $timestamp = $string;
-        $strToTime = strtotime( $string );
+        $strToTime = strtotime( $string, time() );
         if ( !empty( $strToTime ) && !self::isTimestamp( $timestamp ) ) {
             $timestamp = $strToTime;
         }
@@ -71,6 +77,9 @@ class Date {
      * @return bool
      */
     public static function isTimestamp( $string ) {
+        if ( !is_numeric( $string ) ) {
+            return false;
+        }
         try {
             new \DateTime( '@' . $string );
         } catch ( \Exception $e ) {
@@ -198,7 +207,9 @@ class Date {
 
         foreach ( $localeSettings as $localeSetting ) {
             if ( strpos( $localeSetting, "=" ) !== false ) {
-                list ( $category, $locale ) = explode( "=", $localeSetting );
+                $categorylocale = explode( "=", $localeSetting );
+                $category = $categorylocale[0];
+                $locale = $categorylocale[1];
             } else {
                 $category = LC_ALL;
                 $locale = $localeSetting;
