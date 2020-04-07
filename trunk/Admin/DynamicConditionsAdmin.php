@@ -17,7 +17,7 @@ use DynamicConditions\Lib\Date;
  */
 
 // If this file is called directly, abort.
-if ( ! defined( 'ABSPATH' ) ) {
+if ( !defined( 'ABSPATH' ) ) {
     die;
 }
 
@@ -112,6 +112,20 @@ class DynamicConditionsAdmin {
             $type = $element->get_type();
         }
 
+        $categories = [
+            Module::BASE_GROUP,
+            Module::TEXT_CATEGORY,
+            Module::URL_CATEGORY,
+            Module::GALLERY_CATEGORY,
+            Module::IMAGE_CATEGORY,
+            Module::MEDIA_CATEGORY,
+            Module::POST_META_CATEGORY,
+        ];
+
+        if ( defined( Module::class . '::COLOR_CATEGORY' ) ) {
+            $categories[] = Module::COLOR_CATEGORY;
+        }
+
         $element->start_controls_section(
             'dynamicconditions_section',
             [
@@ -127,15 +141,7 @@ class DynamicConditionsAdmin {
                 'type' => Controls_Manager::MEDIA,
                 'dynamic' => [
                     'active' => true,
-                    'categories' => [
-                        Module::BASE_GROUP,
-                        Module::TEXT_CATEGORY,
-                        Module::URL_CATEGORY,
-                        Module::GALLERY_CATEGORY,
-                        Module::IMAGE_CATEGORY,
-                        Module::MEDIA_CATEGORY,
-                        Module::POST_META_CATEGORY,
-                    ],
+                    'categories' => $categories,
                 ],
                 'render_type' => $renderType,
                 'placeholder' => __( 'Select condition field', 'dynamiccondtions' ),
@@ -432,6 +438,16 @@ class DynamicConditionsAdmin {
             );
         }
 
+
+        $element->add_control(
+            'dynamicconditions_headline_expert',
+            [
+                'label' => __( 'Expert', 'dynamicconditions' ),
+                'type' => Controls_Manager::HEADING,
+                'separator' => 'before',
+            ]
+        );
+
         $element->add_control(
             'dynamicconditions_parse_shortcodes',
             [
@@ -442,7 +458,16 @@ class DynamicConditionsAdmin {
         );
 
         $element->add_control(
-            'dynamicconditions_hr2',
+            'dynamicconditions_prevent_date_parsing',
+            [
+                'type' => Controls_Manager::SWITCHER,
+                'label' => __( 'Prevent date parsing', 'dynamicconditions' ),
+                'render_type' => $renderType,
+            ]
+        );
+
+        $element->add_control(
+            'dynamicconditions_hr3',
             [
                 'type' => Controls_Manager::DIVIDER,
                 'style' => 'thick',

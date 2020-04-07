@@ -3,7 +3,8 @@ Contributors: rtowebsites
 Donate link: https://www.rto.de
 Tags: elementor, conditions, dynamic, fields, rto
 Requires at least: 5.0
-Tested up to: 5.3
+Requires PHP: 7.0
+Tested up to: 5.4
 Stable tag: 1.4.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -54,6 +55,10 @@ Yes, you can set display conditions for logged in or logged out users. Selecting
 1. Widget options for conditions
 
 == Changelog ==
+= 1.4.5 =
+* Fix some issues with date-parsing
+* Add option to disable date-parsing
+
 = 1.4.4 =
 * Fix issues with parsing of dates from shortcodes
 * Fix issue with Elementor 2.9
