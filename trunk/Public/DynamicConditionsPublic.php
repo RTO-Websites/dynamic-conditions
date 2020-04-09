@@ -85,10 +85,6 @@ class DynamicConditionsPublic {
     private function getElementSettings( $element ) {
         $id = $element->get_id();
 
-        if ( !empty( $this->elementSettings[$id] ) ) {
-            return $this->elementSettings[$id];
-        }
-
         $clonedElement = clone $element;
 
         $fields = '__dynamic__
