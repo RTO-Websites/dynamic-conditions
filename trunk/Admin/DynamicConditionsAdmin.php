@@ -137,7 +137,7 @@ class DynamicConditionsAdmin {
         $element->add_control(
             'dynamicconditions_dynamic',
             [
-                'label' => __( 'Dynamic Tag', 'dynamiccondtions' ),
+                'label' => __( 'Dynamic Tag', 'dynamicconditions' ),
                 'type' => Controls_Manager::MEDIA,
                 'dynamic' => [
                     'active' => true,
