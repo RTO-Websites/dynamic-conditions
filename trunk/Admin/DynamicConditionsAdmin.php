@@ -144,7 +144,7 @@ class DynamicConditionsAdmin {
                     'categories' => $categories,
                 ],
                 'render_type' => $renderType,
-                'placeholder' => __( 'Select condition field', 'dynamiccondtions' ),
+                'placeholder' => __( 'Select condition field', 'dynamicconditions' ),
             ]
         );
 
