@@ -4,8 +4,8 @@ Donate link: https://www.rto.de
 Tags: elementor, conditions, dynamic, fields, rto
 Requires at least: 5.0
 Requires PHP: 7.0
-Tested up to: 5.5
-Stable tag: 1.4.6
+Tested up to: 5.7
+Stable tag: 1.5.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -50,11 +50,23 @@ Yes, the plugin supports date based conditions, for example current-date or post
 = Can I show/hide elements for logged-in or logged-out users? =
 Yes, you can set display conditions for logged in or logged out users. Selecting the "user information" dynamic-tag, and set it to "user ID". Now check if it is empty or not.
 
+= I´m missing some dynamic tags
+We have developed an other plugin which provides some useful tags.
+You can find it here:
+https://wordpress.org/plugins/dynamictags/
+
+
 == Screenshots ==
 
 1. Widget options for conditions
 
 == Changelog ==
+= 1.5.0 =
+* Add option to hide wrappers and other elements by selector (javascript only)
+* Add new compare type "in_array_contains"
+* Fix error when elementor is disabled
+* Styling dynamic-tag field
+
 = 1.4.5 =
 * Fix some issues with date-parsing
 * Add option to disable date-parsing
