@@ -744,6 +744,10 @@ class DynamicConditionsPublic {
      * @return string
      */
     private function getMode() {
+        if ( !class_exists('Elementor\Plugin') ) {
+            return;
+        }
+
         if ( !empty( Plugin::$instance->editor ) && Plugin::$instance->editor->is_edit_mode() ) {
             return 'edit';
         }
