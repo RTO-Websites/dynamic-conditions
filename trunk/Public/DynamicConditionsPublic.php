@@ -106,6 +106,8 @@ class DynamicConditionsPublic {
             dynamicconditions_value2
             dynamicconditions_parse_shortcodes
             dynamicconditions_debug
+            dynamicconditions_hideOthers
+            dynamicconditions_hideWrapper
             _column_size
             _inline_size';
 
@@ -337,8 +339,17 @@ class DynamicConditionsPublic {
             $section->before_render();
             $section->after_render();
         } else if ( $type == 'column' && $settings['dynamicconditions_resizeOtherColumns'] ) {
-            echo '<div class="dc-elementor-hidden-column" data-size="' . $settings['_column_size'] . '"></div>';
+            echo '<div class="dc-hidden-column" data-size="' . $settings['_column_size'] . '"></div>';
         }
+
+        if ( !empty( $settings['dynamicconditions_hideWrapper'] ) ) {
+            echo '<div class="dc-hide-wrapper" data-selector="' . $settings['dynamicconditions_hideWrapper'] . '"></div>';
+        }
+
+        if ( !empty( $settings['dynamicconditions_hideOthers'] ) ) {
+            echo '<div class="dc-hide-others" data-selector="' . $settings['dynamicconditions_hideOthers'] . '"></div>';
+        }
+
 
         echo "<!-- hidden $type -->";
     }

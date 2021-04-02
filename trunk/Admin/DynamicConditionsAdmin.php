@@ -466,8 +466,40 @@ class DynamicConditionsAdmin {
             ]
         );
 
+
         $element->add_control(
             'dynamicconditions_hr3',
+            [
+                'type' => Controls_Manager::DIVIDER,
+                'style' => 'thick',
+            ]
+        );
+
+
+        $element->add_control(
+            'dynamicconditions_hideWrapper',
+            [
+                'type' => Controls_Manager::TEXT,
+                'label' => __( 'Hide wrapper', 'dynamicconditions' ),
+                'description' => __( 'Will hide a parent matching the selector.', 'dynamicconditions' ),
+                'placeholder' => 'selector',
+                'render_type' => $renderType,
+            ]
+        );
+
+        $element->add_control(
+            'dynamicconditions_hideOthers',
+            [
+                'type' => Controls_Manager::TEXT,
+                'label' => __( 'Hide other elements', 'dynamicconditions' ),
+                'description' => __( 'Will hide all other elements matching the selector.', 'dynamicconditions' ),
+                'placeholder' => 'selector',
+                'render_type' => $renderType,
+            ]
+        );
+
+        $element->add_control(
+            'dynamicconditions_hr4',
             [
                 'type' => Controls_Manager::DIVIDER,
                 'style' => 'thick',
