@@ -148,8 +148,8 @@ class DynamicConditions {
         $this->loader->addAction( 'elementor/element/popup/section_advanced/after_section_end', $pluginAdmin, 'addConditionFields', 10, 3 );
 
         $this->loader->addAction( 'admin_notices', $pluginAdmin, 'addAdminNotices', 10, 3 );
-        #$this->loader->addAction( 'admin_enqueue_scripts', $pluginAdmin, 'enqueueStyles' );
-        #$this->loader->addAction( 'elementor/editor/before_enqueue_styles', $pluginAdmin, 'enqueueStyles' );
+        $this->loader->addAction( 'admin_enqueue_scripts', $pluginAdmin, 'enqueueStyles' );
+        $this->loader->addAction( 'elementor/editor/before_enqueue_styles', $pluginAdmin, 'enqueueStyles' );
     }
 
     /**
