@@ -522,6 +522,29 @@ class DynamicConditionsAdmin {
         );
 
         $element->add_control(
+            'dynamicconditions_widget_id',
+            [
+                'type' => Controls_Manager::TEXT,
+                'label' => __( 'Widget-ID', 'dynamicconditions' ),
+                'render_type' => $renderType,
+                'description' => '<script>
+                    let $dcWidgetIdInput = jQuery(\'.elementor-control-dynamicconditions_widget_id input\');
+                    $dcWidgetIdInput.val(elementor.getCurrentElement().model.id);
+                    $dcWidgetIdInput.attr(\'readonly\', true);
+                    $dcWidgetIdInput.on(\'focus\', function() { this.select();document.execCommand(\'copy\'); });
+                    </script>',
+            ]
+        );
+
+        $element->add_control(
+            'dynamicconditions_hr5',
+            [
+                'type' => Controls_Manager::DIVIDER,
+                'style' => 'thick',
+            ]
+        );
+
+        $element->add_control(
             'dynamicconditions_debug',
             [
                 'type' => Controls_Manager::SWITCHER,
@@ -529,6 +552,7 @@ class DynamicConditionsAdmin {
                 'render_type' => $renderType,
             ]
         );
+
         $element->end_controls_section();
     }
 }
