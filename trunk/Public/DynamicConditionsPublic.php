@@ -533,6 +533,16 @@ class DynamicConditionsPublic {
                 $condition = in_array( $dynamicTagValue, explode( ',', $checkValue ) ) !== false;
                 $break = true;
                 break;
+
+            case 'in_array_contains':
+                foreach ( explode( ',', $checkValue ) as $toCheck ) {
+                    $condition = strpos( $dynamicTagValue, $toCheck ) !== false;
+                    if ( $condition ) {
+                        break;
+                    }
+                }
+                $break = true;
+                break;
         }
 
         return [

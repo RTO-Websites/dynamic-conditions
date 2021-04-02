@@ -104,7 +104,7 @@ class DynamicConditionsAdmin {
      * @param $args
      */
     public function addConditionFields( $element, $section_id = null, $args = null ) {
-        $valueCondition = [ 'equal', 'not_equal', 'contains', 'not_contains', 'less', 'greater', 'between', 'in_array' ];
+        $valueCondition = [ 'equal', 'not_equal', 'contains', 'not_contains', 'less', 'greater', 'between', 'in_array', 'in_array_contains' ];
         $allCondition = [ 'equal', 'not_equal', 'contains', 'not_contains', 'less', 'greater', 'between', 'empty', 'not_empty' ];
         $type = 'element';
         $renderType = 'ui';
@@ -181,6 +181,7 @@ class DynamicConditionsAdmin {
                     'less' => __( 'Less than', 'dynamicconditions' ),
                     'greater' => __( 'Greater than', 'dynamicconditions' ),
                     'in_array' => __( 'In array', 'dynamicconditions' ),
+                    'in_array_contains' => __( 'In array contains', 'dynamicconditions' ),
                 ],
                 'description' => __( 'Select your condition for this widget visibility.', 'dynamicconditions' ),
 
@@ -375,6 +376,20 @@ class DynamicConditionsAdmin {
                 ],
                 'show_label' => false,
                 'raw' => __( 'Use comma-separated values, to check if dynamic-value is equal with one of each item.', 'dynamicconditions' ),
+            ]
+        );
+
+        $element->add_control(
+            'dynamicconditions_in_array_contains_description',
+            [
+                'type' => Controls_Manager::RAW_HTML,
+                'label' => __( 'Conditional value', 'dynamicconditions' ) . ' 2',
+                'render_type' => $renderType,
+                'condition' => [
+                    'dynamicconditions_condition' => [ 'in_array_contains' ],
+                ],
+                'show_label' => false,
+                'raw' => __( 'Use comma-separated values, to check if dynamic-value contains one of each item.', 'dynamicconditions' ),
             ]
         );
 
