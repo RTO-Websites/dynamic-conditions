@@ -66,6 +66,7 @@ https://wordpress.org/plugins/dynamictags/
 * Add new compare type "in_array_contains"
 * Fix error when elementor is disabled
 * Styling dynamic-tag field
+* Prevent shortcode-execution on hidden elements
 
 = 1.4.5 =
 * Fix some issues with date-parsing

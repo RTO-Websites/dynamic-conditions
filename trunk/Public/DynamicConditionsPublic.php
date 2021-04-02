@@ -62,6 +62,8 @@ class DynamicConditionsPublic {
 
     private static $debugCssRendered = false;
 
+    private $shortcodeTags;
+
     /**
      * Initialize the class and set its properties.
      *
@@ -316,6 +318,10 @@ class DynamicConditionsPublic {
         $section->dynamicConditionIsHidden = true;
         $section->dynamicConditionSettings = $settings;
 
+        //prevent shortcodes from execution
+        $this->shortcodeTags = $GLOBALS['shortcode_tags'];
+        $GLOBALS['shortcode_tags'] = null;
+
         ob_start();
     }
 
@@ -333,6 +339,8 @@ class DynamicConditionsPublic {
 
         $type = $section->get_type();
         $settings = $section->dynamicConditionSettings;
+        // reset shortcode tags
+        $GLOBALS['shortcode_tags'] = $this->shortcodeTags;
 
         if ( !empty( $settings['dynamicconditions_hideContentOnly'] ) ) {
             // render wrapper
