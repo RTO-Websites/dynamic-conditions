@@ -208,7 +208,7 @@ class DynamicConditions {
      * @since 1.3.0
      */
     public function setFooterStyleForPreview() {
-        if ( !Plugin::$instance->preview->is_preview_mode() ) {
+        if ( !class_exists('Elementor\Plugin') || !Plugin::$instance->preview->is_preview_mode() ) {
             return;
         }
         ?>
