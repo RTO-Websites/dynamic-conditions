@@ -50,6 +50,10 @@ Yes, the plugin supports date based conditions, for example current-date or post
 = Can I show/hide elements for logged-in or logged-out users? =
 Yes, you can set display conditions for logged in or logged out users. Selecting the "user information" dynamic-tag, and set it to "user ID". Now check if it is empty or not.
 
+= Are my elements only hidden or fully removed =
+The elements will be fully removed from source code, like they are not existing.
+Only if you use the experts options to hide also wrappers or other elements, they will only be hidden with css.
+
 = I´m missing some dynamic tags
 We have developed an other plugin which provides some useful tags.
 You can find it here:
