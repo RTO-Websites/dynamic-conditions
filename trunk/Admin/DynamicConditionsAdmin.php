@@ -122,6 +122,13 @@ class DynamicConditionsAdmin {
             Module::POST_META_CATEGORY,
         ];
 
+        $categoriesTextOnly = [
+            Module::BASE_GROUP,
+            Module::TEXT_CATEGORY,
+            Module::URL_CATEGORY,
+            Module::POST_META_CATEGORY,
+        ];
+
         if ( defined( Module::class . '::COLOR_CATEGORY' ) ) {
             $categories[] = Module::COLOR_CATEGORY;
         }
@@ -221,6 +228,10 @@ class DynamicConditionsAdmin {
                 'description' => __( 'Add your conditional value to compare here.', 'dynamicconditions' ),
                 'render_type' => $renderType,
 
+                'dynamic' => [
+                    'active' => true,
+                    'categoriies' => $categoriesTextOnly,
+                ],
                 'condition' => [
                     'dynamicconditions_condition' => $valueCondition,
                     'dynamicconditions_type' => [ 'default', 'strtotime' ],
@@ -235,6 +246,10 @@ class DynamicConditionsAdmin {
                 'label' => __( 'Conditional value', 'dynamicconditions' ) . ' 2',
                 'description' => __( 'Add a second condition value, if between is selected', 'dynamicconditions' ),
                 'render_type' => $renderType,
+                'dynamic' => [
+                    'active' => true,
+                    'categoriies' => $categoriesTextOnly,
+                ],
 
                 'condition' => [
                     'dynamicconditions_condition' => [ 'between' ],

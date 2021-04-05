@@ -67,6 +67,7 @@ https://wordpress.org/plugins/dynamictags/
 * Fix error when elementor is disabled
 * Styling dynamic-tag field
 * Prevent shortcode-execution on hidden elements
+* Make condition value dynamic
 
 = 1.4.5 =
 * Fix some issues with date-parsing
