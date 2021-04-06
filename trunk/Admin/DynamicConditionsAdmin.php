@@ -104,8 +104,30 @@ class DynamicConditionsAdmin {
      * @param $args
      */
     public function addConditionFields( $element, $section_id = null, $args = null ) {
-        $valueCondition = [ 'equal', 'not_equal', 'contains', 'not_contains', 'less', 'greater', 'between', 'in_array', 'in_array_contains' ];
-        $allCondition = [ 'equal', 'not_equal', 'contains', 'not_contains', 'less', 'greater', 'between', 'empty', 'not_empty' ];
+        $valueCondition = [
+            'equal',
+            'not_equal',
+            'contains',
+            'not_contains',
+            'less',
+            'greater',
+            'between',
+            'in_array',
+            'in_array_contains'
+        ];
+
+        $allCondition = [
+            'equal',
+            'not_equal',
+            'contains',
+            'not_contains',
+            'less',
+            'greater',
+            'between',
+            'empty',
+            'not_empty'
+        ];
+
         $type = 'element';
         $renderType = 'ui';
         if ( !empty( $element ) && is_object( $element ) && method_exists( $element, 'get_type' ) ) {
