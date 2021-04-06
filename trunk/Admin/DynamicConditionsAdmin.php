@@ -104,8 +104,30 @@ class DynamicConditionsAdmin {
      * @param $args
      */
     public function addConditionFields( $element, $section_id = null, $args = null ) {
-        $valueCondition = [ 'equal', 'not_equal', 'contains', 'not_contains', 'less', 'greater', 'between', 'in_array' ];
-        $allCondition = [ 'equal', 'not_equal', 'contains', 'not_contains', 'less', 'greater', 'between', 'empty', 'not_empty' ];
+        $valueCondition = [
+            'equal',
+            'not_equal',
+            'contains',
+            'not_contains',
+            'less',
+            'greater',
+            'between',
+            'in_array',
+            'in_array_contains'
+        ];
+
+        $allCondition = [
+            'equal',
+            'not_equal',
+            'contains',
+            'not_contains',
+            'less',
+            'greater',
+            'between',
+            'empty',
+            'not_empty'
+        ];
+
         $type = 'element';
         $renderType = 'ui';
         if ( !empty( $element ) && is_object( $element ) && method_exists( $element, 'get_type' ) ) {
@@ -119,6 +141,13 @@ class DynamicConditionsAdmin {
             Module::GALLERY_CATEGORY,
             Module::IMAGE_CATEGORY,
             Module::MEDIA_CATEGORY,
+            Module::POST_META_CATEGORY,
+        ];
+
+        $categoriesTextOnly = [
+            Module::BASE_GROUP,
+            Module::TEXT_CATEGORY,
+            Module::URL_CATEGORY,
             Module::POST_META_CATEGORY,
         ];
 
@@ -181,6 +210,7 @@ class DynamicConditionsAdmin {
                     'less' => __( 'Less than', 'dynamicconditions' ),
                     'greater' => __( 'Greater than', 'dynamicconditions' ),
                     'in_array' => __( 'In array', 'dynamicconditions' ),
+                    'in_array_contains' => __( 'In array contains', 'dynamicconditions' ),
                 ],
                 'description' => __( 'Select your condition for this widget visibility.', 'dynamicconditions' ),
 
@@ -220,6 +250,10 @@ class DynamicConditionsAdmin {
                 'description' => __( 'Add your conditional value to compare here.', 'dynamicconditions' ),
                 'render_type' => $renderType,
 
+                'dynamic' => [
+                    'active' => true,
+                    'categories' => $categoriesTextOnly,
+                ],
                 'condition' => [
                     'dynamicconditions_condition' => $valueCondition,
                     'dynamicconditions_type' => [ 'default', 'strtotime' ],
@@ -234,6 +268,10 @@ class DynamicConditionsAdmin {
                 'label' => __( 'Conditional value', 'dynamicconditions' ) . ' 2',
                 'description' => __( 'Add a second condition value, if between is selected', 'dynamicconditions' ),
                 'render_type' => $renderType,
+                'dynamic' => [
+                    'active' => true,
+                    'categories' => $categoriesTextOnly,
+                ],
 
                 'condition' => [
                     'dynamicconditions_condition' => [ 'between' ],
@@ -378,6 +416,20 @@ class DynamicConditionsAdmin {
             ]
         );
 
+        $element->add_control(
+            'dynamicconditions_in_array_contains_description',
+            [
+                'type' => Controls_Manager::RAW_HTML,
+                'label' => __( 'Conditional value', 'dynamicconditions' ) . ' 2',
+                'render_type' => $renderType,
+                'condition' => [
+                    'dynamicconditions_condition' => [ 'in_array_contains' ],
+                ],
+                'show_label' => false,
+                'raw' => __( 'Use comma-separated values, to check if dynamic-value contains one of each item.', 'dynamicconditions' ),
+            ]
+        );
+
         $languageArray = explode( '_', get_locale() );
         $language = array_shift( $languageArray );
         $element->add_control(
@@ -466,8 +518,63 @@ class DynamicConditionsAdmin {
             ]
         );
 
+
         $element->add_control(
             'dynamicconditions_hr3',
+            [
+                'type' => Controls_Manager::DIVIDER,
+                'style' => 'thick',
+            ]
+        );
+
+
+        $element->add_control(
+            'dynamicconditions_hideWrapper',
+            [
+                'type' => Controls_Manager::TEXT,
+                'label' => __( 'Hide wrapper', 'dynamicconditions' ),
+                'description' => __( 'Will hide a parent matching the selector.', 'dynamicconditions' ),
+                'placeholder' => 'selector',
+                'render_type' => $renderType,
+            ]
+        );
+
+        $element->add_control(
+            'dynamicconditions_hideOthers',
+            [
+                'type' => Controls_Manager::TEXT,
+                'label' => __( 'Hide other elements', 'dynamicconditions' ),
+                'description' => __( 'Will hide all other elements matching the selector.', 'dynamicconditions' ),
+                'placeholder' => 'selector',
+                'render_type' => $renderType,
+            ]
+        );
+
+        $element->add_control(
+            'dynamicconditions_hr4',
+            [
+                'type' => Controls_Manager::DIVIDER,
+                'style' => 'thick',
+            ]
+        );
+
+        $element->add_control(
+            'dynamicconditions_widget_id',
+            [
+                'type' => Controls_Manager::TEXT,
+                'label' => __( 'Widget-ID', 'dynamicconditions' ),
+                'render_type' => $renderType,
+                'description' => '<script>
+                    let $dcWidgetIdInput = jQuery(\'.elementor-control-dynamicconditions_widget_id input\');
+                    $dcWidgetIdInput.val(elementor.getCurrentElement().model.id);
+                    $dcWidgetIdInput.attr(\'readonly\', true);
+                    $dcWidgetIdInput.on(\'focus click\', function() { this.select();document.execCommand(\'copy\'); });
+                    </script>',
+            ]
+        );
+
+        $element->add_control(
+            'dynamicconditions_hr5',
             [
                 'type' => Controls_Manager::DIVIDER,
                 'style' => 'thick',
@@ -482,6 +589,7 @@ class DynamicConditionsAdmin {
                 'render_type' => $renderType,
             ]
         );
+
         $element->end_controls_section();
     }
 }

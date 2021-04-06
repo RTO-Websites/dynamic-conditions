@@ -1,0 +1,19 @@
+
+
+.elementor-control-dynamicconditions_dynamic .elementor-control-media__tools {
+  bottom: 0 !important;
+}
+
+.elementor-control-dynamicconditions_dynamic .elementor-control-media__tool,
+.elementor-control-dynamicconditions_dynamic .elementor-control-media-upload-button {
+  display: none;
+}
+
+.elementor-control-dynamicconditions_dynamic .elementor-control-media__content {
+  height: 27px;
+  padding-bottom: 0 !important;
+}
+
+.elementor-control-dynamicconditions_dynamic .elementor-control-dynamic-switcher {
+  width: 100%;
+}

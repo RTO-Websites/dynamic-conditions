@@ -1,87 +1,86 @@
-(function ($) {
+(function($) {
   'use strict';
 
-  /**
-   * All of the code for your public-facing JavaScript source
-   * should reside in this file.
-   *
-   * Note that this assume you're going to use jQuery, so it prepares
-   * the $ function reference to be used within the scope of this
-   * function.
-   *
-   * From here, you're able to define handlers for when the DOM is
-   * ready:
-   *
-   * $(function() {
-   *
-   * });
-   *
-   * Or when the window is loaded:
-   *
-   * $( window ).load(function() {
-   *
-   * });
-   *
-   * ...and so on.
-   *
-   * Remember that ideally, we should not attach any more than a single DOM-ready or window-load handler
-   * for any particular page. Though other scripts in WordPress core, other plugins, and other themes may
-   * be doing this, we should try to minimize doing that in our own work.
-   */
+  const dcHiddenSelector = '.dc-hidden-column',
+    dcHideWrapperSelector = '.dc-hide-wrapper',
+    dcHideOthersSelector = '.dc-hide-others',
+    dcRowSelector = '.elementor-row,.elementor-container',
+    dcColumnSelector = '> .elementor-column';
+
 
   function resizeColumns() {
-    let columns = $('.dc-elementor-hidden-column');
-    columns.each(function (index, column) {
-      column = $(column);
-      let hiddenSize = parseFloat(column.data('size')),
-        row = column.closest('.elementor-row'),
-        children = row.find('> .elementor-column'),
-        rowSize = 0;
+    const $columns = $(dcHiddenSelector);
+    $columns.each(function(index, column) {
+      const $column = $(column),
+        hiddenSize = parseFloat($column.data('size')),
+        $row = $column.closest(dcRowSelector),
+        $children = $row.find(dcColumnSelector);
 
-      if (children.length === 0) {
+      if ($children.length === 0) {
         return;
       }
 
       // get percent-width of row
-      children.each(function (cIndex, child) {
-        child = $(child);
-        rowSize += parseFloat(child.width() / row.width() * 100);
-      });
+      const rowSize = $children.toArray().reduce(
+        (acc, child) => acc + calcRowWidth($(child), $row),
+        0
+      );
 
-      children.each(function (cIndex, child) {
+      $children.each(function(cIndex, child) {
         // resize columns
-        child = $(child);
-        let childSize = parseFloat(child.width() / row.width() * 100),
+        const $child = $(child),
+          childSize = calcRowWidth($child, $row),
           newSize = childSize + (hiddenSize * (childSize / rowSize));
 
         if (childSize < 100) {
-          child.css({width: newSize + '%'});
+          $child.css({width: newSize + '%'});
         }
       });
 
     });
   }
 
+  function calcRowWidth($child, $row) {
+    return parseFloat($child.width() / $row.width() * 100);
+  }
+
   function resetColumns() {
-    let columns = $('.dc-elementor-hidden-column');
-    columns.each(function (index, column) {
-      column = $(column);
-      let row = column.closest('.elementor-row'),
-        children = row.find('> .elementor-column');
+    const $columns = $(dcHiddenSelector);
+    $columns.each(function(index, column) {
+      const $children = $(column).closest(dcRowSelector).find(dcColumnSelector);
 
       // reset width for recalc
-      children.css({width: ''});
+      $children.css({width: ''});
     });
   }
 
+  function hideWrappers() {
+    const $elements = $(dcHideWrapperSelector);
+    $elements.each(function(index, element) {
+      const $element = $(element),
+        $wrapper = $element.closest($element.data('selector'));
+      $wrapper.css({display: 'none'});
+    });
+  }
 
-  $(window).on('resize', function () {
+  function hideOthers() {
+    const $elements = $(dcHideOthersSelector);
+    $elements.each(function(index, element) {
+      const $element = $(element),
+        $toHide = $($element.data('selector'));
+      $toHide.css({display: 'none'});
+    });
+  }
+
+  $(window).on('resize', function() {
     resetColumns();
     resizeColumns();
   });
 
-  $(window).on('elementor/frontend/init', function () {
+  $(window).on('elementor/frontend/init', function() {
     resetColumns();
     resizeColumns();
+    hideWrappers();
+    hideOthers();
   });
 })(jQuery);
