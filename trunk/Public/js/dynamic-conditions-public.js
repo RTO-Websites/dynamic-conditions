@@ -47,9 +47,7 @@
   function resetColumns() {
     const $columns = $(dcHiddenSelector);
     $columns.each(function(index, column) {
-      const $column = $(column),
-        $row = $column.closest(dcRowSelector),
-        $children = $row.find(dcColumnSelector);
+      const $children = $(column).closest(dcRowSelector).find(dcColumnSelector);
 
       // reset width for recalc
       $children.css({width: ''});
