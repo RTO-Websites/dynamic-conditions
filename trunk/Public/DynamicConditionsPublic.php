@@ -320,7 +320,7 @@ class DynamicConditionsPublic {
 
         //prevent shortcodes from execution
         $this->shortcodeTags = $GLOBALS['shortcode_tags'];
-        $GLOBALS['shortcode_tags'] = null;
+        $GLOBALS['shortcode_tags'] = [];
 
         ob_start();
     }
