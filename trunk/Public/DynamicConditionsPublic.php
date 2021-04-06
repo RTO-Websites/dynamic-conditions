@@ -62,6 +62,8 @@ class DynamicConditionsPublic {
 
     private static $debugCssRendered = false;
 
+    private $shortcodeTags;
+
     /**
      * Initialize the class and set its properties.
      *
@@ -106,6 +108,8 @@ class DynamicConditionsPublic {
             dynamicconditions_value2
             dynamicconditions_parse_shortcodes
             dynamicconditions_debug
+            dynamicconditions_hideOthers
+            dynamicconditions_hideWrapper
             _column_size
             _inline_size';
 
@@ -314,6 +318,10 @@ class DynamicConditionsPublic {
         $section->dynamicConditionIsHidden = true;
         $section->dynamicConditionSettings = $settings;
 
+        //prevent shortcodes from execution
+        $this->shortcodeTags = $GLOBALS['shortcode_tags'];
+        $GLOBALS['shortcode_tags'] = [];
+
         ob_start();
     }
 
@@ -331,14 +339,25 @@ class DynamicConditionsPublic {
 
         $type = $section->get_type();
         $settings = $section->dynamicConditionSettings;
+        // reset shortcode tags
+        $GLOBALS['shortcode_tags'] = $this->shortcodeTags;
 
         if ( !empty( $settings['dynamicconditions_hideContentOnly'] ) ) {
             // render wrapper
             $section->before_render();
             $section->after_render();
         } else if ( $type == 'column' && $settings['dynamicconditions_resizeOtherColumns'] ) {
-            echo '<div class="dc-elementor-hidden-column" data-size="' . $settings['_column_size'] . '"></div>';
+            echo '<div class="dc-hidden-column" data-size="' . $settings['_column_size'] . '"></div>';
         }
+
+        if ( !empty( $settings['dynamicconditions_hideWrapper'] ) ) {
+            echo '<div class="dc-hide-wrapper" data-selector="' . $settings['dynamicconditions_hideWrapper'] . '"></div>';
+        }
+
+        if ( !empty( $settings['dynamicconditions_hideOthers'] ) ) {
+            echo '<div class="dc-hide-others" data-selector="' . $settings['dynamicconditions_hideOthers'] . '"></div>';
+        }
+
 
         echo "<!-- hidden $type -->";
     }
@@ -520,6 +539,16 @@ class DynamicConditionsPublic {
 
             case 'in_array':
                 $condition = in_array( $dynamicTagValue, explode( ',', $checkValue ) ) !== false;
+                $break = true;
+                break;
+
+            case 'in_array_contains':
+                foreach ( explode( ',', $checkValue ) as $toCheck ) {
+                    $condition = strpos( $dynamicTagValue, $toCheck ) !== false;
+                    if ( $condition ) {
+                        break;
+                    }
+                }
                 $break = true;
                 break;
         }
@@ -723,6 +752,10 @@ class DynamicConditionsPublic {
      * @return string
      */
     private function getMode() {
+        if ( !class_exists('Elementor\Plugin') ) {
+            return;
+        }
+
         if ( !empty( Plugin::$instance->editor ) && Plugin::$instance->editor->is_edit_mode() ) {
             return 'edit';
         }
