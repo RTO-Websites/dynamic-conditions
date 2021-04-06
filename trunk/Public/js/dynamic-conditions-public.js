@@ -9,13 +9,14 @@
 
 
   function resizeColumns() {
-    let $columns = $(dcHiddenSelector);
+    const $columns = $(dcHiddenSelector);
     $columns.each(function(index, column) {
-      let $column = $(column),
+      const $column = $(column),
         hiddenSize = parseFloat($column.data('size')),
         $row = $column.closest(dcRowSelector),
-        $children = $row.find(dcColumnSelector),
-        rowSize = 0;
+        $children = $row.find(dcColumnSelector);
+
+      let rowSize = 0;
 
       if ($children.length === 0) {
         return;
@@ -29,7 +30,7 @@
 
       $children.each(function(cIndex, child) {
         // resize columns
-        let $child = $(child),
+        const $child = $(child),
           childSize = calcRowWidth($child, $row),
           newSize = childSize + (hiddenSize * (childSize / rowSize));
 
@@ -46,9 +47,9 @@
   }
 
   function resetColumns() {
-    let $columns = $(dcHiddenSelector);
+    const $columns = $(dcHiddenSelector);
     $columns.each(function(index, column) {
-      let $column = $(column),
+      const $column = $(column),
         $row = $column.closest(dcRowSelector),
         $children = $row.find(dcColumnSelector);
 
@@ -58,18 +59,18 @@
   }
 
   function hideWrappers() {
-    let $elements = $(dcHideWrapperSelector);
+    const $elements = $(dcHideWrapperSelector);
     $elements.each(function(index, element) {
-      let $element = $(element),
+      const $element = $(element),
         $wrapper = $element.closest($element.data('selector'));
       $wrapper.css({display: 'none'});
     });
   }
 
   function hideOthers() {
-    let $elements = $(dcHideOthersSelector);
+    const $elements = $(dcHideOthersSelector);
     $elements.each(function(index, element) {
-      let $element = $(element),
+      const $element = $(element),
         $toHide = $($element.data('selector'));
       $toHide.css({display: 'none'});
     });
