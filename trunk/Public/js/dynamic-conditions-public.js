@@ -16,17 +16,15 @@
         $row = $column.closest(dcRowSelector),
         $children = $row.find(dcColumnSelector);
 
-      let rowSize = 0;
-
       if ($children.length === 0) {
         return;
       }
 
       // get percent-width of row
-      $children.each(function(cIndex, child) {
-        const $child = $(child);
-        rowSize += calcRowWidth($child, $row);
-      });
+      const rowSize = $children.toArray().reduce(
+        (acc, child) => acc + calcRowWidth($(child), $row),
+        0
+      );
 
       $children.each(function(cIndex, child) {
         // resize columns
