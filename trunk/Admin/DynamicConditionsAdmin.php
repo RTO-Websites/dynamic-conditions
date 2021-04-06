@@ -252,7 +252,7 @@ class DynamicConditionsAdmin {
 
                 'dynamic' => [
                     'active' => true,
-                    'categoriies' => $categoriesTextOnly,
+                    'categories' => $categoriesTextOnly,
                 ],
                 'condition' => [
                     'dynamicconditions_condition' => $valueCondition,
@@ -270,7 +270,7 @@ class DynamicConditionsAdmin {
                 'render_type' => $renderType,
                 'dynamic' => [
                     'active' => true,
-                    'categoriies' => $categoriesTextOnly,
+                    'categories' => $categoriesTextOnly,
                 ],
 
                 'condition' => [
