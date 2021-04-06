@@ -1,13 +1,20 @@
 (function($) {
   'use strict';
 
+  const dcHiddenSelector = '.dc-hidden-column',
+    dcHideWrapperSelector = '.dc-hide-wrapper',
+    dcHideOthersSelector = '.dc-hide-others',
+    dcRowSelector = '.elementor-row,.elementor-container',
+    dcColumnSelector = '> .elementor-column';
+
+
   function resizeColumns() {
-    let $columns = $('.dc-hidden-column');
+    let $columns = $(dcHiddenSelector);
     $columns.each(function(index, column) {
       let $column = $(column),
         hiddenSize = parseFloat($column.data('size')),
-        $row = $column.closest('.elementor-row,.elementor-container'),
-        $children = $row.find('> .elementor-column'),
+        $row = $column.closest(dcRowSelector),
+        $children = $row.find(dcColumnSelector),
         rowSize = 0;
 
       if ($children.length === 0) {
@@ -16,14 +23,14 @@
 
       // get percent-width of row
       $children.each(function(cIndex, child) {
-        let $child = $(child);
-        rowSize += parseFloat($child.width() / $row.width() * 100);
+        const $child = $(child);
+        rowSize += calcRowWidth($child, $row);
       });
 
       $children.each(function(cIndex, child) {
         // resize columns
         let $child = $(child),
-          childSize = parseFloat($child.width() / $row.width() * 100),
+          childSize = calcRowWidth($child, $row),
           newSize = childSize + (hiddenSize * (childSize / rowSize));
 
         if (childSize < 100) {
@@ -34,12 +41,16 @@
     });
   }
 
+  function calcRowWidth($child, $row) {
+    return parseFloat($child.width() / $row.width() * 100);
+  }
+
   function resetColumns() {
-    let $columns = $('.dc-hidden-column');
+    let $columns = $(dcHiddenSelector);
     $columns.each(function(index, column) {
       let $column = $(column),
-        $row = $column.closest('.elementor-row,.elementor-container'),
-        $children = $row.find('> .elementor-column');
+        $row = $column.closest(dcRowSelector),
+        $children = $row.find(dcColumnSelector);
 
       // reset width for recalc
       $children.css({width: ''});
@@ -47,7 +58,7 @@
   }
 
   function hideWrappers() {
-    let $elements = $('.dc-hide-wrapper');
+    let $elements = $(dcHideWrapperSelector);
     $elements.each(function(index, element) {
       let $element = $(element),
         $wrapper = $element.closest($element.data('selector'));
@@ -56,7 +67,7 @@
   }
 
   function hideOthers() {
-    let $elements = $('.dc-hide-others');
+    let $elements = $(dcHideOthersSelector);
     $elements.each(function(index, element) {
       let $element = $(element),
         $toHide = $($element.data('selector'));
