@@ -62,7 +62,7 @@ class DynamicConditionsPublic {
 
     private static $debugCssRendered = false;
 
-    private $shortcodeTags;
+    private $shortcodeTags = [];
 
     /**
      * Initialize the class and set its properties.
@@ -319,7 +319,7 @@ class DynamicConditionsPublic {
         $section->dynamicConditionSettings = $settings;
 
         //prevent shortcodes from execution
-        $this->shortcodeTags = $GLOBALS['shortcode_tags'];
+        $this->shortcodeTags += $GLOBALS['shortcode_tags'];
         $GLOBALS['shortcode_tags'] = [];
 
         ob_start();
@@ -331,6 +331,8 @@ class DynamicConditionsPublic {
      * @param Element_Base $section
      */
     public function filterSectionContentAfter( $section ) {
+        // reset shortcode tags
+        $GLOBALS['shortcode_tags'] += $this->shortcodeTags;
         if ( empty( $section ) || empty( $section->dynamicConditionIsHidden ) ) {
             return;
         }
@@ -339,8 +341,6 @@ class DynamicConditionsPublic {
 
         $type = $section->get_type();
         $settings = $section->dynamicConditionSettings;
-        // reset shortcode tags
-        $GLOBALS['shortcode_tags'] = $this->shortcodeTags;
 
         if ( !empty( $settings['dynamicconditions_hideContentOnly'] ) ) {
             // render wrapper
@@ -752,7 +752,7 @@ class DynamicConditionsPublic {
      * @return string
      */
     private function getMode() {
-        if ( !class_exists('Elementor\Plugin') ) {
+        if ( !class_exists( 'Elementor\Plugin' ) ) {
             return;
         }
 

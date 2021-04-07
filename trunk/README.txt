@@ -27,7 +27,7 @@ https://www.youtube.com/watch?v=bRqW4Oaxtls
 
 You can support development by contributing to the plugin´s GitHub repository:
 
-https://github.com/RTO-Websites/dynamic-conditions
+[Github Dynamic Conditions](https://github.com/RTO-Websites/dynamic-conditions)
 
 = Usage =
 
@@ -41,23 +41,23 @@ https://github.com/RTO-Websites/dynamic-conditions
 8. At last you have to enter the value to compare the dynamic-field with. Or two values, if you have selected the "between" condition.
 
 == Frequently Asked Questions ==
-= Can I use custom-fields, ACF fields, Pods ? =
+= Can I use custom-fields, ACF fields, Pods? =
 Yes, all the above are supported and many others supported out-of-the-box by Elementor Pro.
 
-= Can I set date based conditions ? =
+= Can I set date based conditions? =
 Yes, the plugin supports date based conditions, for example current-date or post-date. You can compare dates, days and months.
 
 = Can I show/hide elements for logged-in or logged-out users? =
 Yes, you can set display conditions for logged in or logged out users. Selecting the "user information" dynamic-tag, and set it to "user ID". Now check if it is empty or not.
 
-= Are my elements only hidden or fully removed =
+= Are my elements only hidden or fully removed? =
 The elements will be fully removed from source code, like they are not existing.
 Only if you use the experts options to hide also wrappers or other elements, they will only be hidden with css.
 
-= I´m missing some dynamic tags
+= I´m missing some dynamic tags =
 We have developed an other plugin which provides some useful tags.
 You can find it here:
-https://wordpress.org/plugins/dynamictags/
+[DynamicTags](https://wordpress.org/plugins/dynamictags/)
 
 
 == Screenshots ==
