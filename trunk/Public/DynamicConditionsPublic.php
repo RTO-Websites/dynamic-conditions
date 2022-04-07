@@ -87,6 +87,15 @@ class DynamicConditionsPublic {
     private function getElementSettings( $element ) {
         $id = $element->get_id();
 
+        if ($id) {
+               $element_key = "DC_ElementSettings$id";
+               $cached_element_settings = wp_cache_get( $element_key );
+               if ($cached_element_settings) {
+                       $this->elementSettings[ $id ] = $cached_element_settings;
+                       return $this->elementSettings[ $id ];
+               }
+       }
+
         $clonedElement = clone $element;
 
         $fields = '__dynamic__
@@ -155,7 +164,7 @@ class DynamicConditionsPublic {
             'tagData' => $tagData['tagData'],
             'tagKey' => $tagData['tagKey'],
         ];
-
+        wp_cache_add( $element_key, $this->elementSettings[ $id ] );
         return $this->elementSettings[$id];
     }
 
