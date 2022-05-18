@@ -147,6 +147,8 @@ class DynamicConditions {
 
         $this->loader->addAction( 'elementor/element/popup/section_advanced/after_section_end', $pluginAdmin, 'addConditionFields', 10, 3 );
 
+        $this->loader->addAction( 'elementor/element/container/section_layout/after_section_end', $pluginAdmin, 'addConditionFields', 10, 3 );
+
         $this->loader->addAction( 'admin_notices', $pluginAdmin, 'addAdminNotices', 10, 3 );
         $this->loader->addAction( 'admin_enqueue_scripts', $pluginAdmin, 'enqueueStyles' );
         $this->loader->addAction( 'elementor/editor/before_enqueue_styles', $pluginAdmin, 'enqueueStyles' );
@@ -175,6 +177,10 @@ class DynamicConditions {
         // filter columns
         $this->loader->addAction( "elementor/frontend/column/before_render", $pluginPublic, 'filterSectionContentBefore', 10, 1 );
         $this->loader->addAction( "elementor/frontend/column/after_render", $pluginPublic, 'filterSectionContentAfter', 10, 1 );
+
+        // filter container
+        $this->loader->addAction( "elementor/frontend/container/before_render", $pluginPublic, 'filterSectionContentBefore', 10, 1 );
+        $this->loader->addAction( "elementor/frontend/container/after_render", $pluginPublic, 'filterSectionContentAfter', 10, 1 );
 
         // filter popup
         $this->loader->addAction( "elementor/theme/before_do_popup", $pluginPublic, 'checkPopupsCondition', 10, 1 );
