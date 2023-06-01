@@ -721,10 +721,10 @@ class DynamicConditionsPublic {
 
         $visibility = self::checkEmpty( $settings, 'dynamicconditions_visibility', 'hide' );
 
-        $dynamicTagValue = str_replace( '[', '&#91;', htmlentities( $dynamicTagValue ) );
+        $dynamicTagValue = str_replace( '[', '&#91;', htmlentities( $dynamicTagValue ?? '') );
         $dynamicTagValue = str_replace( '~~*#~~', '<br />', $dynamicTagValue );
-        $checkValue = str_replace( '[', '&#91;', htmlentities( $checkValue ) );
-        $checkValue2 = str_replace( '[', '&#91;', htmlentities( $checkValue2 ) );
+        $checkValue = str_replace( '[', '&#91;', htmlentities( $checkValue ?? '') );
+        $checkValue2 = str_replace( '[', '&#91;', htmlentities( $checkValue2 ?? '') );
         $dynamicTagValueRaw = self::checkEmpty( $settings, 'dynamicconditions_dynamic_raw', '' );
 
         include( 'partials/debug.php' );

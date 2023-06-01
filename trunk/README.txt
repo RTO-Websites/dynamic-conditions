@@ -3,9 +3,9 @@ Contributors: rtowebsites
 Donate link: https://www.rto.de
 Tags: elementor, conditions, dynamic, fields, rto
 Requires at least: 5.0
-Requires PHP: 7.0
-Tested up to: 5.9
-Stable tag: 1.6.0
+Requires PHP: 8.0
+Tested up to: 6.3
+Stable tag: 1.6.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -65,6 +65,9 @@ You can find it here:
 1. Widget options for conditions
 
 == Changelog ==
+= 1.6.1 =
+* Fix deprecated warnings
+
 = 1.6.0 =
 * Add support for containers
 
