@@ -194,7 +194,7 @@ class DynamicConditions {
      * @access   private
      */
     private function defineElementorHooks() {
-        $this->loader->addAction( 'elementor/dynamic_tags/register_tags', $this, 'registerDynamicTags', 10, 1 );
+        $this->loader->addAction( 'elementor/dynamic_tags/register', $this, 'registerDynamicTags', 10, 1 );
         $this->loader->addAction( 'wp_footer', $this, 'setFooterStyleForPreview', 10, 0 );
     }
 
@@ -205,7 +205,7 @@ class DynamicConditions {
      * @param $dynamicTags
      */
     public function registerDynamicTags( $dynamicTags ) {
-        $dynamicTags->register_tag( NumberPostsTag::class );
+        $dynamicTags->register( new NumberPostsTag );
     }
 
     /**
