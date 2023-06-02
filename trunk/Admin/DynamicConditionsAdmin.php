@@ -565,7 +565,7 @@ class DynamicConditionsAdmin {
                 'label' => __( 'Widget-ID', 'dynamicconditions' ),
                 'render_type' => $renderType,
                 'description' => '<script>
-                    let $dcWidgetIdInput = jQuery(\'.elementor-control-dynamicconditions_widget_id input\');
+                    $dcWidgetIdInput = jQuery(\'.elementor-control-dynamicconditions_widget_id input\');
                     $dcWidgetIdInput.val(elementor.getCurrentElement().model.id);
                     $dcWidgetIdInput.attr(\'readonly\', true);
                     $dcWidgetIdInput.on(\'focus click\', function() { this.select();document.execCommand(\'copy\'); });
