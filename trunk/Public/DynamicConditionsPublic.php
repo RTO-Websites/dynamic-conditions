@@ -195,6 +195,13 @@ class DynamicConditionsPublic {
 
 
         $tag = $this->elementSettings[$id]['__dynamic__']['dynamicconditions_dynamic'];
+        if ( is_array( $tag ) ) {
+            return [
+                'selectedTag' => null,
+                'tagData' => null,
+                'tagKey' => null,
+            ];
+        }
         $splitTag = explode( ' name="', $tag );
 
         // get selected tag
@@ -337,7 +344,10 @@ class DynamicConditionsPublic {
             return;
         }
 
-        ob_end_clean();
+        $content = ob_get_clean();
+        $matches = [];
+        $regex = preg_match('/<link.*?\/?>/', $content, $matches);
+        echo implode('', $matches);
 
         $type = $section->get_type();
         $settings = $section->dynamicConditionSettings;
@@ -709,6 +719,7 @@ class DynamicConditionsPublic {
      * @param $dynamicTagValue
      * @param $checkValue
      * @param $checkValue2
+     * @param $conditionMets
      */
     private function renderDebugInfo( $settings, $dynamicTagValue, $checkValue, $checkValue2, $conditionMets ) {
         if ( !$settings['dynamicconditions_debug'] ) {
@@ -721,10 +732,10 @@ class DynamicConditionsPublic {
 
         $visibility = self::checkEmpty( $settings, 'dynamicconditions_visibility', 'hide' );
 
-        $dynamicTagValue = str_replace( '[', '&#91;', htmlentities( $dynamicTagValue ?? '') );
+        $dynamicTagValue = str_replace( '[', '&#91;', htmlentities( $dynamicTagValue ?? '' ) );
         $dynamicTagValue = str_replace( '~~*#~~', '<br />', $dynamicTagValue );
-        $checkValue = str_replace( '[', '&#91;', htmlentities( $checkValue ?? '') );
-        $checkValue2 = str_replace( '[', '&#91;', htmlentities( $checkValue2 ?? '') );
+        $checkValue = str_replace( '[', '&#91;', htmlentities( $checkValue ?? '' ) );
+        $checkValue2 = str_replace( '[', '&#91;', htmlentities( $checkValue2 ?? '' ) );
         $dynamicTagValueRaw = self::checkEmpty( $settings, 'dynamicconditions_dynamic_raw', '' );
 
         include( 'partials/debug.php' );
@@ -753,7 +764,7 @@ class DynamicConditionsPublic {
      */
     private function getMode() {
         if ( !class_exists( 'Elementor\Plugin' ) ) {
-            return;
+            return '';
         }
 
         if ( !empty( Plugin::$instance->editor ) && Plugin::$instance->editor->is_edit_mode() ) {
