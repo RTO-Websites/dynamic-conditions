@@ -7,6 +7,7 @@ use Elementor\Plugin;
 use ElementorPro\Modules\ThemeBuilder\Classes\Locations_Manager;
 use ElementorPro\Modules\ThemeBuilder\Module;
 use DynamicConditions\Lib\Date;
+use WeakMap;
 
 /**
  * The public-facing functionality of the plugin.
@@ -56,6 +57,15 @@ class DynamicConditionsPublic {
     private $elementSettings = [];
 
     /**
+     * Cache to store a widget's dynamic condition properties.
+     * Provides compatibility with php 8.2+ after deprecation of dynamic properties.
+     *
+     * @access   private
+     * @var      WeakMap $widgetCache For storing dynamic condition data by widget.
+     */
+    private WeakMap $widgetCache;
+
+    /**
      * @var Date $dateInstance
      */
     private $dateInstance;
@@ -76,6 +86,8 @@ class DynamicConditionsPublic {
         $this->pluginName = $pluginName;
         $this->version = $version;
         $this->dateInstance = new Date();
+
+        $this->widgetCache = new WeakMap();
     }
 
     /**
@@ -322,8 +334,10 @@ class DynamicConditionsPublic {
             return;
         }
 
-        $section->dynamicConditionIsHidden = true;
-        $section->dynamicConditionSettings = $settings;
+        $this->widgetCache[$section] = [
+            'isHidden' => true,
+            'settings' => $settings,
+        ];
 
         //prevent shortcodes from execution
         $this->shortcodeTags += $GLOBALS['shortcode_tags'];
@@ -340,7 +354,7 @@ class DynamicConditionsPublic {
     public function filterSectionContentAfter( $section ) {
         // reset shortcode tags
         $GLOBALS['shortcode_tags'] += $this->shortcodeTags;
-        if ( empty( $section ) || empty( $section->dynamicConditionIsHidden ) ) {
+        if ( empty( $section ) || empty( $this->widgetCache[$section]['isHidden'] ) ) {
             return;
         }
 
@@ -350,7 +364,7 @@ class DynamicConditionsPublic {
         echo implode('', $matches);
 
         $type = $section->get_type();
-        $settings = $section->dynamicConditionSettings;
+        $settings = $this->widgetCache[$section]['settings'];
 
         if ( !empty( $settings['dynamicconditions_hideContentOnly'] ) ) {
             // render wrapper
