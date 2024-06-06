@@ -129,7 +129,7 @@ class DynamicConditionsAdmin {
         ];
 
         $type = 'element';
-        $renderType = 'ui';
+        $renderType = 'template';
         if ( !empty( $element ) && is_object( $element ) && method_exists( $element, 'get_type' ) ) {
             $type = $element->get_type();
         }
