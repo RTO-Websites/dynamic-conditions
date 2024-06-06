@@ -98,7 +98,6 @@ class DynamicConditionsPublic {
      */
     private function getElementSettings( $element ) {
         $id = $element->get_id();
-
         $clonedElement = clone $element;
 
         $fields = '__dynamic__
@@ -146,6 +145,7 @@ class DynamicConditionsPublic {
             $this->elementSettings[$id][$field] = $clonedElement->get_settings_for_display( $field );
         }
         unset( $clonedElement );
+        #var_dump($this->elementSettings[$id]);
 
         if ( empty( $preventDateParsing ) ) {
             remove_filter( 'date_i18n', [ $this->dateInstance, 'filterDateI18n' ], 10 );
@@ -230,11 +230,10 @@ class DynamicConditionsPublic {
                 $tagSettings = json_decode( urldecode( $splitTag2[0] ), true );
                 if ( !empty( $tagSettings['key'] ) ) {
                     $tagKey = $tagSettings['key'];
-                    $tagData = get_field_object( explode( ':', $tagSettings['key'] )[0] ); //, false, false );
+                    $tagData = get_field_object( explode( ':', $tagSettings['key'] )[0] );
                 }
             }
         }
-
         return [
             'selectedTag' => $selectedTag,
             'tagData' => $tagData,
@@ -360,8 +359,8 @@ class DynamicConditionsPublic {
 
         $content = ob_get_clean();
         $matches = [];
-        $regex = preg_match('/<link.*?\/?>/', $content, $matches);
-        echo implode('', $matches);
+        $regex = preg_match( '/<link.*?\/?>/', $content, $matches );
+        echo implode( '', $matches );
 
         $type = $section->get_type();
         $settings = $this->widgetCache[$section]['settings'];
@@ -500,6 +499,9 @@ class DynamicConditionsPublic {
         $break = false;
         $breakFalse = false;
         $condition = false;
+        if ( is_null( $dynamicTagValue ) ) {
+            $dynamicTagValue = '';
+        }
 
         switch ( $compare ) {
             case 'equal':
@@ -751,6 +753,10 @@ class DynamicConditionsPublic {
         $checkValue = str_replace( '[', '&#91;', htmlentities( $checkValue ?? '' ) );
         $checkValue2 = str_replace( '[', '&#91;', htmlentities( $checkValue2 ?? '' ) );
         $dynamicTagValueRaw = self::checkEmpty( $settings, 'dynamicconditions_dynamic_raw', '' );
+
+        if ( is_array( $dynamicTagValueRaw ) ) {
+            $dynamicTagValueRaw = json_encode( $dynamicTagValueRaw );
+        }
 
         include( 'partials/debug.php' );
 
