@@ -64,7 +64,7 @@ class Date {
      */
     public static function stringToTime( $string = '' ) {
         $timestamp = $string;
-        $strToTime = strtotime( $string, time() );
+        $strToTime = strtotime( $string ?? '', time() );
         if ( !empty( $strToTime ) && !self::isTimestamp( $timestamp ) ) {
             $timestamp = $strToTime;
         }
