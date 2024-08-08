@@ -1,2 +1,5 @@
 /vendor
 /trunk/vendor
+.idea
+.svn
+/tags

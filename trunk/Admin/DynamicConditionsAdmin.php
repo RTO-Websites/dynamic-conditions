@@ -3,6 +3,7 @@
 namespace DynamicConditions\Admin;
 
 use Elementor\Controls_Manager;
+use Elementor\Element_Base;
 use Elementor\Modules\DynamicTags\Module;
 use DynamicConditions\Lib\Date;
 
@@ -32,32 +33,10 @@ if ( !defined( 'ABSPATH' ) ) {
  * @author     RTO GmbH <kundenhomepage@rto.de>
  */
 class DynamicConditionsAdmin {
-    /**
-     * The ID of this plugin.
-     *
-     * @since    1.0.0
-     * @access   private
-     * @var      string $pluginName The ID of this plugin.
-     */
-    private $pluginName;
+    private string $pluginName;
+    private string $version;
 
-    /**
-     * The version of this plugin.
-     *
-     * @since    1.0.0
-     * @access   private
-     * @var      string $version The current version of this plugin.
-     */
-    private $version;
-
-    /**
-     * Initialize the class and set its properties.
-     *
-     * @param string $pluginName The name of this plugin.
-     * @param string $version The version of this plugin.
-     * @since    1.0.0
-     */
-    public function __construct( $pluginName, $version ) {
+    public function __construct( string $pluginName, string $version ) {
 
         $this->pluginName = $pluginName;
         $this->version = $version;
@@ -70,13 +49,13 @@ class DynamicConditionsAdmin {
      *
      * @since    1.0.0
      */
-    public function enqueueStyles() {
+    public function enqueueStyles(): void {
 
         wp_enqueue_style( $this->pluginName, DynamicConditions_URL . '/Admin/css/dynamic-conditions-admin.css', [], $this->version, 'all' );
 
     }
 
-    public function addAdminNotices() {
+    public function addAdminNotices(): void {
         $message = '';
         $class = 'notice notice-error';
 
@@ -98,12 +77,8 @@ class DynamicConditionsAdmin {
 
     /**
      * Creates section for dynamic conditions in elementor-widgets
-     *
-     * @param $element
-     * @param $section_id
-     * @param $args
      */
-    public function addConditionFields( $element, $section_id = null, $args = null ) {
+    public function addConditionFields( Element_Base $element, $section_id = null, ?array $args = null ): void {
         $valueCondition = [
             'equal',
             'not_equal',
@@ -113,7 +88,7 @@ class DynamicConditionsAdmin {
             'greater',
             'between',
             'in_array',
-            'in_array_contains'
+            'in_array_contains',
         ];
 
         $allCondition = [
@@ -125,7 +100,7 @@ class DynamicConditionsAdmin {
             'greater',
             'between',
             'empty',
-            'not_empty'
+            'not_empty',
         ];
 
         $type = 'element';
@@ -232,6 +207,7 @@ class DynamicConditionsAdmin {
                     'days' => __( 'Weekdays', 'dynamicconditions' ),
                     'months' => __( 'Months', 'dynamicconditions' ),
                     'strtotime' => __( 'String to time', 'dynamicconditions' ),
+                    'int' => __( 'Integer', 'dynamicconditions' ),
                 ],
                 'default' => 'default',
                 'render_type' => $renderType,
@@ -256,7 +232,7 @@ class DynamicConditionsAdmin {
                 ],
                 'condition' => [
                     'dynamicconditions_condition' => $valueCondition,
-                    'dynamicconditions_type' => [ 'default', 'strtotime' ],
+                    'dynamicconditions_type' => [ 'default', 'strtotime', 'int' ],
                 ],
             ]
         );
@@ -275,7 +251,7 @@ class DynamicConditionsAdmin {
 
                 'condition' => [
                     'dynamicconditions_condition' => [ 'between' ],
-                    'dynamicconditions_type' => [ 'default', 'strtotime' ],
+                    'dynamicconditions_type' => [ 'default', 'strtotime', 'int' ],
                 ],
             ]
         );
@@ -466,6 +442,20 @@ class DynamicConditionsAdmin {
                 'type' => Controls_Manager::SWITCHER,
                 'label' => __( 'Hide only content', 'dynamicconditions' ),
                 'description' => __( 'If checked, only the inner content will be hidden, so you will see an empty section', 'dynamicconditions' ),
+                'return_value' => 'on',
+                'render_type' => $renderType,
+                'condition' => [
+                    'dynamicconditions_condition' => $allCondition,
+                ],
+            ]
+        );
+
+        $element->add_control(
+            'dynamicconditions_removeStyles',
+            [
+                'type' => Controls_Manager::SWITCHER,
+                'label' => __( 'Remove Styles', 'dynamicconditions' ),
+                'description' => __( 'If checked, all style- and link-tags will be removed from the element. Can affect other elements.', 'dynamicconditions' ),
                 'return_value' => 'on',
                 'render_type' => $renderType,
                 'condition' => [
