@@ -3,6 +3,7 @@
 namespace DynamicConditions\Lib;
 
 use DynamicConditions\Admin\DynamicConditionsAdmin;
+use Elementor\Core\DynamicTags\Manager;
 use Elementor\Plugin;
 use DynamicConditions\Lib\DynamicTags\NumberPostsTag;
 use DynamicConditions\Pub\DynamicConditionsPublic;
@@ -41,33 +42,11 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class DynamicConditions {
 
-    /**
-     * The loader that's responsible for maintaining and registering all hooks that power
-     * the plugin.
-     *
-     * @since    1.0.0
-     * @access   protected
-     * @var      Loader $loader Maintains and registers all hooks for the plugin.
-     */
-    protected $loader;
+    protected Loader $loader;
 
-    /**
-     * The unique identifier of this plugin.
-     *
-     * @since    1.0.0
-     * @access   protected
-     * @var      string $pluginName The string used to uniquely identify this plugin.
-     */
-    protected $pluginName;
+    protected string $pluginName;
 
-    /**
-     * The current version of the plugin.
-     *
-     * @since    1.0.0
-     * @access   protected
-     * @var      string $version The current version of the plugin.
-     */
-    protected $version;
+    protected string $version;
 
     /**
      * Define the core functionality of the plugin.
@@ -107,7 +86,7 @@ class DynamicConditions {
      * @since    1.0.0
      * @access   private
      */
-    private function loadDependencies() {
+    private function loadDependencies(): void {
 
         $this->loader = new Loader();
 
@@ -122,7 +101,7 @@ class DynamicConditions {
      * @since    1.0.0
      * @access   private
      */
-    private function setLocale() {
+    private function setLocale(): void {
 
         $pluginI18n = new I18n();
         $pluginI18n->setDomain( 'dynamicconditions' );
@@ -138,7 +117,7 @@ class DynamicConditions {
      * @since    1.0.0
      * @access   private
      */
-    private function defineAdminHooks() {
+    private function defineAdminHooks(): void {
         $pluginAdmin = new DynamicConditionsAdmin( $this->getDynamicConditions(), $this->getVersion() );
 
         $this->loader->addAction( 'elementor/element/column/section_advanced/after_section_end', $pluginAdmin, 'addConditionFields', 10, 3 );
@@ -161,7 +140,7 @@ class DynamicConditions {
      * @since    1.0.0
      * @access   private
      */
-    private function definePublicHooks() {
+    private function definePublicHooks(): void {
         $pluginPublic = new DynamicConditionsPublic( $this->getDynamicConditions(), $this->getVersion() );
 
         $this->loader->addAction( 'wp_enqueue_scripts', $pluginPublic, 'enqueueScripts' );
@@ -193,18 +172,12 @@ class DynamicConditions {
      * @since    1.2.0
      * @access   private
      */
-    private function defineElementorHooks() {
+    private function defineElementorHooks(): void {
         $this->loader->addAction( 'elementor/dynamic_tags/register', $this, 'registerDynamicTags', 10, 1 );
         $this->loader->addAction( 'wp_footer', $this, 'setFooterStyleForPreview', 10, 0 );
     }
 
-    /**
-     * Register some useful dynamic tags
-     *
-     * @since 1.2.0
-     * @param $dynamicTags
-     */
-    public function registerDynamicTags( $dynamicTags ) {
+    public function registerDynamicTags( Manager $dynamicTags ): void {
         $dynamicTags->register( new NumberPostsTag );
     }
 
@@ -213,7 +186,7 @@ class DynamicConditions {
      *
      * @since 1.3.0
      */
-    public function setFooterStyleForPreview() {
+    public function setFooterStyleForPreview(): void {
         if ( !class_exists('Elementor\Plugin') || !Plugin::$instance->preview->is_preview_mode() ) {
             return;
         }
@@ -229,38 +202,22 @@ class DynamicConditions {
                 font-family: eicons;
                 color: #71d7f7;
             }
+            body.elementor-editor-active .elementor-element.dc-has-condition {
+              border: 1px dashed rgba(255, 0,0, 0.3);
+            }
         </style>
         <?php
     }
 
-    /**
-     * The name of the plugin used to uniquely identify it within the context of
-     * WordPress and to define internationalization functionality.
-     *
-     * @return    string    The name of the plugin.
-     * @since     1.0.0
-     */
-    public function getDynamicConditions() {
+    public function getDynamicConditions(): string {
         return $this->pluginName;
     }
 
-    /**
-     * The reference to the class that orchestrates the hooks with the plugin.
-     *
-     * @return    Loader    Orchestrates the hooks of the plugin.
-     * @since     1.0.0
-     */
-    public function getLoader() {
+    public function getLoader(): Loader {
         return $this->loader;
     }
 
-    /**
-     * Retrieve the version number of the plugin.
-     *
-     * @return    string    The version number of the plugin.
-     * @since     1.0.0
-     */
-    public function getVersion() {
+    public function getVersion(): string {
         return $this->version;
     }
 
@@ -269,7 +226,7 @@ class DynamicConditions {
      *
      * @since    1.0.0
      */
-    public static function run() {
+    public static function run(): void{
         $plugin = new self();
         $plugin->loader->run();
     }

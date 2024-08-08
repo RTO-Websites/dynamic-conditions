@@ -7,7 +7,6 @@ use Elementor\Plugin;
 use ElementorPro\Modules\ThemeBuilder\Classes\Locations_Manager;
 use ElementorPro\Modules\ThemeBuilder\Module;
 use DynamicConditions\Lib\Date;
-use WeakMap;
 
 /**
  * The public-facing functionality of the plugin.
@@ -24,6 +23,10 @@ if ( !defined( 'ABSPATH' ) ) {
     die;
 }
 
+if ( !class_exists( 'WeakMap' ) ) {
+    include_once DynamicConditions_DIR . '/Legacy/WeakMap_Fallback.php';
+}
+
 /**
  * The public-facing functionality of the plugin.
  *
@@ -36,67 +39,43 @@ if ( !defined( 'ABSPATH' ) ) {
  */
 class DynamicConditionsPublic {
 
-    /**
-     * The ID of this plugin.
-     *
-     * @since    1.0.0
-     * @access   private
-     * @var      string $pluginName The ID of this plugin.
-     */
-    private $pluginName;
+    private string $pluginName;
 
-    /**
-     * The version of this plugin.
-     *
-     * @since    1.0.0
-     * @access   private
-     * @var      string $version The current version of this plugin.
-     */
-    private $version;
+    private string $version;
 
-    private $elementSettings = [];
+    private array $elementSettings = [];
 
     /**
      * Cache to store a widget's dynamic condition properties.
      * Provides compatibility with php 8.2+ after deprecation of dynamic properties.
      *
      * @access   private
-     * @var      WeakMap $widgetCache For storing dynamic condition data by widget.
+     * @var      \WeakMap $widgetCache For storing dynamic condition data by widget.
      */
-    private WeakMap $widgetCache;
+    private \WeakMap $widgetCache;
 
-    /**
-     * @var Date $dateInstance
-     */
-    private $dateInstance;
+    private Date $dateInstance;
 
-    private static $debugCssRendered = false;
+    private static bool $debugCssRendered = false;
 
-    private $shortcodeTags = [];
+    private array $shortcodeTags = [];
 
     /**
      * Initialize the class and set its properties.
-     *
-     * @param string $pluginName The name of the plugin.
-     * @param string $version The version of this plugin.
-     * @since    1.0.0
      */
-    public function __construct( $pluginName, $version ) {
+    public function __construct( string $pluginName, string $version ) {
 
         $this->pluginName = $pluginName;
         $this->version = $version;
         $this->dateInstance = new Date();
 
-        $this->widgetCache = new WeakMap();
+        $this->widgetCache = new \WeakMap();
     }
 
     /**
      * Gets settings with english locale (needed for date)
-     *
-     * @param Element_Base $element
-     * @return mixed
      */
-    private function getElementSettings( $element ) {
+    private function getElementSettings( Element_Base $element ): array {
         $id = $element->get_id();
         $clonedElement = clone $element;
 
@@ -121,6 +100,7 @@ class DynamicConditionsPublic {
             dynamicconditions_debug
             dynamicconditions_hideOthers
             dynamicconditions_hideWrapper
+            dynamicconditions_removeStyles
             _column_size
             _inline_size';
 
@@ -145,7 +125,6 @@ class DynamicConditionsPublic {
             $this->elementSettings[$id][$field] = $clonedElement->get_settings_for_display( $field );
         }
         unset( $clonedElement );
-        #var_dump($this->elementSettings[$id]);
 
         if ( empty( $preventDateParsing ) ) {
             remove_filter( 'date_i18n', [ $this->dateInstance, 'filterDateI18n' ], 10 );
@@ -173,11 +152,8 @@ class DynamicConditionsPublic {
 
     /**
      * Returns data of dynamic tag
-     *
-     * @param $id
-     * @return array
      */
-    private function getDynamicTagData( $id ) {
+    private function getDynamicTagData( string $id ): array {
         $dynamicEmpty = empty( $this->elementSettings[$id]['__dynamic__'] )
             || empty( $this->elementSettings[$id]['__dynamic__']['dynamicconditions_dynamic'] );
         $staticEmpty = empty( $this->elementSettings[$id]['dynamicconditions_dynamic'] )
@@ -244,11 +220,8 @@ class DynamicConditionsPublic {
 
     /**
      * Convert acf date to timestamp
-     *
-     * @param $id
-     * @param array $data
      */
-    private function convertAcfDate( $id, array $data ) {
+    private function convertAcfDate( string $id, ?array $data ): void {
         if ( empty( $data ) ) {
             return;
         }
@@ -295,10 +268,8 @@ class DynamicConditionsPublic {
 
     /**
      * Removes popup from location, if it is hidden by condition
-     *
-     * @param Locations_Manager $locationManager
      */
-    public function checkPopupsCondition( $locationManager ) {
+    public function checkPopupsCondition( Locations_Manager $locationManager ): void {
         if ( $this->getMode() !== 'website' ) {
             return;
         }
@@ -318,10 +289,8 @@ class DynamicConditionsPublic {
 
     /**
      * Check if section is hidden, before rendering
-     *
-     * @param Element_Base $section
      */
-    public function filterSectionContentBefore( $section ) {
+    public function filterSectionContentBefore( Element_Base $section ): void {
         if ( $this->getMode() === 'edit' ) {
             return;
         }
@@ -350,7 +319,7 @@ class DynamicConditionsPublic {
      *
      * @param Element_Base $section
      */
-    public function filterSectionContentAfter( $section ) {
+    public function filterSectionContentAfter( Element_Base $section ): void {
         // reset shortcode tags
         $GLOBALS['shortcode_tags'] += $this->shortcodeTags;
         if ( empty( $section ) || empty( $this->widgetCache[$section]['isHidden'] ) ) {
@@ -358,12 +327,19 @@ class DynamicConditionsPublic {
         }
 
         $content = ob_get_clean();
-        $matches = [];
-        $regex = preg_match( '/<link.*?\/?>/', $content, $matches );
-        echo implode( '', $matches );
+        $matchesLinkTags = [];
+        $matchesStyleTags = [];
+
 
         $type = $section->get_type();
         $settings = $this->widgetCache[$section]['settings'];
+
+        if ( empty( $settings['dynamicconditions_removeStyles'] ) ) {
+            preg_match_all( '/<link.*?\/?>/', $content, $matchesLinkTags );
+            preg_match_all( '/<style(.*?)<\/style>/s', $content, $matchesStyleTags );
+            echo implode( '', $matchesLinkTags[0] );
+            echo implode( '', $matchesStyleTags[0] );
+        }
 
         if ( !empty( $settings['dynamicconditions_hideContentOnly'] ) ) {
             // render wrapper
@@ -387,11 +363,8 @@ class DynamicConditionsPublic {
 
     /**
      * Checks condition, return if element is hidden
-     *
-     * @param $settings
-     * @return bool
      */
-    public function checkCondition( $settings ) {
+    public function checkCondition( array $settings ): bool {
         if ( !$this->hasCondition( $settings ) ) {
             return false;
         }
@@ -425,11 +398,8 @@ class DynamicConditionsPublic {
 
     /**
      * Loop widget-values and check the condition
-     *
-     * @param $settings
-     * @return bool|mixed
      */
-    private function loopValues( $settings ) {
+    private function loopValues( array $settings ): bool {
         $condition = false;
         $dynamicTagValueArray = self::checkEmpty( $settings, 'dynamicconditions_dynamic' );
 
@@ -495,7 +465,7 @@ class DynamicConditionsPublic {
      * @param $checkValue2
      * @return array
      */
-    private function compareValues( $compare, $dynamicTagValue, $checkValue, $checkValue2 ) {
+    private function compareValues( $compare, $dynamicTagValue, $checkValue, $checkValue2 ): array {
         $break = false;
         $breakFalse = false;
         $condition = false;
@@ -588,11 +558,8 @@ class DynamicConditionsPublic {
 
     /**
      * Parse value of widget to timestamp, day or month
-     *
-     * @param $dynamicTagValue
-     * @param $compareType
      */
-    private function parseDynamicTagValue( &$dynamicTagValue, $compareType ) {
+    private function parseDynamicTagValue( ?string &$dynamicTagValue, string $compareType ): void {
         switch ( $compareType ) {
             case 'days':
                 $dynamicTagValue = date( 'N', Date::stringToTime( $dynamicTagValue ) );
@@ -600,6 +567,10 @@ class DynamicConditionsPublic {
 
             case 'months':
                 $dynamicTagValue = date( 'n', Date::stringToTime( $dynamicTagValue ) );
+                break;
+
+            case 'int':
+                $dynamicTagValue = (int)filter_var( $dynamicTagValue, FILTER_SANITIZE_NUMBER_INT );
                 break;
 
             case 'strtotime':
@@ -612,12 +583,8 @@ class DynamicConditionsPublic {
 
     /**
      * Get value to compare
-     *
-     * @param $compareType
-     * @param $settings
-     * @return array
      */
-    private function getCheckValue( $compareType, $settings ) {
+    private function getCheckValue( string $compareType, array $settings ): array {
 
         switch ( $compareType ) {
             case 'days':
@@ -668,6 +635,11 @@ class DynamicConditionsPublic {
                 $checkValue2 = Date::stringToTime( $checkValue2 );
                 break;
 
+            case 'int':
+                $checkValue = (int)filter_var( self::checkEmpty( $settings, 'dynamicconditions_value' ), FILTER_SANITIZE_NUMBER_INT );
+                $checkValue2 = (int)filter_var( self::checkEmpty( $settings, 'dynamicconditions_value2' ), FILTER_SANITIZE_NUMBER_INT );
+                break;
+
             case 'default':
             default:
                 $checkValue = self::checkEmpty( $settings, 'dynamicconditions_value' );
@@ -685,12 +657,8 @@ class DynamicConditionsPublic {
 
     /**
      * Parse shortcode if active
-     *
-     * @param $value
-     * @param array $settings
-     * @return string
      */
-    private function parseShortcode( $value, $settings = [] ) {
+    private function parseShortcode( ?string $value, array $settings = [] ): ?string {
         if ( empty( $settings['dynamicconditions_parse_shortcodes'] ) ) {
             return $value;
         }
@@ -699,12 +667,9 @@ class DynamicConditionsPublic {
 
     /**
      * Checks if an array or entry in array is empty and return its value
-     *
-     * @param array $array
-     * @param null $key
-     * @return array|mixed|null
+     * @return mixed
      */
-    public static function checkEmpty( $array = [], $key = null, $fallback = null ) {
+    public static function checkEmpty( array $array = [], ?string $key = null, ?string $fallback = null ) {
         if ( empty( $key ) ) {
             return !empty( $array ) ? $array : $fallback;
         }
@@ -714,11 +679,8 @@ class DynamicConditionsPublic {
 
     /**
      * Checks if element has a condition
-     *
-     * @param $settings
-     * @return bool
      */
-    public function hasCondition( $settings ) {
+    public function hasCondition( array $settings ): bool {
         if ( empty( $settings['dynamicconditions_condition'] ) || empty( $settings['dynamicConditionsData']['selectedTag'] )
         ) {
             // no condition or no tag selected - disable conditions
@@ -737,7 +699,7 @@ class DynamicConditionsPublic {
      * @param $checkValue2
      * @param $conditionMets
      */
-    private function renderDebugInfo( $settings, $dynamicTagValue, $checkValue, $checkValue2, $conditionMets ) {
+    private function renderDebugInfo( $settings, $dynamicTagValue, $checkValue, $checkValue2, $conditionMets ): void {
         if ( !$settings['dynamicconditions_debug'] ) {
             return;
         }
@@ -766,7 +728,7 @@ class DynamicConditionsPublic {
     /**
      * Renders css for debug-output
      */
-    private function renderDebugCss() {
+    private function renderDebugCss(): void {
         if ( self::$debugCssRendered ) {
             return;
         }
@@ -779,10 +741,8 @@ class DynamicConditionsPublic {
 
     /**
      * Returns elementor-mode (edit, preview or website)
-     *
-     * @return string
      */
-    private function getMode() {
+    private function getMode(): string {
         if ( !class_exists( 'Elementor\Plugin' ) ) {
             return '';
         }
@@ -803,7 +763,7 @@ class DynamicConditionsPublic {
      *
      * @since    1.0.0
      */
-    public function enqueueScripts() {
+    public function enqueueScripts(): void {
         if ( $this->getMode() === 'edit' ) {
             return;
         }
