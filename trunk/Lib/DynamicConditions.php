@@ -226,7 +226,7 @@ class DynamicConditions {
      *
      * @since    1.0.0
      */
-    public static function run(): void{
+    public static function run(): void {
         $plugin = new self();
         $plugin->loader->run();
     }
