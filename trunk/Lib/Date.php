@@ -96,6 +96,9 @@ class Date {
      * @return mixed|string
      */
     public static function unTranslateDate( $needle = '', $setLocale = null ) {
+        if (empty($needle)) {
+            return $needle;
+        }
         // get in translated lang
         $translatedMonths = self::getMonthsTranslated();
         $translatedDays = self::getDaysTranslated();

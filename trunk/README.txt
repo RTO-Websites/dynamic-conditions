@@ -5,7 +5,7 @@ Tags: elementor, conditions, dynamic, fields, rto
 Requires at least: 5.0
 Requires PHP: 7.4
 Tested up to: 6.6
-Stable tag: 1.7.0
+Stable tag: 1.7.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -65,6 +65,18 @@ You can find it here:
 1. Widget options for conditions
 
 == Changelog ==
+= 1.7.4 =
+* Fix big issue with loops destroying everything
+
+= 1.7.3 =
+* Fix issue with date-conditions
+
+= 1.7.2 =
+* Fix issue with broken layout caused by weakmap and ob_cache
+
+= 1.7.1 =
+* Hotfix issue when element is no Base_Element
+
 = 1.7.0 =
 * Fix issue with removed css
 * Add int as option for compare-type

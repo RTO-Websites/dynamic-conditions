@@ -3,6 +3,7 @@
 namespace DynamicConditions\Admin;
 
 use Elementor\Controls_Manager;
+use Elementor\Core\Base\Document;
 use Elementor\Element_Base;
 use Elementor\Modules\DynamicTags\Module;
 use DynamicConditions\Lib\Date;
@@ -77,8 +78,9 @@ class DynamicConditionsAdmin {
 
     /**
      * Creates section for dynamic conditions in elementor-widgets
+     * @param Element_Base|Document $element
      */
-    public function addConditionFields( Element_Base $element, $section_id = null, ?array $args = null ): void {
+    public function addConditionFields( $element, $section_id = null, ?array $args = null ): void {
         $valueCondition = [
             'equal',
             'not_equal',
