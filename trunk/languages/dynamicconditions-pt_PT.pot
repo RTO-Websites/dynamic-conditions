@@ -1,0 +1,166 @@
+msgid ""
+msgstr "Project-Id-Version: dynamic-conditions\n"
+"POT-Creation-Date: 2018-11-07 09:29+0100\n"
+"PO-Revision-Date: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.4.1\n"
+"X-Poedit-Basepath: .\n"
+"Plural-Forms: \n"
+"X-Poedit-KeywordsList: __;_e\n"
+"Last-Translator: \n"
+"Language: \n"
+"X-Poedit-SearchPath-0: .\n"
+""
+
+#: admin/DynamicConditionsAdmin.php:66
+msgid "Elementor and Elementor Pro not installed."
+msgstr ""
+
+#: admin/DynamicConditionsAdmin.php:68
+msgid "Elementor Pro not installed."
+msgstr ""
+
+#: admin/DynamicConditionsAdmin.php:70
+msgid "Elementor not installed."
+msgstr ""
+
+#: admin/DynamicConditionsAdmin.php:93
+msgid "Dynamic Conditions"
+msgstr ""
+
+#: admin/DynamicConditionsAdmin.php:103
+msgid "Dynamic Tag"
+msgstr ""
+
+#: admin/DynamicConditionsAdmin.php:117
+msgid "Select condition field"
+msgstr ""
+
+#: admin/DynamicConditionsAdmin.php:125
+msgid "Show/Hide"
+msgstr ""
+
+#: admin/DynamicConditionsAdmin.php:129
+msgid "Show when condition met"
+msgstr ""
+
+#: admin/DynamicConditionsAdmin.php:130
+msgid "Hide when condition met"
+msgstr ""
+
+#: admin/DynamicConditionsAdmin.php:143
+msgid "Condition"
+msgstr ""
+
+#: admin/DynamicConditionsAdmin.php:148
+msgid "Is equal to"
+msgstr ""
+
+#: admin/DynamicConditionsAdmin.php:149
+msgid "Is not equal to"
+msgstr ""
+
+#: admin/DynamicConditionsAdmin.php:150
+msgid "Contains"
+msgstr ""
+
+#: admin/DynamicConditionsAdmin.php:151
+msgid "Does not contain"
+msgstr ""
+
+#: admin/DynamicConditionsAdmin.php:152
+msgid "Is empty"
+msgstr ""
+
+#: admin/DynamicConditionsAdmin.php:153
+msgid "Is not empty"
+msgstr ""
+
+#: admin/DynamicConditionsAdmin.php:154
+msgid "Less than"
+msgstr ""
+
+#: admin/DynamicConditionsAdmin.php:155
+msgid "Greater than"
+msgstr ""
+
+msgid "Between"
+msgstr ""
+
+msgid "Compare Type"
+msgstr ""
+
+msgid "Date"
+msgstr ""
+
+msgid "Months"
+msgstr ""
+
+msgid "Weekdays"
+msgstr ""
+
+#: admin/DynamicConditionsAdmin.php:158
+msgid "Select your condition for this widget visibility."
+msgstr ""
+
+msgid "Add a second condition value, if between is selected"
+msgstr ""
+
+#: admin/DynamicConditionsAdmin.php:168
+msgid "Conditional value"
+msgstr ""
+
+msgid "Select what do you want to compare"
+msgstr ""
+
+#: admin/DynamicConditionsAdmin.php:169
+msgid "Add your conditional value to compare here."
+msgstr ""
+
+msgid "Supported Date and Time Formats"
+msgstr ""
+
+msgid "Hide only content"
+msgstr ""
+
+msgid "Resize other columns"
+msgstr ""
+
+msgid "If checked, only the inner content will be hidden, so you will see an empty section"
+msgstr ""
+
+msgid "Parse shortcodes"
+msgstr ""
+
+msgid "In array"
+msgstr ""
+
+msgid "Use comma-separated values, to check if dynamic-value is equal with one of each item."
+msgstr ""
+
+msgid "Prevent date parsing"
+msgstr ""
+
+msgid "Debug-Mode"
+msgstr ""
+
+msgid "Use comma-separated values, to check if dynamic-value contains one of each item."
+msgstr ""
+
+msgid "In array contains"
+msgstr ""
+
+msgid "Hide wrapper"
+msgstr ""
+
+msgid "Hide other elements"
+msgstr ""
+
+msgid "Will hide a parent matching the selector."
+msgstr ""
+
+msgid "Will hide all other elements matching the selector."
+msgstr ""
