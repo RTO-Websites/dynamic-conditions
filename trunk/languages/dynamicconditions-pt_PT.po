@@ -1,0 +1,166 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: dynamic-conditions\n"
+"POT-Creation-Date: 2018-11-07 09:29+0100\n"
+"PO-Revision-Date: 2024-11-28 00:06+0000\n"
+"Last-Translator: ChobPT\n"
+"Language-Team: chob.pt\n"
+"Language: pt\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 3.4.4\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-KeywordsList: __;_e\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: admin/DynamicConditionsAdmin.php:66
+msgid "Elementor and Elementor Pro not installed."
+msgstr "Elementor e Elementor Pro não estão instalados."
+
+#: admin/DynamicConditionsAdmin.php:68
+msgid "Elementor Pro not installed."
+msgstr "O Elementor Pro não está instalado."
+
+#: admin/DynamicConditionsAdmin.php:70
+msgid "Elementor not installed."
+msgstr "O Elementor não está instalado."
+
+#: admin/DynamicConditionsAdmin.php:93
+msgid "Dynamic Conditions"
+msgstr "Condições Dinâmicas"
+
+#: admin/DynamicConditionsAdmin.php:103
+msgid "Dynamic Tag"
+msgstr "Etiqueta Dinâmica"
+
+#: admin/DynamicConditionsAdmin.php:117
+msgid "Select condition field"
+msgstr "Selecionar campo da condição"
+
+#: admin/DynamicConditionsAdmin.php:125
+msgid "Show/Hide"
+msgstr "Mostrar/Ocultar"
+
+#: admin/DynamicConditionsAdmin.php:129
+msgid "Show when condition met"
+msgstr "Mostrar quando obedece à condição"
+
+#: admin/DynamicConditionsAdmin.php:130
+msgid "Hide when condition met"
+msgstr "Ocultar quando obedece à condição"
+
+#: admin/DynamicConditionsAdmin.php:143
+msgid "Condition"
+msgstr "Condição"
+
+#: admin/DynamicConditionsAdmin.php:148
+msgid "Is equal to"
+msgstr "É igual a"
+
+#: admin/DynamicConditionsAdmin.php:149
+msgid "Is not equal to"
+msgstr "Não é igual a"
+
+#: admin/DynamicConditionsAdmin.php:150
+msgid "Contains"
+msgstr "Contém"
+
+#: admin/DynamicConditionsAdmin.php:151
+msgid "Does not contain"
+msgstr "Não contém"
+
+#: admin/DynamicConditionsAdmin.php:152
+msgid "Is empty"
+msgstr "Está vazio"
+
+#: admin/DynamicConditionsAdmin.php:153
+msgid "Is not empty"
+msgstr "Não está vazio"
+
+#: admin/DynamicConditionsAdmin.php:154
+msgid "Less than"
+msgstr "É menor que"
+
+#: admin/DynamicConditionsAdmin.php:155
+msgid "Greater than"
+msgstr "É Maior que"
+
+msgid "Between"
+msgstr "Entre"
+
+msgid "Compare Type"
+msgstr "Tipo de comparação"
+
+msgid "Date"
+msgstr "Data"
+
+msgid "Months"
+msgstr "Meses"
+
+msgid "Weekdays"
+msgstr "Dias da semana"
+
+#: admin/DynamicConditionsAdmin.php:158
+msgid "Select your condition for this widget visibility."
+msgstr "Selecione a condição para mostrar/ocultar o widget."
+
+msgid "Add a second condition value, if between is selected"
+msgstr "Segunda condição se entre estiver selecionado"
+
+#: admin/DynamicConditionsAdmin.php:168
+msgid "Conditional value"
+msgstr "Valor condicional"
+
+msgid "Select what do you want to compare"
+msgstr "Selecionar o que pretende comparar"
+
+#: admin/DynamicConditionsAdmin.php:169
+msgid "Add your conditional value to compare here."
+msgstr "Introduza aqui a sua condição de comparação."
+
+msgid "Supported Date and Time Formats"
+msgstr "Formatos de data e hora suportados"
+
+msgid "Hide only content"
+msgstr "Ocultar apenas o conteúdo"
+
+msgid "Resize other columns"
+msgstr "Redimensionar outras colunas"
+
+msgid "If checked, only the inner content will be hidden, so you will see an empty section"
+msgstr "Se estiver selecionado, apenas o conteúdo interior será ocultado, pelo que verá uma secção vazia"
+
+msgid "Parse shortcodes"
+msgstr "Executar códigos curtos"
+
+msgid "In array"
+msgstr "Na matriz"
+
+msgid "Use comma-separated values, to check if dynamic-value is equal with one of each item."
+msgstr "Utilizar valores separados por vírgulas, para verificar se o valor dinâmico é igual a um de cada item."
+
+msgid "Prevent date parsing"
+msgstr "Impedir a interpretação de datas"
+
+msgid "Debug-Mode"
+msgstr "Modo de depuração"
+
+msgid "Use comma-separated values, to check if dynamic-value contains one of each item."
+msgstr "Utilizar valores separados por vírgulas, para verificar se dynamic-value contém um de cada item."
+
+msgid "In array contains"
+msgstr "Na série contém"
+
+msgid "Hide wrapper"
+msgstr "Ocultar envolvente"
+
+msgid "Hide other elements"
+msgstr "Ocultar outros elementos"
+
+msgid "Will hide a parent matching the selector."
+msgstr "Oculta um elemento superior que corresponde ao seletor."
+
+msgid "Will hide all other elements matching the selector."
+msgstr "Oculta todos os elementos que correspondem ao seletor."
