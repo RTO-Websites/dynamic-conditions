@@ -348,15 +348,15 @@ class DynamicConditionsPublic {
             $section->before_render();
             $section->after_render();
         } else if ( $type == 'column' && $settings['dynamicconditions_resizeOtherColumns'] ) {
-            echo '<div class="dc-hidden-column" data-size="' . $settings['_column_size'] . '"></div>';
+            echo '<div class="dc-hidden-column" data-size="' . floatval( $settings['_column_size'] ) . '"></div>';
         }
 
         if ( !empty( $settings['dynamicconditions_hideWrapper'] ) ) {
-            echo '<div class="dc-hide-wrapper" data-selector="' . $settings['dynamicconditions_hideWrapper'] . '"></div>';
+            echo '<div class="dc-hide-wrapper" data-selector="' . esc_attr($settings['dynamicconditions_hideWrapper']) . '"></div>';
         }
 
         if ( !empty( $settings['dynamicconditions_hideOthers'] ) ) {
-            echo '<div class="dc-hide-others" data-selector="' . $settings['dynamicconditions_hideOthers'] . '"></div>';
+            echo '<div class="dc-hide-others" data-selector="' . esc_attr($settings['dynamicconditions_hideOthers']) . '"></div>';
         }
 
         echo "<!-- hidden $type $id -->";
